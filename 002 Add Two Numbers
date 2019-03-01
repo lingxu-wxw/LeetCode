@@ -1,0 +1,58 @@
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
+    
+        if (l1 == NULL) return l2;
+        if (l2 == NULL) return l1;
+        
+        //复制一份，安全起见
+        ListNode* pl1 = l1;
+        ListNode* pl2 = l2;
+        ListNode* header = NULL;
+        ListNode* tailer = header;
+        ListNode* temp = NULL;
+        
+        int flag = 0;
+        int sum = 0;
+        
+        //将情况合并在一个循环内
+        while (pl1 != NULL || pl2 != NULL){
+            int val1 = pl1 == NULL ? 0 : pl1->val;
+            int val2 = pl2 == NULL ? 0 : pl2->val;
+            int sum = val1 + val2 + flag;
+            flag = sum / 10;
+            
+            temp = new ListNode(sum%10);
+            
+            //如果首项为空
+            if (header == NULL){
+                header = temp;
+                tailer = header;
+            } else {
+                tailer->next = temp;
+                tailer = temp;
+            }
+            
+            pl1 = pl1 == NULL ? NULL : pl1->next;
+            pl2 = pl2 == NULL ? NULL : pl2->next;
+        }
+        
+        //最高位进位符
+        if (flag){
+            flag = 0;
+            temp = new ListNode(1);
+            tailer->next = temp;
+            tailer = temp;
+        }
+        
+        return header;
+    }
+};
