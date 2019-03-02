@@ -1,0 +1,59 @@
+class Solution {
+public:
+    vector<vector<int>> threeSum(vector<int>& nums) {
+        //将3Sum问题拆解成若干2Sum问题, 并做一些剪枝优化
+        
+        int size = nums.size();    
+        vector<vector<int>> res;
+        if (size < 3) return res;
+        
+        //对数组进行排序
+        sort(nums.begin(), nums.end());
+        
+        for (int i = 0; i < size - 2; i++){
+            
+            //剪枝
+            if (nums[i] > 0) break;
+            
+            //避免重复答案
+            if (i == 0 || (i > 0 && nums[i] != nums[i-1])){ 
+                
+                int left = i + 1, right = size - 1;
+                int sum = -nums[i];
+                
+                //2Sum问题
+                while (left < right){
+                    
+                    //匹配
+                    if (nums[left] + nums[right] == sum){
+                        vector<int> vec;
+                        vec.push_back(nums[i]);
+                        vec.push_back(nums[left]);
+                        vec.push_back(nums[right]);
+                        res.push_back(vec);
+                        
+                        //避免重复答案
+                        while (left < right && nums[left] == nums[left + 1]){
+                            left++;
+                        }
+                        while (left < right && nums[right] == nums[right - 1]){
+                            right--;
+                        }
+                         
+                        left++;
+                        right--;
+                    } 
+                    //不匹配
+                    else if (nums[left] + nums[right] < sum){
+                        left++;
+                    } 
+                    else {
+                        right--;
+                    }
+                }
+            }
+        }
+        
+        return res;
+    }
+};
