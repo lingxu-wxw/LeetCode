@@ -4,6 +4,7 @@ public:
         //可以按照3Sum的思路加一层循环, 复杂度O(n3), 空间复杂度O(1)
         
         //这里尝试网上的另一种方法,用哈希表缓存两个数的和, 平均O(n2),最坏O(n4),空间复杂度O(n2)
+        //但测出来效果一般
         
         int size = nums.size();
         vector<vector<int>> res;
