@@ -1,0 +1,17 @@
+class Solution {
+public:
+    bool isPalindrome(int x) {
+        if (x < 0) return false;
+        if (x < 10) return true;
+        
+        //复用reserve integer
+        long int res = 0, num = x;
+        
+        while (x != 0) {
+            res = 10 * res + x % 10;
+            x = x / 10;
+        }
+        
+        return (res == num);
+    }
+};
