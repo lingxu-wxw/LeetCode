@@ -1,0 +1,48 @@
+class Solution {
+public:
+    vector<vector<int>> fourSum(vector<int>& nums, int target) {
+        //可以按照3Sum的思路加一层循环, 复杂度O(n3), 空间复杂度O(1)
+        
+        //这里尝试网上的另一种方法,用哈希表缓存两个数的和, 平均O(n2),最坏O(n4),空间复杂度O(n2)
+        
+        int size = nums.size();
+        vector<vector<int>> res;
+        if (size < 4) return res;
+        
+        //对数组进行排序
+        sort(nums.begin(), nums.end());
+        
+        //构建两数之和的哈希表
+        unordered_map<int, vector<pair<int, int>>> map;
+        for (int i = 0; i < size - 1; i++){
+            for (int j = i + 1; j < size; j++){
+                int sum = nums[i] + nums[j];
+                map[sum].push_back(pair<int, int>(i, j)); //索引对
+            }
+        }
+        
+        //两层遍历
+        for (int i = 0; i < size - 1; i++){
+            for (int j = i + 1; j < size; j++){
+                int diff = target - nums[i] - nums[j];
+                
+                //不匹配
+                if (!map.count(diff)) continue;
+                
+                //匹配
+                auto vec = map[diff]; 
+                for (int k = 0; k < vec.size(); k++){
+                    //消除重复, 保证大小顺序
+                    if (i <= vec[k].second) continue;  
+                    res.push_back({nums[vec[k].first], nums[vec[k].second], nums[i], nums[j]});
+                }
+            }
+        }
+        
+        //消除重复
+        sort(res.begin(), res.end());     
+        res.erase(unique(res.begin(), res.end()), res.end()); 
+       
+        return res;
+    }
+};
