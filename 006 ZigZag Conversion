@@ -1,0 +1,33 @@
+class Solution {
+public:
+    string convert(string s, int numRows) {
+        int size = s.size();
+        int step = (numRows-1)*2;
+        
+        if (numRows == 1) return s;
+        
+        //zigzag后的每一行作为一个元素
+        vector<string> lines;
+        for (int i = 0; i < numRows; i++){
+            lines.push_back("");
+        }
+        
+        for (int i = 0; i < size; i++){
+            int index = i % step;
+            
+            if (index < numRows){
+                lines[index] = lines[index] + s[i];
+            } else {
+                lines[step - index] = lines[step - index] + s[i];             
+            }
+        }
+        
+        string res = "";
+        for (int i = 0; i < numRows; i++){
+            res = res + lines[i];
+        }
+        
+        return res;
+        
+    }
+};
