@@ -1,0 +1,30 @@
+class Solution {
+public:
+    vector<string> letterCombinations(string digits) {
+       
+        //初始化
+        vector<string> res{""};
+        if (digits.empty()) return {};
+        
+        //字符串数组
+        string dict[] = {"", "", "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz"};
+        
+        for (int i = 0; i < digits.size(); i++){
+            
+            vector<string> tmp;
+            string newstr = dict[digits[i] - '0'];
+                
+            //res每个元素和新元素匹配
+            for (int j = 0; j < newstr.size(); j++){
+                for (string str : res){
+                    tmp.push_back(str + newstr[j]);
+                }
+            }
+            
+            //防止死循环
+            res = tmp;
+        }
+        
+        return res;
+    }
+};
