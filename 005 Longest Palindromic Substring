@@ -1,5 +1,9 @@
 class Solution {
 public:
+    //Input: "babad"
+    //Output: "bab"
+    //Note: "aba" is also a valid answer.
+    
     string longestPalindrome(string s) {
         const int size = s.size();
         if (size <= 1) return s;
