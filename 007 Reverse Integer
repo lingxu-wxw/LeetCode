@@ -1,5 +1,8 @@
 class Solution {
 public:
+    //Input: 123
+    //Output: 321
+    
     int reverse(int x) {
         
         long int res = 0;
