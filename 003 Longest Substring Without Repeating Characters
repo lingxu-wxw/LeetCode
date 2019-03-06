@@ -1,5 +1,9 @@
 class Solution {
 public:
+    //Input: "pwwkew"
+    //Output: 3
+    //Explanation: The answer is "wke", with the length of 3. 
+    
     int lengthOfLongestSubstring(string s) {
         //滑动窗口: 遍历一遍，判断s[j]是否在s[i:j]当中
         unordered_set<int> slide_window;
