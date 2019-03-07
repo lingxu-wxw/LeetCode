@@ -1,0 +1,28 @@
+class Solution {
+public:
+    // Input: ")()())"
+    // Output: 4
+    // Explanation: The longest valid parentheses substring is "()()"
+    
+    int longestValidParentheses(string s) {
+        //可以参考问题20, 用栈实现
+        
+        int res = 0, start = 0;
+        stack<int> pares;
+        
+        for (int i = 0; i < s.size(); i++){
+            //如果是左括号, 压栈
+            if (s[i] == '(') pares.push(i);
+            else {
+                //若栈空, 前面不符合, 更新start
+                if (pares.empty())  start = i+1;
+                else {
+                    pares.pop();
+                    res = (pares.empty()) ? max(res, i-start+1) : max(res, i-pares.top());
+                }
+            }
+        }
+        
+        return res;
+    }
+};
