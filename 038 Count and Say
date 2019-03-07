@@ -1,0 +1,29 @@
+class Solution {
+public:
+    //1.     1
+    //2.     11
+    //3.     21
+    //4.     1211
+    //5.     111221
+    
+    string countAndSay(int n) {
+        //边界条件
+        if (n == 1) return "1";
+        else {
+            //方便循环
+            string str = countAndSay(n-1) + "*";
+            string newstr = "";
+            //计数
+            int count = 1;
+            for (int i = 0; i < str.size() - 1; i++){
+                if (str[i] == str[i+1]){
+                    count++;
+                    continue;
+                }
+                newstr += to_string(count) + str[i];
+                count = 1;
+            }
+            return newstr;
+        }
+    }
+};
