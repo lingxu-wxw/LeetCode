@@ -1,5 +1,8 @@
 class Solution {
 public:
+    //Input: "23"
+    //Output: ["ad", "ae", "af", "bd", "be", "bf", "cd", "ce", "cf"].
+
     vector<string> letterCombinations(string digits) {
        
         //初始化
