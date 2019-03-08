@@ -8,6 +8,9 @@
  */
 class Solution {
 public:
+    //Given linked list: 1->2->3->4->5, and n = 2.
+    //After removing the second node from the end, the linked list becomes 1->2->3->5.
+
     ListNode* removeNthFromEnd(ListNode* head, int n) {
         //删除链表倒数第n个
         
