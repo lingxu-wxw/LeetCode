@@ -1,5 +1,8 @@
 class Solution {
 public:
+    //Input: ["flower","flow","flight"]
+    //Output: "fl"
+
     string longestCommonPrefix(vector<string>& strs) {
         int size = strs.size();
         if (strs.empty()) return "";
