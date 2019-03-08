@@ -1,5 +1,12 @@
 class Solution {
 public:
+    //Given array nums = [-1, 0, 1, 2, -1, -4],
+    //A solution set is:
+    //[
+    //  [-1, 0, 1],
+    //  [-1, -1, 2]
+    //]
+
     vector<vector<int>> threeSum(vector<int>& nums) {
         //将3Sum问题拆解成若干2Sum问题, 并做一些剪枝优化
         
