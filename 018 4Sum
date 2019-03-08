@@ -1,5 +1,13 @@
 class Solution {
 public:
+    //Given array nums = [1, 0, -1, 0, -2, 2], and target = 0.
+    //A solution set is:
+    //[
+    //  [-1,  0, 0, 1],
+    //  [-2, -1, 1, 2],
+    //  [-2,  0, 0, 2]
+    //]
+
     vector<vector<int>> fourSum(vector<int>& nums, int target) {
         //可以按照3Sum的思路加一层循环, 复杂度O(n3), 空间复杂度O(1)
         
