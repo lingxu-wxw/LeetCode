@@ -1,0 +1,45 @@
+class Solution {
+public:
+    //Input: num1 = "123", num2 = "456"
+    //Output: "56088"
+    
+    string multiply(string num1, string num2) {
+        //production: 乘法, 竖式设定num1在上 num2在下
+      
+        if (num1 == "0" || num2 == "0") return "0";
+        
+        //数字长度, 进位, 倒位存储
+        int size1 = num1.size(), size2 = num2.size();
+        int flag = 0, k = size1 + size2 - 2;
+        
+        //数组初始化, 最大可能位数
+        vector<int> res(size1+size2, 0);
+        
+        //竖式, res[0]是个位
+        for (int i = 0; i < size2; i++){
+            for (int j = 0; j < size1; j++){
+                res[k-i-j] += (num2[i] - '0') * (num1[j] - '0');
+            }
+        }
+        
+        //处理进位
+        for (int i = 0; i < size1+size2; i++){
+            res[i] += flag;
+            flag = res[i] / 10;
+            res[i] = res[i] % 10;
+        }
+        
+        //清理多余0
+        int index = size1 + size2 - 1;
+        while (res[index] == 0) index--;
+        if (index < 0) return "0";
+         
+        //逆序输出
+        string str = "";
+        while (index >= 0) {
+            str.push_back(res[index--] + '0');
+        }
+        
+        return str;
+    }
+};
