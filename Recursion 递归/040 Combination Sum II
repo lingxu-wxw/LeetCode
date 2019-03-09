@@ -1,0 +1,38 @@
+class Solution {
+public:
+    
+    void combinationSum2DFS(vector<int>& candidates, int target, int start, vector<int> cur, vector<vector<int>> &res) {
+        //不可能出现
+        if (target < 0) return;
+        
+        //恰好匹配
+        if (target == 0) {
+            res.push_back(cur);
+            return;
+        }
+        
+        //start位后的全排列
+        for (int i = start; i < candidates.size(); i++) {
+            //防止重复,可能会出现两组相同的答案[1,2,5]
+            if (i > start && candidates[i] == candidates[i - 1]) continue;
+            
+            int num = candidates[i];
+            
+            //push - call - pop
+            cur.push_back(num);
+            combinationSum2DFS(candidates, target-num, i+1, cur, res);
+            cur.pop_back();
+        }
+    }
+    
+    vector<vector<int>> combinationSum2(vector<int>& candidates, int target) {
+        //类似问题22, 都要用到深度优先算法
+        
+        vector<vector<int>> res;
+        sort(candidates.begin(), candidates.end());
+        
+        combinationSum2DFS(candidates, target, 0, {}, res);
+        
+        return res;
+    }
+};
