@@ -1,0 +1,39 @@
+class Solution {
+public:
+    //Input: candidates = [2,3,6,7], target = 7,
+    //A solution set is:
+    //[
+    //  [7],
+    //  [2,2,3]
+    //]
+    
+    void combinationSumDFS(vector<int>& candidates, int target, int start, vector<int> cur, vector<vector<int>> &res) {
+        //不可能出现
+        if (target < 0) return;
+        
+        //恰好匹配
+        if (target == 0) {
+            res.push_back(cur);
+            return;
+        }
+        
+        for (int i = start; i < candidates.size(); i++) {
+            int num = candidates[i];
+            
+            //push - call - pop
+            cur.push_back(num);
+            combinationSumDFS(candidates, target-num, i, cur, res);
+            cur.pop_back();
+        }
+    }
+    
+    vector<vector<int>> combinationSum(vector<int>& candidates, int target) {
+        //类似问题22, 都要用到深度优先算法
+        
+        vector<vector<int>> res;
+        
+        combinationSumDFS(candidates, target, 0, {}, res);
+        
+        return res;
+    }
+};
