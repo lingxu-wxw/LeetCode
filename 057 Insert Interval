@@ -1,0 +1,47 @@
+/**
+ * Definition for an interval.
+ * struct Interval {
+ *     int start;
+ *     int end;
+ *     Interval() : start(0), end(0) {}
+ *     Interval(int s, int e) : start(s), end(e) {}
+ * };
+ */
+class Solution {
+public:
+    
+    // Input: intervals = [[1,3],[6,9]], newInterval = [2,5]
+    // Output: [[1,5],[6,9]]
+    
+    vector<Interval> insert(vector<Interval>& intervals, Interval newInterval) {
+        
+        if (intervals.empty()) return {newInterval};
+        int size = intervals.size();
+    
+        vector<Interval> res;
+        
+        int index = 0;
+        
+        for (int i = 0; i < size; i++) {
+            //前置无交叉,
+            if (intervals[i].end < newInterval.start) {
+                res.push_back(intervals[i]);
+                index++;
+            }     
+            //后置无交叉
+            else if (intervals[i].start > newInterval.end){
+                res.push_back(intervals[i]);
+            } 
+            //有交叉, 合并
+            else {
+                newInterval.start = min(newInterval.start, intervals[i].start);
+                newInterval.end = max(newInterval.end, intervals[i].end);
+            }
+        }
+        
+        //指定位置插入
+        res.insert(res.begin() + index, newInterval);
+        
+        return res;
+    }
+};
