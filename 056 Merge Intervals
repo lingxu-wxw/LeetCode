@@ -1,0 +1,43 @@
+/**
+ * Definition for an interval.
+ * struct Interval {
+ *     int start;
+ *     int end;
+ *     Interval() : start(0), end(0) {}
+ *     Interval(int s, int e) : start(s), end(e) {}
+ * };
+ */
+class Solution {
+public:
+    
+    // Input: [[1,4],[4,5]]
+    // Output: [[1,5]]
+    // Explanation: Intervals [1,4] and [4,5] are considered overlapping.
+    
+    vector<Interval> merge(vector<Interval>& intervals) {
+        //合并区间
+        
+        if (intervals.empty()) return {};
+        int size = intervals.size();
+        
+        //自定义sort函数: 按照区间的start排序
+        sort(intervals.begin(), intervals.end(), [](Interval &a, Interval &b) 
+            {return a.start < b.start;});
+        
+        //先把第一个放进vector
+        vector<Interval> res{intervals[0]};
+        
+        for (int i = 1; i < size; i++){
+            //无交叉, 直接添加
+            if (intervals[i].start > res.back().end){
+                res.push_back(intervals[i]);
+            }
+            //有交叉, 合并
+            else {
+                res.back().end = max(res.back().end, intervals[i].end);
+            }
+        }
+        
+        return res;
+    }
+};
