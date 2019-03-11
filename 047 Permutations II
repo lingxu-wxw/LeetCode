@@ -1,0 +1,39 @@
+class Solution {
+public:
+    // Input: [1,1,2]
+    // Output:
+    // [
+    //   [1,1,2],
+    //   [1,2,1],
+    //   [2,1,1]
+    // ]
+    
+    void permuteUniqueDFS(vector<int> &nums, int start, vector<vector<int>> &res){
+        //排列结束
+        if (start >= nums.size()){
+            res.push_back(nums);
+            return;
+        }
+        
+        //交换顺序
+        for (int i = start; i < nums.size(); i++){
+            //避免重复
+            int j = i - 1;
+            while (j >= start && nums[j] != nums[i]) j--;
+            if (j != start - 1) continue;
+            
+            swap(nums[start], nums[i]);
+            permuteUniqueDFS(nums, start+1, res);
+            swap(nums[start], nums[i]);
+        }
+    }
+    
+    vector<vector<int>> permuteUnique(vector<int>& nums) {
+        //全排列问题
+        //大致思路是先决定第i个, 再决定第i+1个
+        vector<vector<int>> res;
+        sort(nums.begin(), nums.end());
+        permuteUniqueDFS(nums, 0, res);
+        return res;
+    }
+};
