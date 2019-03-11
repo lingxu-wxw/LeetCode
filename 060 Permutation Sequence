@@ -1,0 +1,29 @@
+class Solution {
+public:
+    
+    // Input: n = 4, k = 9
+    // Output: "2314"
+    
+    string getPermutation(int n, int k) {
+        
+        string res = "";
+        string num = "123456789";
+        
+        //商 除数 阶乘
+        int quotient;
+        vector<int> f(n, 1);
+        for (int i = 1; i < n; i++) f[i] = f[i - 1] * i;
+        
+        //倒序算权重
+        k--;
+        for (int i = n; i >= 1; i--) {
+            quotient = k / f[i-1];
+            k = k % f[i-1];
+            
+            res.push_back(num[quotient]);
+            num.erase(quotient, 1);
+        }
+        
+        return res;
+    }
+};
