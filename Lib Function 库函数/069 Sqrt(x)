@@ -1,0 +1,20 @@
+class Solution {
+public:
+    
+    // Input: 8
+    // Output: 2
+    // Explanation: The square root of 8 is 2.82842..., and since  
+    //              the decimal part is truncated, 2 is returned.
+    
+    int mySqrt(int x) {
+        // 牛顿迭代法
+        // 因为要求x2 = n的解，令f(x)=x2-n，相当于求解f(x)=0的解，可以求出递推式如下：
+        // xi+1 = xi - (xi2 - n) / (2xi) = xi - xi / 2 + n / (2xi) = xi / 2 + n / 2xi = (xi + n/xi) / 2
+        
+        long res = x;
+        while (res * res > x) {
+            res = (res + x / res) / 2;
+        }
+        return res;
+    }
+};
