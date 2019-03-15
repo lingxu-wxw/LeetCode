@@ -1,0 +1,73 @@
+class Solution {
+public:
+    
+    // Input:
+    // words = ["What","must","be","acknowledgment","shall","be"]
+    // maxWidth = 16
+    // Output:
+    // [   
+    //   "What   must   be",
+    //   "acknowledgment  ",
+    //   "shall be        "
+    // ]
+    
+    vector<string> fullJustify(vector<string>& words, int maxWidth) {
+        // 文本两端对齐
+        // hint 1: 超过两个单词两端对齐, 最后一行除外, 要左对齐
+        // hint 2: 单个单词左对齐
+        // hint 3: 空格除不尽的话尽可能放在左边
+        
+        vector<string> res;
+        int size = words.size();
+        
+        // 单行左指针
+        int i = 0;
+        
+        while (i < size) {
+            // 贪心, 找到一行最多能放的单词数
+            int j = i, wlen = 0, wnum = 0;
+            while (j < size && wlen + words[j].size() + wnum <= maxWidth) {
+                wlen += words[j++].size();
+                wnum++;
+            }
+            
+            // 将word拼接成单行, 填充空格
+            string line;
+            int slen = maxWidth - wlen;    
+            int savg = wnum > 1 ? slen / (wnum-1) : slen;
+            int srem = wnum > 1 ? slen % (wnum-1) : 0;
+            
+            for (int k = i; k < j; k++) {
+                line += words[k];
+
+                // 填充空格, space是填充空格的个数
+                int space;
+                
+                if (slen > 0) {
+                    // 最后一行
+                    if (j == size) {
+                        if (j - k == 1) space = slen;   // 最后一个单词
+                        else space = 1;
+                    }
+                    // 普通行
+                    else {
+                        if (j - k == 1) space = slen;    // 最后一个单词（含单行单个的情况）
+                        else {
+                            if (srem-- > 0) space = savg + 1;
+                            else space = savg;
+                        }    
+                    }
+                    // 填充空格
+                    line.append(space, ' ');
+                    slen -= space;
+                }
+            }
+            
+            // 下一行
+            res.push_back(line);
+            i = j;
+        }
+        
+        return res;      
+    }
+};
