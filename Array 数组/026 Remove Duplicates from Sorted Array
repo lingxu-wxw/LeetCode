@@ -1,16 +1,21 @@
 class Solution {
 public:
     int removeDuplicates(vector<int>& nums) {
-      
+        // 用快慢指针来记录index，最开始都指向nums[0]
+        // 如果两个指针指的数字相同，则快指针向前走一; 如果不同，则两个指针都向前走一步
+        // 这样当快指针走完整个数组后，慢指针当前的坐标加1就是数组中不同数字的个数
+        
         int size = nums.size();
         if (size == 0) return 0;
         
-        int j = 0;  
-        for (int i = 0; i < size; i++){
-            if (nums[i] != nums[j]) nums[++j] = nums[i];
+        int pre = 0, cur = 0;
+        
+        while (cur < size) {
+            if (nums[pre] == nums[cur]) ++cur;
+            else nums[++pre] = nums[cur++];
         }
         
-        //返回数组的前j+1个
-        return j+1;
+        //返回数组的前pre+1个
+        return pre + 1;
     }
 };
