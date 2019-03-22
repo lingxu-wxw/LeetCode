@@ -1,0 +1,43 @@
+class Solution {
+public:
+    
+    // Input: [1,2,2]
+    // Output:
+    // [
+    //   [2],
+    //   [1],
+    //   [1,2,2],
+    //   [2,2],
+    //   [1,2],
+    //   []
+    // ]
+    
+    vector<vector<int>> subsetsWithDup(vector<int>& nums) {
+        if (nums.empty()) return {};
+        sort(nums.begin(), nums.end());
+        
+        vector<vector<int>> res;
+        res.push_back({});
+        
+        int lastnum = INT_MAX, lastsize;
+        
+        // 遍历所有nums
+        for (int num : nums) {
+            int size = res.size();
+            vector<vector<int>> cpyres = res;
+            
+            // 如果没有重复就从头开始，有重复就从中间开始
+            int i = (lastnum == num) ? lastsize : 0;
+           
+            for (; i < size; i++) {
+                cpyres[i].push_back(num);
+                res.push_back(cpyres[i]);
+            }
+            
+            lastnum = num;
+            lastsize = size;
+        }
+        
+        return res;
+    }
+};
