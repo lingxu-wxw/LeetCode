@@ -1,0 +1,39 @@
+class Solution {
+public:
+
+    int maxValue(node* root)
+    {
+        if(root == NULL)
+            return INT_MAX
+        while(root -> right)
+            root = root -> right;
+        return root -> value;
+    }
+    
+    int minValue(node* root)
+    {
+        if(root == NULL)
+            return INT_MIN
+        while(root -> left)
+            root = root -> left;
+        return root -> value;
+    }
+    
+    bool isBST(node* root )
+    {
+            if (root == NULL)
+                   return true;
+            //如果左子树最大值大于根节点，则返回false
+            if (root->left != NULL && maxValue(root->left) > node->value)
+                   return false;
+            //如果右子树最小值小于根节点，则返回false
+            if (root->right != NULL && minValue(root->right) < node->value)
+                   return false;
+
+            //递归判断
+            if (!isBST(root->left) || !isBST(root->right))
+                   return false;
+            return true;
+    }
+
+}
