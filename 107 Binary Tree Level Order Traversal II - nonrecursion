@@ -39,6 +39,10 @@ public
                 if (t->left) q.push(t->left);
                 if (t->right) q.push(t->right);
             }
+            
+            // 也可以在这里插入到前面
+            // res.insert(res.begin(), onelevel);
+            
             res.push_back(onelevel);
         }
         
