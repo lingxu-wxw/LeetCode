@@ -1,0 +1,30 @@
+class Solution {
+public:
+    
+    // For example, given the following triangle
+
+    // [
+    //      [2],
+    //     [3,4],
+    //    [6,5,7],
+    //   [4,1,8,3]
+    // ]
+    // The minimum path sum from top to bottom is 11 (i.e., 2 + 3 + 5 + 1 = 11).
+    
+    int minimumTotal(vector<vector<int>>& triangle) {
+        // 复制三角形最后一行作为更新的一位数组
+        // 然后逐个遍历这个DP数组，对于每个数字，和它之后的元素比较选择较小的再加上面一行相邻位置的元素做为新的元素，
+        // 然后一层一层的向上扫描，整个过程和冒泡排序的原理差不多，最后最小的元素都冒到前面，第一个元素即为所求
+        
+        int size = triangle.size();
+        vector<int> dp(triangle.back());
+        
+        for (int i = (int)size - 2; i >= 0; --i) {
+            for (int j = 0; j <= i; ++j) {
+                dp[j] = min(dp[j], dp[j + 1]) + triangle[i][j];
+            }
+        }
+        
+        return dp[0];
+    }
+};
