@@ -1,0 +1,52 @@
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    
+    // For example, given
+
+    // preorder = [3,9,20,15,7]
+    // inorder = [9,3,15,20,7]
+    // Return the following binary tree:
+
+    //     3
+    //    / \
+    //   9  20
+    //     /  \
+    //    15   7
+    
+    TreeNode* buildTreeDFS(vector<int>& preorder, vector<int>& inorder,
+                     int prestart, int preend, int instart, int inend) {
+        // 终止检测
+        if ((prestart > preend) || (instart > inend))
+            return NULL;
+        
+        // 找到root结点在inorder中的索引
+        TreeNode* root = new TreeNode(preorder[prestart]);  
+        int idx = 0, i;
+        for (i = instart; i <= inend; i++) {
+            if (preorder[prestart] == inorder[i]) break;
+        }
+        idx = i;
+    
+        // 递归左右子树
+        root->left = buildTreeDFS(preorder, inorder, prestart+1, prestart+idx-instart, instart, idx-1);
+        root->right = buildTreeDFS(preorder, inorder, prestart+idx-instart+1, preend, idx+1, inend);
+            
+        return root;
+    }
+    
+    TreeNode* buildTree(vector<int>& preorder, vector<int>& inorder) {
+        // preorder: root - left - right
+        // inorder: left - root - right
+        // 先用preorder找到root, 在用inorder找到左右孩子
+        return buildTreeDFS(preorder, inorder, 0, preorder.size()-1, 0, inorder.size()-1);
+    }
+};
