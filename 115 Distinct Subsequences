@@ -1,0 +1,43 @@
+class Solution {
+public:
+    
+    // Input: S = "rabbbit", T = "rabbit"
+    // Output: 3
+    // Explanation:
+
+    // As shown below, there are 3 ways you can generate "rabbit" from S.
+    // (The caret symbol ^ means the chosen letters)
+
+    // rabbbit
+    // ^^^^ ^^
+    // rabbbit
+    // ^^ ^^^^
+    // rabbbit
+    // ^^^ ^^^
+    
+    int numDistinct(string s, string t) {
+        // 字符串的题很容易就想到动态规划
+        if (t.empty()) return 1;
+        
+        int m = t.size(), n = s.size();
+        if (n < m) return 0;
+        
+        // 其中dp[i][j]表示的是s的前j个字符和t的前i个字符有几种匹配方式
+        vector<vector<long> > dp(m+1, vector<long>(n+1, 0));
+        
+        // 初始化动态数组
+        for (int j = 0; j <= n; j++) {
+            dp[0][j] = 1;
+        }
+        
+        // 用递推式导出整个动态数组
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1; j <= n; j++) {
+                // 分匹配或不匹配的情况
+                dp[i][j] = dp[i][j-1] + (t[i-1]==s[j-1] ? dp[i-1][j-1] : 0);
+            }
+        }
+        
+        return dp[m][n];
+    }
+};
