@@ -1,0 +1,39 @@
+/*
+// Definition for a Node.
+class Node {
+public:
+    int val;
+    Node* left;
+    Node* right;
+    Node* next;
+
+    Node() {}
+
+    Node(int _val, Node* _left, Node* _right, Node* _next) {
+        val = _val;
+        left = _left;
+        right = _right;
+        next = _next;
+    }
+};
+*/
+class Solution {
+public:
+    Node* connect(Node* root) {
+        if (!root) return NULL;
+        queue<Node*> q{{root}}; 
+        
+        // 而每当从queue中取出一个元素时，将其next指针指向queue中下一个节点即可
+        while (!q.empty()) {
+            for (int i = q.size(); i > 0; i--) {
+                Node *t = q.front();
+                q.pop();
+                t->next = (i == 1) ? NULL : q.front();
+                if (t->left) q.push(t->left);
+                if (t->right) q.push(t->right);
+            }
+        }
+        
+        return root;
+    }
+};
