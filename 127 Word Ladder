@@ -1,0 +1,77 @@
+class Solution {
+public:
+    
+    // Return 0 if there is no such transformation sequence.
+    // All words have the same length.
+    // All words contain only lowercase alphabetic characters.
+    // You may assume no duplicates in the word list.
+    // You may assume beginWord and endWord are non-empty and are not the same.
+    
+    // Input:
+    // beginWord = "hit",
+    // endWord = "cog",
+    // wordList = ["hot","dot","dog","lot","log","cog"]
+
+    // Output: 5
+    
+    int ladderLength(string beginWord, string endWord, vector<string>& wordList) {
+        
+        if (beginWord == endWord) return 0;
+        
+        // dict是单词集
+        unordered_set<string> dict(wordList.begin(), wordList.end());
+        
+        // 起始路径p，在p中先把起始单词放进去
+        vector<string> p{beginWord};
+        
+        // 路径集paths，用以保存所有路径
+        queue<vector<string>> paths;
+        paths.push(p);
+        
+        // level记录循环中当前路径的长度，minLevel是记录最短路径的长度
+        // 如果某条路径的长度超过了已有的最短路径的长度就舍弃
+        int level = 1, minLevel = INT_MAX;
+        
+        // words记录已经循环过的路径中的词，防止重复
+        unordered_set<string> words;
+        
+        // BFS遍历
+        while (!paths.empty()) {
+            auto t = paths.front(); paths.pop();
+            
+            // 如果该路径长度大于level，说明字典中的有些词已经存入路径了
+            if (t.size() > level) {
+                // 在字典中将这些词删去，然后将words清空，对循环对剪枝处理
+                for (string w : words) dict.erase(w);
+                words.clear();
+                level = t.size();
+                if (level > minLevel) break;
+            }
+            
+            // 取出当前路径的最后一个词，对每个字母进行替换并在字典中查找是否存在替换后的新词
+            string last = t.back();
+            for (int i = 0; i < last.size(); i++) {
+                string newLast = last;
+                for (char ch = 'a'; ch <= 'z'; ch++) {
+                    newLast[i] = ch;
+                    if (!dict.count(newLast)) continue;
+                    
+                    // 如果替换后的新词在字典中存在，将其加入words中，并在原有路径的基础上加上这个新词生成一条新路径
+                    words.insert(newLast);
+                    vector<string> nextPath = t;
+                    nextPath.push_back(newLast);
+                    
+                    // 如果这个新词就是结束词，则此新路径为一条完整的路径，加入结果中，并更新minLevel
+                    if (newLast == endWord) {
+                        // 当前路径加上最后一个元素才是完整路径
+                        return level+1;
+                    } else {
+                        paths.push(nextPath);
+                    }
+                }
+            }
+        }
+        
+        return 0;
+    }
+};
