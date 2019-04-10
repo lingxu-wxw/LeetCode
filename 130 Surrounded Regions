@@ -1,0 +1,54 @@
+class Solution {
+public:
+    
+    // board的高和宽
+    int m, n;
+    
+    // 向上下左右格子移动, row/col
+    vector<vector<int>> step;
+    
+    // 判断该坐标点在board范围内/在board的边缘
+    bool inboard(int row, int col) {return row >= 0 && row < m && col >= 0 && col < n;} 
+    bool isedge(int row, int col) {return row == 0 || row == m-1 || col ==0 || col == n-1;}
+    
+    void solveDFS(vector<vector<char>>& board, int row, int col) {
+        // 将O标记为$
+        board[row][col] = '$';
+        // 上下左右分别搜索
+        for (int i = 0; i < step.size(); i++) {
+            int newrow = row + step[i][0];
+            int newcol = col + step[i][1];
+            // 如果新格子在board内、是O、继续DFS
+            if (inboard(newrow, newcol) && board[newrow][newcol] == 'O') 
+                solveDFS(board, newrow, newcol);
+        }
+    }
+    
+    void solve(vector<vector<char>>& board) {
+        // 扫面矩阵的四条边，如果有O，则用DFS遍历，将所有连着的O都变成另一个字符，比如$，
+        // 这样剩下的O都是被包围的，然后将这些O变成X，把$变回O就行了
+    
+        // matrix判空
+        if (board.empty() || board[0].empty()) return;
+        
+        // 初始化全局变量
+        m = board.size(), n = board[0].size();
+        step = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+        
+        // 遍历边缘
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (isedge(i, j) && board[i][j] == 'O')
+                    solveDFS(board, i, j);
+            }
+        }
+        
+        // 遍历全图
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (board[i][j] == 'O') board[i][j] = 'X';
+                if (board[i][j] == '$') board[i][j] = 'O';
+            }
+        }
+    }
+};
