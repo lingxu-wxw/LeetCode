@@ -1,0 +1,40 @@
+class Solution {
+public:
+    //Input: "MCMXCIV"
+    //Output: 1994
+    //Explanation: M = 1000, CM = 900, XC = 90 and IV = 4.
+
+    int romanToInt(string s) {
+        unordered_map<char, int> romans;
+        romans['I'] = 1;
+        romans['V'] = 5;
+        romans['X'] = 10;
+        romans['L'] = 50;
+        romans['C'] = 100;
+        romans['D'] = 500;
+        romans['M'] = 1000;
+        
+        //当前量级level
+        int level = 1;
+        int size = s.length();
+        
+        if (s == "") return 0;
+     
+        int res = 0;
+        for (int i = size-1; i >= 0; i--){
+            int newnum = romans[s[i]];
+            
+            //高量级, 同量级
+            if (newnum >= level){
+                level = newnum;
+                res += level;
+            }
+            //低量级
+            else {
+                res -= newnum;
+            }
+        }
+        
+        return res;
+    }
+};
