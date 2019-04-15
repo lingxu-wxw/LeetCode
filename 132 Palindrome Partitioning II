@@ -1,0 +1,30 @@
+class Solution {
+    
+    // Input: "aab"
+    // Output: 1
+    // Explanation: The palindrome partitioning ["aa","b"] could be produced using 1 cut.
+    
+    public int minCut(String s) {
+        // cut[i]表示第i个字符到最后一个字符所构成的子串的最小分割次数，
+        // 这里的i有约束条件，就是第i个位置必须是可进行回文分割的
+        // dp[i][j]表示第i个字符到第j个字符是否构成回文
+        
+        // java数组的初始值是0
+        int[][] dp = new int[s.length()][s.length()];
+        int[] cut = new int[s.length()+1];
+        
+        for (int i = s.length()-1; i >= 0; --i) {
+            cut[i] = Integer.MAX_VALUE;
+            for (int j = i; j < s.length(); ++j) { 
+                // 转移公式, 如果i处回文: ij处字符相等，且距离小于等于1或累计回文
+                if ((s.charAt(i)==s.charAt(j)) && (j-i<=1 || dp[i+1][j-1]==1)){
+                    dp[i][j] = 1;
+                    cut[i] = Math.min(1+cut[j+1], cut[i]);
+                }
+            }
+        }
+        
+        return cut[0]-1;    
+    }
+    
+}
