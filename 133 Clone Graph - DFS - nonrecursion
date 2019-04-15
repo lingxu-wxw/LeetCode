@@ -1,0 +1,46 @@
+/*
+// Definition for a Node.
+class Node {
+    public int val;
+    public List<Node> neighbors;
+
+    public Node() {}
+
+    public Node(int _val,List<Node> _neighbors) {
+        val = _val;
+        neighbors = _neighbors;
+    }
+};
+*/
+class Solution {
+    
+    public Node cloneGraph(Node node) {
+        // 深度优先搜索 DFS
+        if (node == null) return null;
+        
+        // 初始化新结点，不加邻接节点
+        Node cloneNode = new Node(node.val, new ArrayList<Node>());
+        // HashMap, key是拷贝前的Node, value是拷贝后的Node
+        HashMap<Node, Node> map = new HashMap<Node, Node>();
+        map.put(node, cloneNode);
+        // LinkedList, 定义栈, 用作非递归的深搜, 先进后出
+        LinkedList<Node> stack = new LinkedList<Node>();
+        stack.push(node);
+        
+        while (!stack.isEmpty()) {
+            Node curnode = stack.pop();
+            for (Node neigh : curnode.neighbors) {
+                // 如果map中没有，虽然是广搜，但是无向图，所以仍然可能重复
+                if (!map.containsKey(neigh)) {
+                    Node newneigh = new Node(neigh.val, new ArrayList<Node>());
+                    map.put(neigh, newneigh);
+                    stack.push(neigh);
+                }
+                map.get(curnode).neighbors.add(map.get(neigh));
+            }
+        }
+        
+        return cloneNode;
+    }
+}
+
