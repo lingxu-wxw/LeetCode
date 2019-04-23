@@ -1,0 +1,49 @@
+class Solution {
+    
+    // Java Queue 的接口
+    // Java5中新增加了java.util.Queue接口，用以支持队列的常见操作。该接口扩展了java.util.Collection接口
+    // add      增加一个元索              如果队列已满，则抛出一个IIIegaISlabEepeplian异常
+    // remove   移除并返回队列头部的元素    如果队列为空，则抛出一个NoSuchElementException异常
+    // element  返回队列头部的元素         如果队列为空，则抛出一个NoSuchElementException异常
+    // offer    添加一个元素并返回true     如果队列已满，则返回false
+    // poll     移除并返问队列头部的元素    如果队列为空，则返回null
+    // peek     返回队列头部的元素         如果队列为空，则返回null
+    // put      添加一个元素              如果队列满，则阻塞
+    // take     移除并返回队列头部的元素    如果队列为空，则阻塞
+    
+    // Set接口最长用的两大实现: HashSet 和 TreeSet
+    
+    // Input: s = "applepenapple", wordDict = ["apple", "pen"]
+    // Output: true
+    // Explanation: Return true because "applepenapple" can be segmented as "apple pen apple".
+    //         Note that you are allowed to reuse a dictionary word.
+    
+    public boolean wordBreak(String s, List<String> wordDict) {
+        
+        if (wordDict.contains(s)) return true;
+        int length = s.length();
+        
+        // queue中是字符串的索引号, 用于BFS遍历
+        Queue<Integer> queue = new LinkedList<Integer>();
+        queue.offer(0);
+        
+        // set用于记录已经访问的索引号, 剪枝
+        Set<Integer> visited = new HashSet<Integer>();
+        visited.add(0);
+        
+        while (!queue.isEmpty()) {
+            int curidx = queue.poll();
+            for (int i = curidx + 1; i <= length; i++) {
+                // 因为只需要返回true or false，所以可以剪枝
+                if (visited.contains(i)) continue;
+                if (wordDict.contains(s.substring(curidx, i))) {
+                    if (i == length) return true;
+                    queue.offer(i);
+                    visited.add(i);
+                }
+            }
+        }
+        
+        return false;
+    }
+}
