@@ -1,0 +1,35 @@
+class Solution {
+    
+    // 关于java的String, StringBuilder, StringBuffer
+    // String 是不可变的对象, 底层使用了一个不可变的数组 private final char value[], 不能用来拼接字符串
+    // StringBuffer 和 StringBuilder 都是内容可变的, 底层使用的是可变的字符数组 char[] value, 可以用来拼接字符串
+    // 从线程安全来说，因为String是不可被继承的，所以不可改变，故是线程安全的；StringBuffer是线程安全的；StringBuilder是线程不安全的
+    
+    // Input: s = "applepenapple", wordDict = ["apple", "pen"]
+    // Output: true
+    // Explanation: Return true because "applepenapple" can be segmented as "apple pen apple".
+    //         Note that you are allowed to reuse a dictionary word.
+    
+    public boolean wordBreak(String s, List<String> wordDict) {
+        // dp[i]是表示到字符串s的第i个元素为止能不能用字典中的词来表示
+        // java的boolean数组默认值是false
+        
+        int length = s.length();
+        boolean[] dp = new boolean[length+1];
+        dp[0] = true;
+        
+        // 因为后面的dp要用到前面的dp，所以外循环用切分字符串的后段
+        for (int j = 1; j <= length; j++) {
+            for (int i = 0; i < j; i++) {
+                // str.substring 左闭右开
+                StringBuilder str = new StringBuilder(s.substring(i, j));
+                if (dp[i] && wordDict.contains(str.toString())) {
+                    dp[j] = true;
+                    break;
+                }
+            }
+        }
+        
+        return dp[length];
+    }
+}
