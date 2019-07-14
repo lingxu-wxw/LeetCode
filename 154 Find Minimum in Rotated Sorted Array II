@@ -1,0 +1,16 @@
+class Solution:
+    
+    # Input: [2,2,2,0,1]
+    # Output: 0
+    
+    def findMin(self, nums: List[int]) -> int:
+        if (nums is None):
+            return -1
+        
+        lastnum = nums[0]
+        for num in nums:
+            if (num < lastnum):
+                return num
+        
+        return nums[0]
+        
