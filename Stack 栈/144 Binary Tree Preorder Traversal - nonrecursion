@@ -1,0 +1,36 @@
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    
+    public List<Integer> preorderTraversal(TreeNode root) {
+        // 前序遍历: 访问根结点 -> 前序遍历左子树 -> 前序遍历右子树
+        // 在迭代写法上，前序比后序简单很多
+        List<Integer> res = new ArrayList<Integer>();
+        if (root == null) return res;
+        
+        // state用于记录对应的右结点是否访问过
+        Stack<TreeNode> stack = new Stack<TreeNode>();
+        stack.push(root);
+        
+        // 深度优先搜索
+        while (!stack.isEmpty()) {  
+            // 访问根结点
+            res.add(stack.pop().val);
+            
+            // 右结点先进后出
+            if (root.right != null) stack.push(root.right);
+            
+            // 左结点后进先出
+            if (root.left != null) stack.push(root.left);   
+        }
+    
+        return res;
+    }
+}

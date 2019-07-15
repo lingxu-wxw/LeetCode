@@ -1,0 +1,26 @@
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    
+    public void postorderTraversalDFS(TreeNode node, List<Integer> res) {
+        if (node != null) {
+            postorderTraversalDFS(node.left, res);
+            postorderTraversalDFS(node.right, res);
+            res.add(new Integer(node.val));
+        }
+    }
+    
+    public List<Integer> postorderTraversal(TreeNode root) {
+        // 后序遍历: 后序遍历左子树 -> 后序遍历右子树 -> 访问根结点
+        List<Integer> res = new ArrayList<Integer>();
+        postorderTraversalDFS(root, res);
+        return res;
+    }
+}
