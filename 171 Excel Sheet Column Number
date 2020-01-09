@@ -1,0 +1,23 @@
+// Input: "AB"
+// Output: 28
+
+// Input: "ZY"
+// Output: 701
+
+class Solution {
+public:
+    int titleToNumber(string s) {
+        reverse(s.begin(), s.end());
+        
+        int colnum = 0;
+        long step = 1;
+        
+        for (char c : s) {
+            int num = c - 'A' + 1;
+            colnum += num * step;
+            step *= 26;
+        }
+        
+        return colnum;
+    }
+};
