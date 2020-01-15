@@ -1,0 +1,28 @@
+class Solution {
+public:
+    // 自定义比较两个数的方法，就可以对整个数组进行排序。然后再把排好序的数拼接在一起
+    static bool cmp(string str1, string str2) {
+        return str1+str2 > str2+str1;    
+    }
+    
+    string largestNumber(vector<int>& nums) {
+        vector<string> strnums;
+        string res = "";
+        
+        for (int num : nums) {
+            strnums.push_back(to_string(num));
+        }
+        
+        sort(strnums.begin(), strnums.end(), cmp);
+        
+        for (string strnum : strnums) {
+            res += strnum;
+        }
+        
+        while (res[0] == '0' && res.length() > 1) {
+            res.erase(0, 1);
+        }
+        
+        return res;
+    }
+};
