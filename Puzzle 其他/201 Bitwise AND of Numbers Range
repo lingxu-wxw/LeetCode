@@ -1,0 +1,19 @@
+// Input: [5,7]
+// Output: 4
+
+class Solution {
+public:
+    // 101 110 111，找左边的公共部分
+    
+    int rangeBitwiseAnd(int m, int n) {
+        int i = 0;
+        
+        while (m != n) {
+            m >>= 1;
+            n >>= 1;
+            i++;
+        }
+        
+        return (m << i);
+    }
+};
