@@ -2,8 +2,8 @@
 
 * Language : C++，Java，Python，Mysql
 
-* 持续更新LeetCode的解题，目前更新到no.155 (有断档)
-* no.1 - no.130用C++写，no.131 - no.148用Java写，no.153 - no.155用Python写
+* 持续更新LeetCode的解题，目前更新到no.207 (有断档)
+* no.1 - no.130用C++写，no.131 - no.148用Java写，no.153 - no.155用Python写，之后用C++写
 
 * 分类索引
   * Array 数组：26,27,35,41,66,75,80,88,153-154,162,167,189
