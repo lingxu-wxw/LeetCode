@@ -1,0 +1,56 @@
+// Input: numCourses = 4, prerequisites = [[1,0],[2,0],[3,1],[3,2]]
+// Output: [0,2,1,3]
+// Explanation: There are a total of 4 courses to take. To take course 3 you should have finished both courses 1 and 2. 
+// Both courses 1 and 2 should be taken after you finished course 0.
+// So one correct course order is [0,1,2,3]. Another correct ordering is [0,2,1,3].
+
+class Solution {
+public:
+    vector<int> findOrder(int numCourses, vector<vector<int>>& prerequisites) {
+        
+        // 有向图: 不是完整图, 只标记先修课程
+        vector<vector<int>> graph(numCourses, vector<int>());
+        // 入度
+        vector<int> indegree(numCourses, 0);
+        // 顺序数组
+        vector<int> order;
+        
+        // 初始化有向图和入度
+        for (auto pair : prerequisites) {
+            // 先修pres[1], 再修pres[0], pres[1]->pres[0]
+            // 方便从入度0结点遍历, 记录后续课程list
+            graph[pair[1]].push_back(pair[0]);
+            indegree[pair[0]]++;
+        }
+        
+        // BFS
+        queue<int> q;
+        for (int i = 0; i < numCourses; i++) {
+            // 入度为0的结点先入队
+            if (indegree[i] == 0) {
+                q.push(i);
+            }
+        }
+        
+        // 如果有环, 则环中的结点都不会入队
+        while (!q.empty()) {
+            int course = q.front();
+            q.pop();
+            order.push_back(course);
+            
+            for (auto cur : graph[course]) {
+                indegree[cur]--;
+                if (indegree[cur] == 0) {
+                    q.push(cur);
+                }
+            }
+        }
+        
+        // 如果order长度不对，说明存在环
+        if (order.size() != numCourses) {
+            order.clear();
+        }
+        
+        return order;
+    }
+};
