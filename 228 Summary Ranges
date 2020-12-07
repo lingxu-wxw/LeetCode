@@ -1,0 +1,34 @@
+// Input: nums = [0,1,2,4,5,7]
+// Output: ["0->2","4->5","7"]
+// Explanation: The ranges are:
+// [0,2] --> "0->2"
+// [4,5] --> "4->5"
+// [7,7] --> "7"
+    
+class Solution {
+public:
+    vector<string> summaryRanges(vector<int>& nums) {
+        int size = nums.size();
+        if (size == 0) return {};
+        
+        vector<string> res;
+        int i = 0; // 左端起始位
+        
+        while (i < size) {
+            int rlen = 1; // summary range长度
+            while (i+rlen < size && nums[i+rlen] == nums[i]+rlen) { // 防止int溢出
+                rlen++; // 前提是sorted unique arra
+            }
+            
+            if (rlen <= 1) {
+                res.push_back(to_string(nums[i])); // 没有range，单个字符
+            } else {
+                res.push_back(to_string(nums[i]) + "->" + to_string(nums[i+rlen-1]));
+            }
+        
+            i += rlen;
+        }
+        
+        return res;
+    }
+};
