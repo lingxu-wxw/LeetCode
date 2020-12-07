@@ -1,6 +1,8 @@
 // Input: "(1+(4+5+2)-3)+(6+8)"
 // Output: 23
 
+// 加法，减法，无负数，括号
+
 class Solution {
 public:
     int calculate(string s) {
