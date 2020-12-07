@@ -1,0 +1,31 @@
+// Input:  [1,2,3,4]
+// Output: [24,12,8,6]
+
+class Solution {
+public:
+    vector<int> productExceptSelf(vector<int>& nums) {
+        int size = nums.size();
+        if (size <= 1) return {};
+        
+        // 该数左边所有数的乘积和右边所有数的乘积
+        vector<int> leftpd(size, 0), rightpd(size, 0);
+        vector<int> res(size, 0);
+        
+        leftpd[0] = 1;
+        rightpd[size-1] = 1;
+        
+        for (int i = 1; i < size; i++) {
+            leftpd[i] = leftpd[i-1] * nums[i-1];
+        }
+        for (int i = size-2; i >= 0; i--) {
+            rightpd[i] = rightpd[i+1] * nums[i+1];
+        }
+        
+        // 生成product of array expect
+        for (int i = 0; i < size; i++) {
+            res[i] = leftpd[i] * rightpd[i];
+        }
+        
+        return res;
+    }
+};
