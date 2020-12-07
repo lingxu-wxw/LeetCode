@@ -1,0 +1,52 @@
+// Input: s = " 3+5 / 2 "
+// Output: 5
+
+// 加减乘除，无负数，无括号
+
+class Solution {
+public:
+    int calculate(string s) {
+        int slen = s.size();
+        
+        int res = 0, num = 0;
+        char op = '+';
+        stack<int> st; // 遇到加减时利用栈做存储
+        
+        for (int i = 0; i < slen; i++) {
+            char c = s[i];
+            
+            // 处理数字
+            if (c >= '0' && c <= '9') {
+                num = num*10 + (c - '0');
+            }
+            
+            // 处理运算符号
+            if (c == '+' || c == '-' || c == '*' || c == '/' || i == slen-1) { // 读到字符串尾
+                if (op == '+') {
+                    st.push(num);
+                } 
+                else if (op == '-') {
+                    st.push(-num);
+                } 
+                else if (op == '*' || op == '/') {
+                    if (op == '/' && num == 0) return -1;
+                    // 优先运算
+                    int tmp = (op == '*') ? st.top() * num : st.top() / num;
+                    st.pop();
+                    st.push(tmp);
+                } 
+                
+                op = c;
+                num = 0;
+            }
+        }
+        
+        // 栈中数字全部相加得出结果
+        while (!st.empty()) {
+            res += st.top();
+            st.pop();
+        }
+        
+        return res;
+    }
+};
