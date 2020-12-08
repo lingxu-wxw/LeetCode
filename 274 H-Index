@@ -1,0 +1,25 @@
+// Input: citations = [3,0,6,1,5]
+// Output: 3 
+// Explanation: [3,0,6,1,5] means the researcher has 5 papers in total and each of them ha// d 
+//              received 3, 0, 6, 1, 5 citations respectivel// y. 
+//              Since the researcher has 3 papers with at le// ast 3 citations each and the remaining 
+//              two with no more than 3 citations each, her h-index is 3.
+
+class Solution {
+public:
+    int hIndex(vector<int>& citations) {
+        // h指数：作者至多有h篇论文分别被引用了至少h次
+        
+        // 按照引用数量从大到小排序
+        sort(citations.begin(), citations.end(), greater<int>());
+        
+        // 查找，直到idx大于论文被引数
+        for (int i = 0; i < citations.size(); i++) {
+            if (i >= citations[i]) {
+                return i;
+            }
+        }
+        
+        return citations.size();
+    }
+};
