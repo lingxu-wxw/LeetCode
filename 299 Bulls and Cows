@@ -12,7 +12,6 @@ public:
         int bulls = 0, cows = 0;
         int len = secret.length();
         
-        unordered_set<int> bullIdxs;
         unordered_map<char, int> restNums; // 用set不能记录重复数字
         
         string res;
@@ -21,7 +20,6 @@ public:
         for (int i = 0; i < len; i++) {
             if (secret[i] == guess[i]) {
                 bulls++;
-                bullIdxs.insert(i);
             } else {
                 restNums[secret[i]]++;
             }
@@ -29,7 +27,7 @@ public:
         
         // 获取错位的数字数量bulls
         for (int i = 0; i < len; i++) {
-            if (bullIdxs.find(i) != bullIdxs.end()) {
+            if (secret[i] == guess[i]) {
                 continue;
             }
             
