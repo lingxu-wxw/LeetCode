@@ -251,6 +251,7 @@
 230 Kth Smallest Element in a BST
 231 Power of Two
 232 Implement Queue using Stacks
+233 Number of Digit One
 234 Palindrome Linked List
 235 Lowest Common Ancestor of a Binary Search Tree
 236 Lowest Common Ancestor of a Binary Tree
