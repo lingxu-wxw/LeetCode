@@ -232,6 +232,7 @@
 211 Design Add and Search Words Data Structure
 212 Word Search II
 213 House Robber II
+214 Shortest Palindrome
 215 Kth Largest Element in an Array（快速排序）
 216 Combination Sum III
 217 Contains Duplicate
