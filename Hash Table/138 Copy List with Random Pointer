@@ -1,0 +1,61 @@
+/*
+// Definition for a Node.
+class Node {
+    public int val;
+    public Node next;
+    public Node random;
+
+    public Node() {}
+
+    public Node(int _val,Node _next,Node _random) {
+        val = _val;
+        next = _next;
+        random = _random;
+    }
+};
+*/
+class Solution {
+
+    // 考虑用Hash map来缩短查找时间，第一遍遍历生成所有新节点时同时建立一个原节点和新节点的哈希表，     // 第二遍给随机指针赋值时，查找时间是常数级
+    
+    public Node copyRandomList(Node head) {
+        // 尝试深度优先搜索
+        if (head == null) return null;
+        
+        // 初始化需要返回的结点
+        Node newhead = new Node(head.val, null, null);
+        // 初始化循环中遍历用的结点, node是新链, cur是旧链
+        Node newp = newhead;
+        Node oldp = head.next;
+        
+        // HashMap, key是拷贝前的Node, value是拷贝后的Node
+        HashMap<Node, Node> map = new HashMap<Node, Node>();
+        map.put(head, newhead);
+        
+        // 第一次遍历
+        // old比new快一点来check是否到达最后
+        while (oldp != null) {
+            Node newnode = new Node(oldp.val, null, null);
+            map.put(oldp, newnode);
+            
+            newp.next = newnode;
+            
+            oldp = oldp.next;
+            newp = newp.next;
+        }
+        
+        // 重置遍历用的结点
+        newp = newhead;
+        oldp = head;
+        
+        // 第二次遍历
+        while (oldp != null) {
+            newp.random = map.get(oldp.random);
+            
+            oldp = oldp.next;
+            newp = newp.next;
+        }
+        
+        return newhead;
+    }
+}

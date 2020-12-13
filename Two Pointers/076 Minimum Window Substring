@@ -1,0 +1,40 @@
+class Solution {
+public:
+    
+    // Input: S = "ADOBECODEBANC", T = "ABC"
+    // Output: "BANC"
+    
+    string minWindow(string s, string t) {
+        // 主要思想: 滑动窗口的思想, 用两个idx, 分别指向substr的开头和末尾
+        
+        if (s.empty() || t.empty()) return "";
+        
+        // 记录t中所有字母在子串res中还缺多少
+        unordered_map<char, int> lettercounts;
+        for (char c : t) lettercounts[c]++;
+        
+        // 左指针, 计数, 子串长度, 右指针不用
+        int left = 0, cnt = 0, minlen = INT_MAX;
+        string res = "";
+        
+        for (int i = 0; i < s.length(); i++) {
+            // 找到了有用的字母, 即原先map中大于0的
+            if (--lettercounts[s[i]] >= 0) cnt++;
+            
+            // 当所有字符都找到了, 开始找最短的
+            while (cnt == t.length()) {
+                int len = i - left + 1;
+                // 找到了更短的子串
+                if (minlen > len) {
+                    minlen = len;
+                    res = s.substr(left, minlen);
+                }
+                // left开始右移滑动, 如果删了有用的就减cnt
+                if (++lettercounts[s[left]] > 0) cnt--;
+                left++;
+            }
+        }
+        
+        return res;
+    }
+};

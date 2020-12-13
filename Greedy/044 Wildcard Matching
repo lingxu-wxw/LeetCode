@@ -1,0 +1,46 @@
+class Solution {
+public:
+    //Input:
+    //s = "aa"
+    //p = "*"
+    //Output: true
+    //Explanation: '*' matches any sequence.
+    
+    bool isMatch(string s, string p) {
+        //类似问题10, 但是用同样的方法会超时
+        //大致思路: 真-动态规划, 二维dp数组, dp[i][j]表示s中前i个字符和p中前j个字符是否能匹配
+        //      考虑空串, 数组长度为size+1
+        //      注意dp的长度和str的长度不一样
+        
+        int slen = s.length(), plen = p.length();  
+        
+        //初值全都设为false
+        vector<vector<bool> > dp(slen+1, vector<bool>(plen+1, false));
+    
+        //特殊1: dp[0][0], 双空串匹配
+        dp[0][0] = true;
+        
+        //特殊2: s空, p都是*, 匹配
+        for (int j = 1; j <= plen; j++) {
+            if (p[j-1] == '*')  dp[0][j] = true;
+            else break;
+        }
+        
+        //动态规划, 对于定量s先更新p
+        for (int i = 1; i <= slen; i++) {
+            for (int j = 1; j <= plen; j++) {
+                //如果p[j]='*', 直接匹配
+                if (p[j-1] == '*'){
+                    //动态规划转移方程, 分别表示 *匹配++ 和 *匹配空
+                    dp[i][j] = dp[i-1][j] || dp[i][j-1];
+                }
+                //如果相等匹配
+                else if (s[i-1] == p[j-1] || p[j-1] == '?') {
+                    dp[i][j] = dp[i-1][j-1];
+                }
+            }
+        }
+        
+        return dp[slen][plen];
+    }
+};

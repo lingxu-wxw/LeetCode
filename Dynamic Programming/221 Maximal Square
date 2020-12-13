@@ -1,0 +1,54 @@
+// Input: matrix = [["1","0","1","0","0"],["1","0","1","1","1"],["1","1","1","1","1"],["1","0","0","1","0"]]
+// Output: 4
+
+class Solution {
+public:
+    int largestSquareArea(vector<int>& v, int len){
+        if (v.size() < len) {
+            return 0;
+        }
+        
+        // 当前符合边长len的列数
+        int count = 0;
+        
+        for (int i = 0; i < v.size(); i++) {
+            if (v[i] == len) {
+                count++;
+            } else {
+                count = 0;
+            }
+            // 如果找到len列，则组成正方形
+            if (count == len) {
+                return len*len;
+            }
+        }
+        
+        return 0;
+    }
+    
+    int maximalSquare(vector<vector<char>>& matrix) {
+        // 类似85题的解法Maximal Rectangle
+        if (matrix.empty() || matrix[0].empty()) return 0;
+        int height = matrix.size(), width = matrix[0].size();
+        
+        int res = 0;
+        
+        for (int i = 0; i < height; i++) {
+            // 第k列中1的个数
+            vector v(width, 0);
+            
+            // 在第i行~第j行的矩阵中，寻找边长为j-i+1的正方形
+            for (int j = i; j < height; j++) {
+                for (int k = 0; k < width; k++) {
+                    if (matrix[j][k] == '1') {
+                        v[k]++;
+                    }
+                }
+                // 更新完v后，寻找正方形
+                res = max(res, largestSquareArea(v, j-i+1));
+            }
+        }
+        
+        return res;
+    }
+};

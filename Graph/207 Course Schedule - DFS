@@ -1,0 +1,52 @@
+// Input: numCourses = 2, prerequisites = [[1,0],[0,1]]
+// Output: false
+// Explanation: There are a total of 2 courses to take. 
+//              To take course 1 you should have finished course 0, and to take course 0 you should
+//              also have finished course 1. So it is impossible.
+
+class Solution {
+public:
+    
+    // [[0,0,0],
+    // [0,0,0],
+    // [0,0,0]]
+    
+    bool canFinish(int numCourses, vector<vector<int>>& prerequisites) {
+        
+        // 有向图: 不是完整图, 只标记先修课程
+        vector<vector<int>> graph(numCourses, vector<int>());
+        // 访问表(递归用): 0 未访问, -1 已访问/待定/冲突, 1 已访问/不冲突
+        vector<int> visit(numCourses, 0);
+        
+        // 初始化有向图和入度
+        for (auto pair : prerequisites) {
+            // 先修pres[1], 再修pres[0], pres[1]->pres[0]
+            // 方便从结点往后遍历, 记录后续课程list
+            graph[pair[1]].push_back(pair[0]);
+        }
+        
+        for (int i = 0; i < numCourses; i++) {
+            if (!canFinishDFS(i, visit, graph)) {
+                return false;
+            }
+        }
+        
+        return true;
+    }
+    
+    bool canFinishDFS(int i, vector<int>& visit, vector<vector<int>>& graph) {
+        if (visit[i] == 1) return true;
+        if (visit[i] == -1) return false;
+        
+        visit[i] = -1;
+        for (auto cur : graph[i]) {
+            if (!canFinishDFS(cur, visit, graph)) {
+                return false;
+            }   
+        }
+        
+        // 当前结点完全遍历后后续无环
+        visit[i] = 1;
+        return true;
+    }
+};

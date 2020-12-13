@@ -1,0 +1,94 @@
+// Input
+// ["WordDictionary","addWord","addWord","addWord","search","search","search","search"]
+// [[],["bad"],["dad"],["mad"],["pad"],["bad"],[".ad"],["b.."]]
+// Output
+// [null,null,null,null,false,true,true,true]
+
+// Explanation
+// WordDictionary wordDictionary = new WordDictionary();
+// wordDictionary.addWord("bad");
+// wordDictionary.addWord("dad");
+// wordDictionary.addWord("mad");
+// wordDictionary.search("pad"); // return False
+// wordDictionary.search("bad"); // return True
+// wordDictionary.search(".ad"); // return True
+// wordDictionary.search("b.."); // return True
+
+class WordNode {
+public:
+    // 每个结点都是一个26叉树
+    WordNode* child[26];
+    bool isWord;
+    
+    // new新的结点时将child全都置为NULL
+    WordNode() : isWord(false) {
+        for (auto &p : child) {
+            p = NULL;
+        }
+    }
+};
+
+class WordDictionary {
+private:
+    WordNode* root;
+
+public:
+    /** Initialize your data structure here. */
+    WordDictionary() {
+        root = new WordNode();
+    }
+    
+    /** Adds a word into the data structure. */
+    void addWord(string word) {
+        WordNode* p = root;
+        
+        for (auto &c : word) {
+            // 获取当前字母序
+            int i = c - 'a';
+            if (!p->child[i]) {
+                // TrieNode和NULL区分是否存在结点
+                p->child[i] = new WordNode();
+            }
+            p = p->child[i];
+        }
+        
+        p->isWord = true;
+    }
+    
+    /** Returns if the word is in the data structure. A word could contain the dot character '.' to represent any one letter. */
+    bool search(string word) {
+        return searchDFS(root, word, 0);
+    }
+    
+    bool searchDFS(WordNode *p, string word, int idx) {
+        // 已经遍历到单词最后
+        if (idx == word.length()) {
+            return p->isWord;    
+        }
+        
+        if (word[idx] != '.') {
+            // 获取当前字母序
+            int i = word[idx] - 'a';
+            if (!p->child[i]) {
+                return false;
+            }
+            p = p->child[i]; 
+            return searchDFS(p, word, idx+1);
+        } 
+        else {
+            for (auto &pc : p->child) {
+                if (pc && searchDFS(pc, word, idx+1)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
+};
+
+/**
+ * Your WordDictionary object will be instantiated and called as such:
+ * WordDictionary* obj = new WordDictionary();
+ * obj->addWord(word);
+ * bool param_2 = obj->search(word);
+ */

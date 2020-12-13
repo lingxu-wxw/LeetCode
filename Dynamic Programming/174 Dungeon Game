@@ -1,0 +1,37 @@
+class Solution {
+public:
+    
+    // dungeon 地牢，demons 恶魔，magic orbs 魔法球
+    
+    int calculateMinimumHP(vector<vector<int>>& dungeon) {
+        int height = dungeon.size();
+        int width = dungeon[0].size();
+        
+        // 从终点倒推
+        // dp[i][j] 表示以 (i, j) 为起点时走到右下角所需的初始血量
+        vector<vector<int>> dp(height, vector<int>(width, 1)); //minInitHP
+        
+        dp[height-1][width-1] = max(1 - dungeon[height-1][width-1], 1);
+        
+        // 初始化第height-1行和第width-1列
+        for (int j = width-2; j >= 0; j--) {
+            dp[height-1][j] = max(dp[height-1][j+1] - dungeon[height-1][j], 1);
+        }
+        for (int i = height-2; i >= 0; i--) {
+            dp[i][width-1] = max(dp[i+1][width-1] - dungeon[i][width-1], 1);
+        }
+        
+        // 更新dp数组
+        for (int i = height-2; i >= 0; i--) {
+            for (int j = width-2; j >= 0; j--) {
+                // 往右走和往下走所需的最低血量
+                int right = max(dp[i][j+1] - dungeon[i][j], 1);
+                int down = max(dp[i+1][j] - dungeon[i][j], 1);
+                // 当前格子出发所需要的最低血量
+                dp[i][j] = min(right, down);
+            }
+        }
+        
+        return dp[0][0];
+    }
+};

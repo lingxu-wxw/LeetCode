@@ -1,0 +1,52 @@
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    
+    // Given a binary tree, determine if it is a valid binary search tree (BST).
+    // a BST is defined as follows:
+    // The left subtree of a node contains only nodes with keys less than the node's key.
+    // The right subtree of a node contains only nodes with keys greater than the node's key.
+    // Both the left and right subtrees must also be binary search trees.
+    
+    int maxValue(TreeNode* root) {
+        if (root == NULL)
+            return INT_MAX;
+        while (root->right)
+            root = root->right;
+        return root->val;
+    }
+    
+    int minValue(TreeNode* root) {
+        if (root == NULL)
+            return INT_MIN;
+        while (root->left)
+            root = root->left;
+        return root->val;
+    }
+    
+    bool isValidBST(TreeNode* root) {
+        if (root == NULL) 
+            return true;
+        
+        //如果左子树最大值大于根节点，则返回false
+        if (root->left != NULL && maxValue(root->left) >= root->val)
+            return false;
+        //如果右子树最小值小于根节点，则返回false
+        if (root->right != NULL && minValue(root->right) <= root->val)
+            return false;
+
+        //递归判断
+        if (!isValidBST(root->left) || !isValidBST(root->right))
+            return false;
+        
+        return true;
+    }
+};

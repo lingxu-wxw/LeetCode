@@ -1,0 +1,34 @@
+class Solution {
+    
+    // Example 1:
+    // Input: [2,2,3,2]
+    // Output: 3
+
+    // Example 2:
+    // Input: [0,1,0,1,0,1,99]
+    // Output: 99
+
+    public int singleNumber(int[] nums) {
+        // 用3个整数来表示INT的各位的出现次数情况，one表示出现了1次，two表示出现了2次。
+        // 当出现3次的时候该位清零。最后答案就是one的值。
+        // ones     代表第ith 位只出现一次的掩码变量
+        // twos     代表第ith 位只出现两次的掩码变量
+        // threes   代表第ith 位只出现三次的掩码变量
+        
+        int ones = 0, twos = 0, threes = 0;
+        
+        for (int num : nums) {
+            // 更新twos, 含部分threes
+            twos |= ones & num;
+            // 更新ones, 含部分threes
+            ones ^= num;
+            // 更新threes
+            threes = ones & twos;
+            // 修正ones, twos
+            ones &= ~threes;
+            twos &= ~threes;
+        }
+        
+        return ones;
+    } 
+}

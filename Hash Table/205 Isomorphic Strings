@@ -1,0 +1,25 @@
+// Input: s = "egg", t = "add"
+// Output: true
+
+class Solution {
+public:
+    bool isIsomorphic(string s, string t) {
+        if (s.length() != t.length()) return false;
+        int len = s.length();
+        
+        unordered_map<char, int> smap;
+        unordered_map<char, int> tmap;
+        
+        for (int i = 0; i < len; i++) {
+            // 如果都没有出现过，应该是初始值0
+            if (smap[s[i]] != tmap[t[i]]) {
+                return false;
+            }
+            // 0可能是初始值
+            smap[s[i]] = i+1;
+            tmap[t[i]] = i+1;
+        }
+        
+        return true;
+    }
+};

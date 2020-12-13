@@ -1,0 +1,69 @@
+// Input: buildings = [[2,9,10],[3,7,15],[5,12,12],[15,20,10],[19,24,8]]
+// Output: [[2,10],[3,15],[7,12],[12,0],[15,10],[20,8],[24,0]]
+// Explanation:
+// Figure A shows the buildings of the input.
+// Figure B shows the skyline formed by those buildings. The red points in figure B represent the key points in the output list.
+
+class Solution {
+public:
+    
+    // skyline 天际线
+    // multiset: 能够存数据，数据可重复，能够排序，能够删除的数据结构
+    
+    // c.begin()，返回一个随机存取迭代器，指向第一个元素
+    // c.rbegin()，返回一个逆向迭代器，指向逆向迭代的第一个元素
+    // c.find(elem)，返回元素值为elem的第一个元素，如果没有返回end()
+    // c.insert(elem)，插入一个elem副本，返回新元素位置，无论插入成功与否
+    // c.insert(pos, elem)，安插一个elem元素副本，返回新元素位置，pos为搜索起点，提升插入速度
+    // c.erase(elem)，删除与elem相等的所有元素，返回被移除的元素个数。
+    // c.erase(pos)，移除迭代器pos所指位置元素，无返回值。
+    
+    vector<vector<int>> getSkyline(vector<vector<int>>& buildings) {
+        
+        // 两种情况会出现新的天际线顶点
+        // 1. 新楼的左顶成为最高点
+        // 2. 新楼的右顶是当前最高点
+        
+        // 记录建筑的左顶和右顶
+        vector<pair<int, int>> heights;
+        vector<vector<int>> res;
+
+        // 记录当前可能成为天际线顶点的楼高
+        multiset<int> mlset;
+        // 当前最高楼高和先前最高楼高
+        int curh = 0, preh = 0;
+        
+        // 左顶用负数表示，右顶用正数表示，以示区分
+        for (auto b : buildings) {
+            heights.push_back({b[0], -b[2]});
+            heights.push_back({b[1], b[2]});
+        }
+        // 按照下标idx对heights进行排序
+        sort(heights.begin(), heights.end());
+        
+        // 初始化multiset
+        mlset.insert(0);
+        
+        for (auto h : heights) {
+            // 遍历到左顶，该楼可能成为天际线顶点
+            if (h.second < 0) {
+                mlset.insert(-h.second);
+            }
+            // 遍历到右顶，该楼的左顶不再可能成为天际线顶点
+            else {
+                mlset.erase(mlset.find(h.second));
+            }
+            
+            // 返回multiset的最右，即当前的最高楼高
+            curh = *mlset.rbegin();
+            
+            // 出现新的天际线顶点
+            if (curh != preh) {
+                res.push_back({h.first, curh});
+                preh = curh;
+            }
+        }
+        
+        return res;
+    }
+};

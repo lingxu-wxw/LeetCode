@@ -1,0 +1,31 @@
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    
+    // Given binary tree [3,9,20,null,null,15,7],
+
+    //     3
+    //    / \
+    //   9  20
+    //     /  \
+    //    15   7
+    // return its minimum depth = 2.
+    
+    int minDepth(TreeNode* root) {
+        // 获取以root为根节点的子树的高度
+        if (!root) return 0;
+        // 处理单支
+        if (!root->left) return 1 + minDepth(root->right);
+        if (!root->right) return 1 + minDepth(root->left);
+        // 处理双支
+        return 1 + min(minDepth(root->left), minDepth(root->right));
+    }
+};

@@ -1,0 +1,34 @@
+// Input: [2,3,-2,4]
+// Output: 6
+// Explanation: [2,3] has the largest product 6.
+
+// Input: [-2,0,-1]
+// Output: 0
+// Explanation: The result cannot be 2, because [-2,-1] is not a subarray.
+
+class Solution {
+public:
+    int maxProduct(vector<int>& nums) {
+        int len = nums.size();
+        
+        // 遇到0会使整个乘积为0，而遇到负数，则会使最大乘积变成最小乘积
+        
+        // 两个dp数组，最大乘积和最小乘积
+        vector<int> dpmax(len, 0);
+        vector<int> dpmin(len, 0);
+        
+        // 初值
+        dpmax[0] = nums[0];
+        dpmin[0] = nums[0];
+        int res = nums[0];
+        
+        for (int i = 1; i < len; i++) {
+            int num = nums[i];
+            dpmax[i] = max(num, max(dpmax[i-1]*num, dpmin[i-1]*num));
+            dpmin[i] = min(num, min(dpmax[i-1]*num, dpmin[i-1]*num));
+            res = max(res, dpmax[i]);
+        }
+        
+        return res;
+    }
+};

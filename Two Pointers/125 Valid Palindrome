@@ -1,0 +1,26 @@
+class Solution {
+public:
+    bool isPalindrome(string s) {
+        // considering only alphanumeric characters and ignoring cases.
+        
+        // 特殊情况判断
+        if (s.empty()) return true;
+        
+        // 下一个有效的位置
+        int idx = 0;
+        
+        // 填写有效回文字符
+        for (char c : s) {
+            if (c >= 'a' && c <= 'z')  s[idx++] = c;
+            else if (c >= 'A' && c <= 'Z')  s[idx++] = tolower(c);
+            else if (c >= '0' && c <= '9')  s[idx++] = c;
+        }
+        
+        // 检查回文字符
+        for (int i = 0; i < idx/2; i++) {
+            if (s[i] != s[idx-1-i]) return false;
+        }
+        
+        return true;
+    }
+};

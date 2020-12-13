@@ -1,0 +1,75 @@
+// Input: 
+// [
+//   [0,1,0],
+//   [0,0,1],
+//   [1,1,1],
+//   [0,0,0]
+// ]
+// Output: 
+// [
+//   [0,0,0],
+//   [1,0,1],
+//   [0,1,1],
+//   [0,1,0]
+// ]
+
+class Solution {
+public:
+    // live (1) or dead (0)
+    
+    // (1) 当前细胞为存活状态时，当周围的邻居细胞低于2个(不包含2个)存活时，该细胞变成死亡状态(模拟生命数量稀少)。
+    // (2) 当前细胞为存活状态时，当周围有2个或3个存活细胞时，该细胞保持原样。
+    // (3) 当前细胞为存活状态时，当周围有3个以上的存活细胞时，该细胞变成死亡状态(模拟生命数量过多)。
+    // (4) 当前细胞为死亡状态时，当周围有3个存活细胞时，则迭代后该细胞变成存活状态(模拟繁殖)；若原先为生，则保持不变。
+        
+    void updateLiveCnt(vector<vector<int>>& liveCnt, int row, int col, int state) {
+        if (state == 0) return;
+        
+        int height = liveCnt.size();
+        int width = liveCnt[0].size();
+        
+        int left = max(col-1, 0);
+        int right = min(col+1, width-1);
+        int up = max(row-1, 0);
+        int down = min(row+1, height-1);
+        
+        // 更新liveCnt
+        for (int i = up; i <= down; i++) {
+            for (int j = left; j <= right; j++) {
+                if (i == row && j == col) {
+                    continue;
+                }
+                liveCnt[i][j]++;
+            }
+        }
+    }
+    
+    void gameOfLife(vector<vector<int>>& board) {
+        int height = board.size();
+        int width = board[0].size();
+        
+        vector<vector<int>> liveCnt(height, vector<int>(width, 0));
+        
+        // 更新liveCnt
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                updateLiveCnt(liveCnt, i, j, board[i][j]);
+            }
+        }
+        
+        // 根据liveCnt更新board
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                if (liveCnt[i][j] == 3) {
+                    board[i][j] = 1;
+                } else if (liveCnt[i][j] == 2) {
+                    board[i][j] = board[i][j];
+                } else {
+                    board[i][j] = 0;
+                }
+            }
+        }
+        
+        return;
+    }
+};

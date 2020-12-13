@@ -1,0 +1,27 @@
+class Solution {
+public:
+    //Input: "pwwkew"
+    //Output: 3
+    //Explanation: The answer is "wke", with the length of 3. 
+    
+    int lengthOfLongestSubstring(string s) {
+        //滑动窗口: 遍历一遍，判断s[j]是否在s[i:j]当中
+        unordered_set<int> slide_window;
+        
+        int size = s.length();
+        int res = 0, i = 0, j = 0;
+        
+        while (i < size && j < size){
+            if (! slide_window.count(s[j])){
+                slide_window.insert(s[j]);
+                j++;
+                res = (res > j - i) ? res : j - i; 
+            } else {
+                slide_window.erase(s[i]);
+                i++;
+            }
+        }
+        
+        return res;
+    }
+};

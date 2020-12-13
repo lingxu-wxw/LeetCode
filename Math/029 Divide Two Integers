@@ -1,0 +1,31 @@
+class Solution {
+public:
+    int divide(int dividend, int divisor) {
+        //不能用乘法、除法、取余, 可以用移位
+        //边界条件:  -(longlong)INT_MIN = INT_MAX + 1, -(int)INT_MIN = INT_MIN
+        
+        //被除数为0
+        if (divisor == 0) return INT_MAX;
+        
+        long long m = abs((long long)dividend), n =  abs((long long)divisor), res = 0;
+        if (m < n) return 0;
+        
+        //当t的两倍小于等于被除数时，进行如下循环，t扩大一倍，p扩大一倍，然后更新res和m
+        while (m >= n){
+            //t是计数，p是商
+            long long t = n, p = 1;
+            while (m > (t << 1)){
+                t <<= 1;
+                p <<= 1;
+            }
+            m -= t;
+            res += p;
+        }
+        
+        //处理符号
+        if ((dividend < 0) ^ (divisor < 0)) res = -res;
+        
+        //处理溢出
+        return res > INT_MAX ? INT_MAX : res;
+    }
+};

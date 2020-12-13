@@ -1,0 +1,49 @@
+class Solution {
+public:
+    //Input: s = "barfoothefoobarman", words = ["foo","bar"]
+    //Output: [0,9]
+    //Explanation: Substrings starting at index 0 and 9 are "barfoor" and "foobar" 
+    
+    vector<int> findSubstring(string s, vector<string>& words) {
+        //分析: all of the same length
+        //复用问题3 Longest Substring Without Repeating Characters
+        //但是在这个问题里是可以重复的
+        
+        vector<int> res;
+        if (s.empty() || words.empty()) return res;
+ 
+        int size = s.length();
+        int wnum = words.size();
+        int wsize = words[0].length();
+        
+        unordered_map<string, int> word_table;
+        for (auto &str : words){
+            ++word_table[str];
+        }
+        
+        int i, j;
+        
+        //i是索引,j是个数
+        for (i = 0; i <= size - wnum*wsize; i++){
+            
+            //记录出现次数
+            unordered_map<string, int> slide_window;
+            
+            for (j = 0; j < wnum; j++) {
+                //最新的串, 长wsize
+                string str = s.substr(i+j*wsize, wsize);
+                //如果是非法字符
+                if (word_table.find(str) == word_table.end()) break;
+                //slide_window递增
+                ++slide_window[str];
+                //如果次数超过了,错误
+                if (slide_window[str] > word_table[str]) break;
+            }
+            
+            //没有报错, 匹配成功
+            if (j == wnum) res.push_back(i);
+        }
+        
+        return res;
+    }
+};

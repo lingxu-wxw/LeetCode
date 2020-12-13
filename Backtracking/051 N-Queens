@@ -1,0 +1,44 @@
+class Solution {
+public:
+    bool isValidQueen(vector<int> &pos, int row, int col) {
+        for (int i = 0; i < row; ++i) {
+            //同列冲突, 对角线冲突, 只需跟前面几行不冲突即可
+            if (col == pos[i] || abs(row - i) == abs(col - pos[i])) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    void solveNQueensDFS(vector<int> &pos, int row, int n, vector<vector<string>> &res) {
+        //最后一行, 输出结果
+        if (row == n) {
+            vector<string> out(n, string(n, '.'));
+            for (int i = 0; i < n; i++) {
+                out[i][pos[i]] = 'Q';
+            }
+            res.push_back(out);
+        } 
+        //继续匹配下一行
+        else {
+            for (int col = 0; col < n; col++) {
+                //判断在row, col插入皇后后是否合法
+                if (isValidQueen(pos, row, col)) {
+                    pos[row] = col;
+                    solveNQueensDFS(pos, row+1, n, res);
+                    pos[row] = -1;
+                }
+            }
+        }
+    }
+    
+    vector<vector<string> > solveNQueens(int n) {
+        vector<vector<string> > res;
+        //pos[i]表示第i行皇后的位置，初始化为-1
+        vector<int> pos(n, -1);
+        
+        //从第一行开始一行一行放
+        solveNQueensDFS(pos, 0, n, res);
+        return res;
+    }
+};

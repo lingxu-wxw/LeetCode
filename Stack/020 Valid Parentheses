@@ -1,0 +1,29 @@
+class Solution {
+public:
+    //Input: "{[]}"
+    //Output: true
+
+    bool isPair(char s1, char s2) {
+        if (s1 == ')' && s2 == '(') return true;
+        if (s1 == ']' && s2 == '[') return true;
+        if (s1 == '}' && s2 == '{') return true;
+        return false;
+    }
+    
+    bool isValid(string s) {
+        
+        stack<char> pares;
+        
+        if (s.empty()) return true;
+        
+        int size = s.length();
+        
+        for (int i = 0; i < size; i++){
+            if (pares.empty()) pares.push(s[i]);
+            else if (!isPair(s[i], pares.top())) pares.push(s[i]);
+            else pares.pop();
+        }
+        
+        return pares.empty();
+    }
+};

@@ -1,0 +1,35 @@
+// Input: s = "aacecaaa"
+// Output: "aaacecaaa"
+
+// Input: s = "abcd"
+// Output: "dcbabcd"
+
+class Solution {
+public:
+    
+    // 最长回文前缀本身不一定是回文串，但可以添加最少的字符数让其变为回文串
+    // 而且可以确定后面剩余的部分肯定不属于回文前缀
+    
+    string shortestPalindrome(string s) {
+        int len = s.length();
+        
+        // 利用i,j两个索引找出最长回文前缀
+        int i = 0;
+        for (int j = len-1; j >= 0; j--) {
+            if (s[i] == s[j]) {
+                i++;
+            }
+        }
+        
+        // 当前字符串是回文串，递归返回
+        if (i == len) {
+            return s;
+        }
+        
+        string rem = s.substr(i); // 后半部分
+        reverse(rem.begin(), rem.end());
+        
+        // 后半部分添加到字符串前端，继续递归调用
+        return rem + shortestPalindrome(s.substr(0,i)) + s.substr(i);
+    }
+};

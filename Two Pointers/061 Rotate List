@@ -1,0 +1,46 @@
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    
+    // Input: 1->2->3->4->5->NULL, k = 2
+    // Output: 4->5->1->2->3->NULL
+    // Explanation:
+    // rotate 1 steps to the right: 5->1->2->3->4->NULL
+    // rotate 2 steps to the right: 4->5->1->2->3->NULL
+    
+    ListNode* rotateRight(ListNode* head, int k) {
+        //大致思路: 原先遍历整个链表获得链表长度n，然后此时把链表头和尾链接起来，再往后走n - k % n个节点就到达新链表的头结点前一个点
+        
+        if (!head) return NULL;
+        
+        //第一次遍历
+        int size = 1;
+        ListNode *cur = head;
+        while (cur->next){
+            cur = cur->next;
+            size++;
+        }
+        
+        //尾部链接头
+        cur->next = head;
+        
+        //第二次遍历
+        int step = size - k % size;
+        for (int i = 0; i < step; i++) {
+            cur = cur->next;
+        }
+        
+        //确定链表新head
+        ListNode *newhead = cur->next;
+        cur->next = NULL;
+        
+        return newhead;
+    }
+};

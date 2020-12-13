@@ -1,0 +1,53 @@
+class Solution {
+public:
+    
+    // Input:
+    // [
+    //   ["1","0","1","0","0"],
+    //   ["1","0","1","1","1"],
+    //   ["1","1","1","1","1"],
+    //   ["1","0","0","1","0"]
+    // ]
+    // Output: 6
+    
+    int largestRectangleArea(vector<int>& heights) {
+        // 每找到一个局部峰值，然后向前遍历所有的值，算出共同的矩形面积，每次对比保留最大值
+        int size = heights.size();
+        
+        int maxarea = 0;
+        
+        for (int i = 0; i < size; i++) {
+            // 如果不是峰值
+            if (i + 1 < size && heights[i] <= heights[i+1]) continue; 
+            // 找到峰值，往前回看
+            int minedge = heights[i], area;
+            for (int j = i; j >= 0; j--) {
+                minedge = min(heights[j], minedge);
+                area = minedge * (i - j + 1);
+                maxarea = max(area, maxarea);
+            }    
+        }
+        
+        return maxarea;
+    }
+    
+    int maximalRectangle(vector<vector<char>>& matrix) {
+        // 复用84题的直方图解法
+        if (matrix.empty() || matrix[0].empty()) return 0;
+        int height = matrix.size(), width = matrix[0].size();
+        
+        // 构造直方图数组，反复覆盖
+        vector<int> heights(width, 0);
+        int maxarea = 0;
+        
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                // 更新直方图高度，0就清空
+                heights[j] = (matrix[i][j] == '0') ? 0 : (1 + heights[j]);
+            }
+            maxarea = max(maxarea, largestRectangleArea(heights));
+        }
+        
+        return maxarea;
+    }
+};

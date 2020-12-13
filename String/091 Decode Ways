@@ -1,0 +1,26 @@
+class Solution {
+public:
+    
+    // Input: "12"
+    // Output: 2
+    // Explanation: It could be decoded as "AB" (1 2) or "L" (12).
+    
+    int numDecodings(string s) {        
+        // 确实字符串的用动态规划处理很方便
+        int size = s.length();
+        if (s[0] == '0') return 0;
+         
+        vector<int> dp(size+1, 0);
+        dp[0] = 1;
+        dp[1] = 1;
+        
+        for (int i = 2; i <= size; i++) {
+            // 能组成一位译码
+            if (s[i-1] >= '1' && s[i-1] <= '9')  dp[i] += dp[i-1];
+            // 能组成两位译码
+            if (s[i-2] == '1' || (s[i-2] == '2' && s[i-1] >= '0' && s[i-1] <= '6')) dp[i] += dp[i-2];
+        } 
+        
+        return dp[size];
+    }
+};

@@ -1,0 +1,25 @@
+class Solution {
+public:
+    
+    // Input: "Hello World"
+    // Output: 5
+    
+    int lengthOfLastWord(string s) {
+        
+        if (s.empty()) return 0;
+        
+        int len = 0, index = s.length()-1;
+        
+        //跳过末尾空格
+        for (; index >= 0; index--)  
+            if (s[index] != ' ') break;
+
+        //获取长度
+        for (int i = index; i >= 0; i--){
+            if (s[i] == ' ') break;
+            else len++;
+        }
+        
+        return len;
+    }
+};

@@ -1,0 +1,39 @@
+class Solution {
+public:
+    //Input: [0,1,0,2,1,0,1,3,2,1,2,1]
+    //Output: 6
+    
+    int trap(vector<int>& height) {
+        //类似问题11, 动态规划
+        //主要思路: 第一遍遍历dp[i]中存入i位置左边的最大值，第二遍遍历找右边最大值
+        //      然后和取其中的较小值，跟当前值A[i]相比
+        
+        //mx记录左右最大值
+        int size = height.size();
+        int res = 0;
+        
+        vector<int> dp(size, 0);
+        
+        //第一次遍历
+        int lmax = 0;
+        for (int i = 0; i < size; i++){
+            dp[i] = lmax;
+            lmax = max(lmax, height[i]);
+        }
+        
+        //第二次遍历
+        int rmax = 0;
+        for (int i = size - 1; i >= 0; i--){
+            //dp[i]中存两边最大值的较小值, 表示能否积水
+            dp[i] = min(dp[i], rmax);
+            rmax = max(rmax, height[i]);
+            
+            //能积水(按照竖格子算)
+            if (dp[i] > height[i]){
+                res += dp[i] - height[i];
+            }
+        }
+        
+        return res;
+    }
+};

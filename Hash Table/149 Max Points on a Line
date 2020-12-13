@@ -1,0 +1,55 @@
+// Input: [[1,1],[3,2],[5,3],[4,1],[2,3],[1,4]]
+// Output: 4
+// Explanation:
+// ^
+// |
+// |  o
+// |     o        o
+// |        o
+// |  o        o
+// +------------------->
+// 0  1  2  3  4  5  6
+
+class Solution {
+public:
+    // 用最大公约数/最简分数代替除法，避免小数不精确
+    int gcd(int a, int b) {
+        return b == 0 ? a : gcd(b, a % b);
+    }
+    
+    int maxPoints(vector<vector<int>>& points) {
+        int size = points.size();
+        
+        int res = 0;
+        
+        for (int i = 0; i < size; i++) {
+            // 斜率对(dx,dy)-出现次数
+            map<pair<int,int>, int> map;
+            // 重叠点个数
+            int deduplicate = 1;
+            
+            for (int j = i+1; j < size; j++) {
+                // 重叠点
+                if (points[i][0] == points[j][0] && points[i][1] == points[j][1]) {
+                    deduplicate++;
+                    continue;
+                }
+                
+                // 计算斜率
+                int dx = points[j][0] - points[i][0];
+                int dy = points[j][1] - points[i][1];
+                int d = gcd(dx, dy);
+                // 添加斜率pair对到map
+                map[{dx/d, dy/d}]++;    
+            }
+            
+            // 遍历一次map，更新res
+            res = max(res, deduplicate);
+            for (auto iter : map) {
+                res = max(res, iter.second + deduplicate);
+            }
+        }
+        
+        return res;
+    }
+};

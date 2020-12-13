@@ -1,0 +1,48 @@
+/**
+ * Definition for singly-linked list.
+ * class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode(int x) {
+ *         val = x;
+ *         next = null;
+ *     }
+ * }
+ */
+public class Solution {
+    
+    // * -----a----- * --b-- *(M) 
+    //              |        |
+    //              -----c----   
+    // 第一次相遇时slow走过的距离：a+b，fast走过的距离：a+b+c+b。
+    // 因为fast的速度是slow的两倍，所以fast走的距离是slow的两倍，有 2(a+b) = a+b+c+b，可以得到a=c
+    // 所以fast从相遇点，slow从出发点一起走，再次相遇的地方就是进入环的地方
+    
+    // Input: head = [3,2,0,-4], pos = 1
+    // Output: tail connects to node index 1
+    // Explanation: There is a cycle in the linked list, where tail connects to the second node.
+    
+    public ListNode detectCycle(ListNode head) {
+        if (head == null) return null;
+        
+        // 快慢指针找到相遇点
+        ListNode slow = head, fast = head;
+        while (true) {
+            // 不存在环
+            if (fast == null || fast.next == null) return null;
+                
+            slow = slow.next;
+            fast = fast.next.next;
+            if (slow == fast) break;
+        }
+        
+        // 同速指针找到入环点
+        slow = head;
+        while (slow != fast) {
+            slow = slow.next;
+            fast = fast.next;
+        }
+        
+        return slow;
+    }
+}

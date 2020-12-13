@@ -1,0 +1,41 @@
+// Input: grid = [
+//   ["1","1","0","0","0"],
+//   ["1","1","0","0","0"],
+//   ["0","0","1","0","0"],
+//   ["0","0","0","1","1"]
+// ]
+// Output: 3
+
+class Solution {
+public:
+    
+    void visitNeighbor(vector<vector<char>>& grid, vector<vector<bool>>& visited, int i, int j) {
+        if (i < 0 || i >= grid.size() || j < 0 || j >= grid[0].size()) return;
+        if (grid[i][j] == '0' || visited[i][j]) return;
+        visited[i][j] = true;
+       
+        visitNeighbor(grid, visited, i-1, j);
+        visitNeighbor(grid, visited, i+1, j);
+        visitNeighbor(grid, visited, i, j-1);
+        visitNeighbor(grid, visited, i, j+1);
+    }
+    
+    int numIslands(vector<vector<char>>& grid) {
+        if (grid.empty() || grid[0].empty()) return 0;
+        
+        int width = grid.size();
+        int length = grid[0].size();
+        vector<vector<bool>> visited(width, vector<bool>(length, false));
+        int res = 0;
+        
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < length; j++) {
+                if (grid[i][j] == '0' || visited[i][j]) continue;
+                visitNeighbor(grid, visited, i, j);
+                res++;
+            }
+        }
+        
+        return res;
+    }
+};

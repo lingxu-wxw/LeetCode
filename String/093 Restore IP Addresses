@@ -1,0 +1,41 @@
+class Solution {
+public:
+    
+    // substr(cExpression, nStartPosition, [nCharactersReturned])
+    // 缺省时直接匹配到字符串结束
+    
+    // Input: "25525511135"
+    // Output: ["255.255.11.135", "255.255.111.35"]
+    
+    bool isValidAddress(string s) {
+        if (s.empty() || s.size() > 3 || (s.size() > 1 && s[0] == '0'))
+            return false;
+        int num = atoi(s.c_str());
+        return (num >= 0 && num <= 255);
+    }
+    
+    void restore(string str, int k, string res, vector<string> &ips) {
+        // 匹配完成
+        if (k == 0) {
+            if (str.empty())  ips.push_back(res);
+            return; 
+        }
+        
+        // 开始依次匹配一位、两位、三位
+        for (int i = 1; i <= 3; i++) {
+            // 剩余数字足够且地址合法
+            if (str.size() >= i && isValidAddress(str.substr(0, i))) {
+                // 如果是最后一个
+                if (k == 1)  restore(str.substr(i), k-1, res+str.substr(0,i), ips);
+                else  restore(str.substr(i), k-1, res+str.substr(0,i)+".", ips);
+            }
+        }
+        
+    }
+         
+    vector<string> restoreIpAddresses(string str) {
+        vector<string> ips;
+        restore(str, 4, "", ips);
+        return ips;
+    }
+};

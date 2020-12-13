@@ -1,0 +1,46 @@
+class Solution {
+public:
+    
+    void quickSort(vector<int>& nums, int left, int right) {
+        // 结束条件
+        if (left >= right) {
+            return;
+        }
+        
+        int i = left, j = right; // 下标索引
+        int base = nums[left]; // 取最左边的数为基准数
+        int tmp;
+        
+        while (i < j) {
+            // 从右往左遍历找到第一个比base小的数
+            while (nums[j] >= base && i < j) {
+                j--;
+            }
+            // 从左往右遍历找到第一个比base大的数
+            while (nums[i] <= base && i < j) {
+                i++;
+            }
+            // 交换找到的两个数字
+            if (i < j) {
+                tmp = nums[i];
+                nums[i] = nums[j];
+                nums[j] = tmp;
+            }
+        }
+        
+        // 基准数base归位
+        nums[left] = nums[i];
+        nums[i] = base;
+        
+        // 递归调用
+        quickSort(nums, left, i-1);
+        quickSort(nums, i+1, right);
+    }
+    
+    int findKthLargest(vector<int>& nums, int k) {
+        // 调用快速排序
+        int len = nums.size();
+        quickSort(nums, 0, len-1);
+        return nums[len-k];
+    }
+};

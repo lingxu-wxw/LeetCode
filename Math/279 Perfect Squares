@@ -1,0 +1,29 @@
+// Input: n = 12
+// Output: 3 
+// Explanation: 12 = 4 + 4 + 4.
+
+// Input: n = 13
+// Output: 2
+// Explanation: 13 = 4 + 9.
+
+class Solution {
+public:
+    int numSquares(int n) {
+        // 纯数学解法：
+        // 四平方和定理：每个正整数均可表示为不超过4个完全平方数的和
+        // 欧拉恒等式或四元数的概念：如果正整数m和n能表示为4个整数的平方和，则其乘积mn也能表示为4个整数的平方和
+        
+        // 动态规划：
+        vector<int> dp(n+1, INT_MAX);
+        dp[0] = 0;
+        
+        for (int i = 0; i <= n; i++) {
+            // 遍历可能的平方数
+            for (int j = 1; i + j*j <= n; j++) {
+                dp[i+j*j] = min(dp[i+j*j], dp[i]+1);
+            }
+        }
+        
+        return dp[n];
+    }
+};

@@ -1,0 +1,30 @@
+class Solution {
+public:
+    //Input: [2,3,1,1,4]
+    //Output: 2
+    //Explanation: The minimum number of jumps to reach the last index is 2.
+    //Jump 1 step from index 0 to 1, then 3 steps to the last index.
+    
+    int jump(vector<int>& nums) {
+        //大致思路: 贪心算法
+        //cur是当前能到达的最远位置, pre是上一步能到达的最远位置
+        
+        int size = nums.size();
+        int pre = 0, cur = 0;
+        int res = 0;
+        
+        for (int i = 0; i < size - 1; i++){
+            //确定res步能到的最远距离
+            cur = max(cur, i + nums[i]);
+            
+            //i=pre表示到头了该增加步数了
+            if (i >= pre) {
+                pre = cur;
+                res++;
+                if (cur >= size-1) break;
+            }
+        }
+        
+        return res;
+    }
+};

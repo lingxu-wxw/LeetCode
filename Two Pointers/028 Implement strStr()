@@ -1,0 +1,21 @@
+class Solution {
+public:
+    int strStr(string haystack, string needle) {
+        //i,j分别是haystack和needle的索引
+        
+        int i = 0, j = 0;
+        
+        for (; i < haystack.size() && j < needle.size();) {
+            if (haystack[i] == needle[j]) {
+                i++;
+                j++;
+            } else {
+                i -= j - 1; //j=0的时候就是i++, j!=0时回溯到下一位
+                j = 0;
+            }
+        }
+        
+        //匹配完成就会跳出
+        return j != needle.size() ? -1 : i - j;
+    }
+};

@@ -1,0 +1,30 @@
+class Solution {
+public:
+    
+    // Input: "/a/../../b/../c//.//"
+    // Output: "/c"
+    
+    string simplifyPath(string path) {
+        // 主要思路: C++中有专门处理字符串的机制，可以使用stringstream来分隔字符串
+        
+        // 初始化字符串流
+        stringstream ss(path);
+        
+        string res, dirname;       
+        vector<string> dirs;
+        
+        // 以‘/’为分界切分字符串
+        while (getline(ss, dirname, '/')) {
+            if (dirname == "" || dirname == ".") continue;
+            else if (dirname == ".." && !dirs.empty()) dirs.pop_back();
+            else if (dirname != "..") dirs.push_back(dirname);
+        }
+        
+        // 重组简化路径
+        for (string dir : dirs) {
+            res += "/" + dir; 
+        }
+        
+        return res.empty() ? "/" : res;
+    }
+};

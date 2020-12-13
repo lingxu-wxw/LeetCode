@@ -1,0 +1,15 @@
+class Solution:
+    
+    # Input: [3,4,5,1,2] 
+    # Output: 1
+    
+    def findMin(self, nums: List[int]) -> int:
+        if (nums is None):
+            return -1
+        
+        lastnum = nums[0]
+        for num in nums:
+            if (num < lastnum):
+                return num
+        
+        return nums[0]

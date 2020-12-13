@@ -1,0 +1,57 @@
+class Solution {
+public:
+    //nums1 = [1, 2]
+    //nums2 = [3, 4]
+    //The median is (2 + 3)/2 = 2.5
+    
+    double findMedianSortedArrays(vector<int>& nums1, vector<int>& nums2) {
+        int size1 = nums1.size();
+        int size2 = nums2.size();
+        
+        //默认数组nums1的长度更短
+        if (size1 > size2) return findMedianSortedArrays(nums2, nums1);
+        
+        //特殊情况, nums1为空
+        if (size1 == 0) return (nums2[(size2-1)/2] + nums2[size2/2]) / 2.0;
+        
+        //low,high是nums1中的移动标
+        int low = 0, high = size1;
+        int halflen = (size1 + size2 + 1) / 2;
+        
+        while (low <= high){
+            //i,j为nums1,nums2的切分点, 划分成 左1,右1,左2,右2, 左边可能多一个
+            int i = (low + high) / 2;
+            int j = halflen - i;
+            
+            //max(左2) > min(右1), i太小, 二分增长
+            if (i < high && nums2[j-1] > nums1[i]){
+                low = i + 1; 
+            }
+            
+            //max(左1) > min(右2), i太大, 二分缩小
+            else if (i > low && nums1[i-1] > nums2[j]){
+                high = i - 1; 
+            }
+            
+            //正确区间, 左边的每一个都比右边小, 总数为奇数时左边多一个
+            else {
+                int maxleft = 0, minright = 0;
+                
+                if (i == 0) maxleft = nums2[j-1]; 
+                else if (j == 0) maxleft = nums1[i-1]; 
+                else maxleft = max(nums1[i-1], nums2[j-1]); 
+                
+                //特殊情况, 总数为奇数
+                if ((size1 + size2) % 2 == 1)  return maxleft;
+                
+                if (i == size1) minright = nums2[j]; 
+                else if (j == size2) minright = nums1[i]; 
+                else minright = min(nums2[j], nums1[i]);
+                
+                return (maxleft + minright) / 2.0;
+            }
+        }
+        
+        return 0.0;
+    }
+};

@@ -1,0 +1,43 @@
+// Input: ["4", "13", "5", "/", "+"]
+// Output: 6
+// Explanation: (4 + (13 / 5)) = 6
+
+class Solution {
+public:
+    bool isdigit(string exp) {
+        if ('9' - exp[0] >= 10) {
+            if (exp.length() > 1) return true;
+            else return false;
+        }
+        else return true;
+    }
+    
+    int evalRPN(vector<string>& tokens) {
+        stack<int> exps;
+        
+        int len = tokens.size();
+        
+        for (int i = 0; i < len; i++) {
+            string exp = tokens[i];
+            
+            if (isdigit(exp)) {
+                exps.push(atoi(exp.c_str()));
+            } else {
+                int num2 = exps.top();
+                exps.pop();
+                int num1 = exps.top();
+                exps.pop();
+                
+                int res;
+                if (exp == "+") res = num1 + num2;
+                else if (exp == "-") res = num1 - num2;
+                else if (exp == "*") res = num1 * num2;
+                else if (exp == "/") res = num1 / num2;
+                
+                exps.push(res);
+            }
+        }
+        
+        return exps.top();
+    }
+};

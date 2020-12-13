@@ -1,0 +1,21 @@
+class Solution {
+public:
+    
+    // Input: [2,3,1,1,4]
+    // Output: true
+    // Explanation: Jump 1 step from index 0 to 1, then 3 steps to the last index.
+    
+    bool canJump(vector<int>& nums) {
+        //贪心算法
+        
+        int size = nums.size();
+        int maxreach = 0;
+        
+        for (int i = 0; i < size; i++) {
+            if (i > maxreach || maxreach >= size-1) break;
+            maxreach = max(maxreach, i + nums[i]);
+        }
+        
+        return maxreach >= size-1;
+    }
+};

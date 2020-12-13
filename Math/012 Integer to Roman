@@ -1,0 +1,49 @@
+class Solution {
+public:
+    //Input: 1994
+    //Output: "MCMXCIV"
+    //Explanation: M = 1000, CM = 900, XC = 90 and IV = 4.
+
+    string intToRoman(int num) {
+        if (num < 1 || num > 3999) return "";
+        
+        vector<string> symbols = {"I", "V", "X", "L", "C", "D", "M"};
+        vector<string> romans = {"", "", "", ""};
+        int size = symbols.size();
+        
+        int index = 0;
+        while (num != 0){
+            int digit = num % 10;
+            num = num / 10;
+            
+            string str = "";
+            string low = symbols[index];
+            string high = (index == size-1) ? "" : symbols[index + 1];
+            string carry = (index == size-1) ? "" : symbols[index + 2]; 
+            
+            switch (digit){
+                case 0: break;
+                case 1: str = low; break;
+                case 2: str = low + low; break;
+                case 3: str = low + low + low; break;
+                case 4: str = low + high; break;
+                case 5: str = high; break;
+                case 6: str = high + low; break;
+                case 7: str = high + low + low; break;
+                case 8: str = high + low + low + low; break;
+                case 9: str = low + carry; break;
+                default: break;
+            }
+            
+            romans[index/2] = str;
+            index = index + 2;
+        }
+        
+        string res = "";
+        for (int i = romans.size()-1; i >= 0; i--){
+            res = res + romans[i];
+        }
+        
+        return res;
+    }
+};

@@ -1,0 +1,59 @@
+// Input: numCourses = 2, prerequisites = [[1,0],[0,1]]
+// Output: false
+// Explanation: There are a total of 2 courses to take. 
+//              To take course 1 you should have finished course 0, and to take course 0 you should
+//              also have finished course 1. So it is impossible.
+
+class Solution {
+public:
+    
+    // [[0,0,0],
+    // [0,0,0],
+    // [0,0,0]]
+    
+    bool canFinish(int numCourses, vector<vector<int>>& prerequisites) {
+        
+        // 有向图: 不是完整图, 只标记先修课程
+        vector<vector<int>> graph(numCourses, vector<int>());
+        // 入度
+        vector<int> indegree(numCourses, 0);
+        
+        // 初始化有向图和入度
+        for (auto pair : prerequisites) {
+            // 先修pres[1], 再修pres[0], pres[1]->pres[0]
+            // 方便从入度0结点遍历, 记录后续课程list
+            graph[pair[1]].push_back(pair[0]);
+            indegree[pair[0]]++;
+        }
+        
+        // BFS
+        queue<int> q;
+        for (int i = 0; i < numCourses; i++) {
+            // 入度为0的结点先入队
+            if (indegree[i] == 0) {
+                q.push(i);
+            }
+        }
+        
+        // 如果有环, 则环中的结点都不会入队
+        while (!q.empty()) {
+            int course = q.front();
+            q.pop();
+            for (auto cur : graph[course]) {
+                indegree[cur]--;
+                if (indegree[cur] == 0) {
+                    q.push(cur);
+                }
+            }
+        }
+        
+        // 如果还有入度不为0的结点即为有环
+        for (int i = 0; i < numCourses; i++) {
+            if (indegree[i] != 0) {
+                return false;
+            }
+        }
+        
+        return true;
+    }
+};

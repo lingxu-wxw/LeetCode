@@ -1,0 +1,28 @@
+class Solution {
+public:
+    //Input: [3,4,-1,1]
+    //Output: 2
+    
+    int firstMissingPositive(vector<int>& nums) {
+        //要求O(n)时间, O(1)空间
+        //主要想法: 如果最后一个都没缺，理想状态是nums[i]=i+1
+        
+        int size = nums.size();
+        
+        for (int i = 0; i < size; i++){
+            //如果nums[i] != i+1, 且nums[i]<=size, 表示nums[i]有应该放的位置
+            while (nums[i] > 0 && nums[i] <= size && nums[nums[i]-1] != nums[i]){
+                //index=nums[i]-1是nums[i]该放的位置
+                swap(nums[i], nums[nums[i]-1]);
+            }
+        }
+        
+        //依次遍历找出缺失
+        for (int i = 0; i < size; i++){
+            if (nums[i] != i+1) return i+1;
+        }
+        
+        //没有缺失
+        return size+1;
+    }
+};

@@ -1,0 +1,31 @@
+// Input: s = 7, nums = [2,3,1,2,4,3]
+// Output: 2
+// Explanation: the subarray [4,3] has the minimal length under the problem constraint.
+
+class Solution {
+public:
+    int minSubArrayLen(int s, vector<int>& nums) {
+        if (nums.size() == 0) return 0;
+        
+        int len = nums.size();
+        int left = 0, right = 0;
+        int cursum = 0, minsize = len+1; // minsize正常情况取不到len+1
+            
+        while (right < len) {
+            // 先移动右指针
+            while (cursum < s && right < len) {
+                cursum += nums[right];
+                right++;
+            }
+            // 再移动左指针
+            while (cursum >= s) {
+                minsize = min(right-left, minsize);
+                cursum -= nums[left];
+                left++;
+            }
+        }
+        
+        // 如果没有解，minsize仍是len+1
+        return (minsize == len+1) ? 0 : minsize;
+    }
+};

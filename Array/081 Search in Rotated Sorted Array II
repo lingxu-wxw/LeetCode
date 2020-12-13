@@ -1,0 +1,44 @@
+class Solution {
+public:
+    
+    // Input: nums = [2,5,6,0,0,1,2], target = 0
+    // Output: true
+    
+    // Input: nums = [1,3,1,1], target = 3
+    // Output: true
+    
+    bool search(vector<int>& nums, int target) {
+        //hint 1: 跟之前那道题的区别在于这道题可能有重复元素, 需要多判断一次left才可以判断左右那一边是有序的 
+        //hint 2: 判断的时候要跟left比, 跟right比已经不可信了
+        
+        int left = 0, right = nums.size() - 1;
+        
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
+            
+            //命中
+            if (nums[mid] == target) return true;
+            
+            //左半有序
+            else if  (nums[mid] > nums[left]) {
+                if (nums[left] <= target && nums[mid] >= target)
+                    right = mid - 1;
+                else left = mid + 1;
+            }
+            
+            //右半有序
+            else if (nums[mid] < nums[left]){
+                if (nums[mid] <= target && nums[right] >= target)
+                    left = mid + 1;
+                else right = mid - 1;
+            }
+            
+            //中间项和最左边的项相等
+            else {
+                left++;
+            }
+        }
+        
+        return false;
+    }
+};

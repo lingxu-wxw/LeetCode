@@ -1,0 +1,43 @@
+// Input: pattern = "abba", s = "dog cat cat dog"
+// Output: true
+
+class Solution {
+public:
+    bool wordPattern(string pattern, string s) {
+        // 字符串流，执行split功能
+        istringstream in(s);
+        
+        // 映射pattern和word
+        unordered_map<char, string> map;
+        
+        int len = pattern.length();
+        int i = 0;
+        
+        for (string word; in >> word; i++) {
+            // 判断字符串是否过长
+            if (i >= len) {
+                continue;
+            }
+            
+            // 判断map中是否有pattern[i]的映射
+            if (map.count(pattern[i])) {
+                // 错误映射
+                if (map[pattern[i]] != word) {
+                    return false;
+                }
+            }
+            else {
+                for (auto m : map) {
+                    // 错误映射，m是map中的任意一对映射
+                    if (m.second == word) {
+                        return false;
+                    }
+                }
+                
+                map[pattern[i]] = word;
+            }
+        } 
+        
+        return i == len;
+    }
+};

@@ -1,0 +1,31 @@
+class Solution {
+public:
+    
+    // For example, given the following triangle
+
+    // [
+    //      [2],
+    //     [3,4],
+    //    [6,5,7],
+    //   [4,1,8,3]
+    // ]
+    // The minimum path sum from top to bottom is 11 (i.e., 2 + 3 + 5 + 1 = 11).
+    
+    int minimumTotal(vector<vector<int>>& triangle) {
+        
+        int size = triangle.size();
+        
+        // 顺序遍历叠加
+        for (int i = 1; i < size; ++i) {
+            int size_i = triangle[i].size();
+            for (int j = 0; j < size_i; ++j) {
+                // 两边的位置
+                if (j == 0) triangle[i][j] += triangle[i-1][j];
+                else if (j == size_i-1) triangle[i][j] += triangle[i - 1][j - 1];
+                // 中间的位置
+                else  triangle[i][j] += min(triangle[i-1][j-1], triangle[i-1][j]);
+            }
+        }
+        return *min_element(triangle.back().begin(), triangle.back().end());
+    }
+};

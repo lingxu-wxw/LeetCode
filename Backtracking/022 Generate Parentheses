@@ -1,0 +1,23 @@
+class Solution {
+public:
+    //深度优先
+    //剩余左括号数, 剩余右括号数, 生成字符串, 字符串数组引用
+    void generateDFS(int left, int right, string str, vector<string> &res){
+        //不可能情况
+        if (left > right) return;
+        
+        if (left == 0 && right == 0) res.push_back(str);
+        
+        else {
+            //DFS
+            if (left > 0) generateDFS(left - 1, right, str + '(', res);
+            if (right > 0) generateDFS(left, right - 1, str + ')', res);
+        }
+    }
+    
+    vector<string> generateParenthesis(int n) {
+        vector<string> res;
+        generateDFS(n, n, "", res);
+        return res;
+    }
+};

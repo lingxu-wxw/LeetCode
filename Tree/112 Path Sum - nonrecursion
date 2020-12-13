@@ -1,0 +1,47 @@
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+
+    // Given the below binary tree and sum = 22,
+
+    //       5
+    //      / \
+    //     4   8
+    //    /   / \
+    //   11  13  4
+    //  /  \      \
+    // 7    2      1
+    // return true, as there exist a root-to-leaf path 5->4->11->2 which sum is 22.
+    
+    bool hasPathSum(TreeNode* root, int sum) {
+        if (!root) return false;
+        stack<TreeNode*> st{{root}};
+        
+        while (!st.empty()) {
+            TreeNode *t = st.top(); 
+            st.pop();
+            // 到达叶子节点
+            if (!t->left && !t->right) {
+                if (t->val == sum) return true;
+            }
+            // 累计到达该结点时的val和
+            if (t->right) {
+                t->right->val += t->val;
+                st.push(t->right);
+            }
+            if (t->left) {
+                t->left->val += t->val;
+                st.push(t->left);
+            }
+        }
+        return false;
+    }
+};
