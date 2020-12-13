@@ -189,6 +189,7 @@
 162 Find Peak Element
 164 Maximum Gap（桶排序）
 165 Compare Version Numbers
+166 Fraction to Recurring Decimal
 167 Two Sum II
 168 Excel Sheet Column Title
 169 Majority Element
