@@ -1,0 +1,48 @@
+// Input: 13
+// Output: 6 
+// Explanation: Digit 1 occurred in the following numbers: 1, 10, 11, 12, 13.
+
+class Solution {
+public:
+    
+    // 数字abcde，考虑百位上出现1的个数
+    // 当c=0，如13012，则百位上的1有 00100~00199,01100~01199,...,12100~12199
+    //      个数 = 高位数*当前位阶 = 13*100
+    // 当c=1，如13112，则百位上的1有 00100~00199,01100~01199,...,12100~12199,13100~13112
+    //      个数 = 高位数*当前位阶+低位数+1 = 13*100+12+1
+    // 当c>=2，如13212，则百位上的1有 00100~00199,01100~01199,...,12100~12199,13100~13199
+    //      个数 = (高位数+1)*当前位阶 = 14*100
+    
+    int countDigitOne(int n) {
+        // 处理非正数
+        if (n <= 0) return 0;
+        
+        // 高位数，低位数，当前位数
+        long long higher, lower;
+        int curnum;
+        // 数字位阶
+        long long level = 1;
+        
+        int res = 0;
+        
+        while (n/level) {
+            higher = n / (level*10);
+            lower = n % level;
+            curnum = (n/level) % 10;
+            
+            if (curnum == 0) {
+                res += higher * level;
+            } 
+            else if (curnum == 1) {
+                res += higher * level + lower + 1;
+            }
+            else {
+                res += (higher + 1) * level;
+            }
+            
+            level *= 10;
+        }
+        
+        return res;
+    }
+};
