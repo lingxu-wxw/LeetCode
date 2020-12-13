@@ -179,6 +179,7 @@
 146 LRU Cache
 147 Insertion Sort List
 148 Sort List
+149 Max Points on a Line
 150 Evaluate Reverse Polish Notation
 151 Reverse Words in a String
 152 Maximum Product Subarray
@@ -261,5 +262,14 @@
 268 Missing Number
 274 H-Index
 275 H-Index II
+278 First Bad Version
+279 Perfect Squares
+283 Move Zeroes
+284 Peeking Iterator
+289 Game of Life
+290 Word Pattern
+292 Nim Game
+299 Bulls and Cows
+300 Longest Increasing Subsequence
 ```
 
