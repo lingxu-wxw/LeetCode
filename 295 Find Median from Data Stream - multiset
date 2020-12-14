@@ -1,0 +1,49 @@
+class MedianFinder {
+public:
+    
+    // multiset默认是小顶堆，rbegin()最大（右），begin()最小
+    // 大顶堆：multiset<int, greater<int>> greadterSet;
+    // 小顶堆：multiset<int, less<int>> lessSet; multiset<int> defaultSet;
+    
+    // priority_queue默认是大顶堆，top()最大（左）
+    // 大顶堆：priority_queue<int> p1;
+    // 小顶堆：priority_queue<int,vector<int>,greater<int> >p2;
+    
+    /** initialize your data structure here. */
+    MedianFinder() {
+        
+    }
+    
+    void addNum(int num) {
+        small.insert(-num);
+        large.insert(-*small.begin());
+        small.erase(small.begin());
+        
+        // 保证small >= large
+        if (small.size() < large.size()) {
+            small.insert(-*large.begin());
+            large.erase(large.begin());
+        }
+    }
+    
+    double findMedian() {
+        return small.size() > large.size() ? -*small.begin() : 0.5 * (*large.begin()-*small.begin());
+    }
+
+private:
+    
+    // 大堆保存右半段较大的数字，小堆保存左半段较小的数组
+    // 大堆从小到大，小堆从大到小
+    // [1,2,3,4,5,6]
+    // small [-3,-2,-1] large [4,5,6]
+    
+    multiset<int> small, large;
+    
+};
+
+/**
+ * Your MedianFinder object will be instantiated and called as such:
+ * MedianFinder* obj = new MedianFinder();
+ * obj->addNum(num);
+ * double param_2 = obj->findMedian();
+ */
