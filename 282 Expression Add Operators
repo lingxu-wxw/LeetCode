@@ -1,0 +1,49 @@
+// Input: num = "123", target = 6
+// Output: ["1+2+3", "1*2*3"] 
+
+// Input: num = "105", target = 5
+// Output: ["1*0+5","10-5"]
+
+class Solution {
+public:
+    
+    // diff是上一个数字，因为有乘法的存在，所以运算顺序可能会变化
+    // curRes记录当前运算出的结果
+    // 0 <= num.length <= 10, 10位数有可能int溢出
+    
+    void addOperatorsDFS(string num, int target, long long diff, long long curRes, string out, vector<string>& res) {
+        // 递归结束条件
+        if (num.size() == 0 && curRes == target) {
+            res.push_back(out);
+            return;
+        }
+        
+        int len = num.length();
+        
+        for (int i = 1; i <= len; i++) {
+            // 切分出当前的数字和之后的数字串
+            string cur = num.substr(0, i);
+            string next = num.substr(i);
+                
+            // 考虑特殊情况：0开头的多位数需要剔除
+            if (cur.length() > 1 && cur[0] == '0') return;
+            
+            // 是否第一个计算式子
+            if (out.length() != 0) {
+                // 遍历加法，减法，乘法
+                addOperatorsDFS(next, target, stoll(cur), curRes+stoll(cur), out+"+"+cur, res);
+                addOperatorsDFS(next, target, -stoll(cur), curRes-stoll(cur), out+"-"+cur, res);
+                addOperatorsDFS(next, target, diff*stoll(cur), (curRes-diff)+diff*stoll(cur), out+"*"+cur, res);
+            }
+            else {
+                addOperatorsDFS(next, target, stoll(cur), stoll(cur), cur, res);
+            }
+        }
+    }
+    
+    vector<string> addOperators(string num, int target) {
+        vector<string> res;
+        addOperatorsDFS(num, target, 0, 0, "", res);
+        return res;
+    }
+};
