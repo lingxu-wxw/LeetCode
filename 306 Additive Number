@@ -1,0 +1,57 @@
+// Input: "112358"
+// Output: true
+// Explanation: The digits can form an additive sequence: 1, 1, 2, 3, 5, 8. 
+//              1 + 1 = 2, 1 + 2 = 3, 2 + 3 = 5, 3 + 5 = 8
+
+class Solution {
+public:
+    
+    // contain at least three numbers
+    
+    // 只是判断是不是加法数，因此res设为全局参数，一旦为true后就可以全部返回
+    void helper(string& num, int start, vector<long>& out, bool& res) {
+        // 递归返回条件1
+        if (res) return;
+        
+        // 递归返回条件2
+        if (start >= num.length()) {
+            if (out.size() >= 3) {
+                res = true;
+                return;
+            }    
+        }
+        
+        for (int i = start; i < num.length(); i++) {
+            string str = num.substr(start, i-start+1);
+            // 数字首尾是0 或 数字长度太长: 当前遍历不可能成功，回退
+            if ((str.size() > 1 && str[0] == '0') || str.size() > 19) {
+                break;
+            }
+            
+            long curnum = stoll(str);
+            int size = out.size();
+            // 相加结果错误: 换一个长度继续遍历
+            if (out.size() >= 2 && curnum != out[size-1] + out[size-2]) {
+                continue;
+            }
+            
+            // 初始化阶段（out长度小于3），或找到一个中间结果
+            out.push_back(curnum);
+            
+            // 继续遍历
+            helper(num, i+1, out, res);
+            
+            out.pop_back();
+        }
+    
+    }
+    
+    bool isAdditiveNumber(string num) {
+        vector<long> out;
+        bool res = false;
+        
+        helper(num, 0, out, res);
+            
+        return res;
+    }
+};
