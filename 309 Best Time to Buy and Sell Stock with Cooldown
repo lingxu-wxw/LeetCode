@@ -1,0 +1,31 @@
+// Input: [1,2,3,0,2]
+// Output: 3 
+// Explanation: transactions = [buy, sell, cooldown, buy, sell]
+
+class Solution {
+public:
+    // buy[i]表示在第i天之前最后一个操作是买，此时的最大收益
+    // sell[i]表示在第i天之前最后一个操作是卖，此时的最大收益
+    // cooldown[i]表示在第i天之前最后一个操作是冷冻期，此时的最大收益
+    
+    // buy[i] = max(cooldown[i-1]-price, buy[i-1])  
+    // sell[i] = max(buy[i-1]+price, sell[i-1])
+    // cooldown[i] = max(buy[i-1], sell[i-1], cooldown[i-1])
+    // cooldown[i] = sell[i-1]
+    
+    int maxProfit(vector<int>& prices) {
+        int size = prices.size();
+        if (size == 0) return 0;
+        
+        vector<int> buy(size+1, 0), sell(size+1, 0), cooldown(size+1, 0);
+        buy[0] = -prices[0];
+        
+        for (int i = 1; i <= size; i++) {
+            buy[i] = max(cooldown[i-1]-prices[i-1], buy[i-1]);
+            sell[i] = max(buy[i-1]+prices[i-1], sell[i-1]);
+            cooldown[i] = max(buy[i-1], max(sell[i-1], cooldown[i-1]));
+        }
+        
+        return sell[size];
+    }
+};
