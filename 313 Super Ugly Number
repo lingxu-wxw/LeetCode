@@ -1,0 +1,31 @@
+// Input: n = 12, primes = [2,7,13,19]
+// Output: 32 
+// Explanation: [1,2,4,7,8,13,14,16,19,26,28,32] is the sequence of the first 12 
+//              super ugly numbers given primes = [2,7,13,19] of size 4.
+             
+class Solution {
+public:
+    int nthSuperUglyNumber(int n, vector<int>& primes) {
+        // 最小堆，会按照大小进行排序
+        priority_queue<long, vector<long>, greater<long>> pq;
+        pq.push(1);
+        
+        for (int i = 1; i < n; i++) {
+            long num = pq.top();
+            pq.pop();
+            
+            // 清除最小堆中的重复数据
+            while (!pq.empty() && pq.top() == num) {
+                pq.pop();
+            }
+            
+            // 更新最小堆
+            for (auto prime : primes) {
+                pq.push(num*prime);
+            }
+        }
+        
+        // 停止循环时的top()就是第n个super ugly number
+        return pq.top();
+    }
+};
