@@ -1,0 +1,32 @@
+// Input: nums = [1,2,3,4,5]
+// Output: true
+// Explanation: Any triplet where i < j < k is valid.
+    
+// Input: nums = [2,1,5,0,4,6]
+// Output: true
+// Explanation: The triplet (3, 4, 5) is valid because nums[3] == 0 < nums[4] == 4 < nums[5] == 6.
+
+class Solution {
+public:
+    bool increasingTriplet(vector<int>& nums) {
+        if (nums.size() < 3) return false;
+        
+        // 在可能的情况下尽量缩小这两个标准
+        int small = nums[0];
+        int middle = INT_MAX;
+        
+        for (int i = 0; i < nums.size(); i++) {
+            if (nums[i] > middle) {
+                return true;
+            } else {
+                if (nums[i] <= small) {
+                    small = nums[i];
+                } else {
+                    middle = nums[i];
+                }
+            }
+        }
+        
+        return false;
+    }
+};
