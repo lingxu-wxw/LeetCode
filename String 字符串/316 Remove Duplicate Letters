@@ -1,0 +1,38 @@
+// Input: s = "bcabc"
+// Output: "abc"
+// Input: s = "cbacdcbc"
+// Output: "acdb"
+
+class Solution {
+public:
+    string removeDuplicateLetters(string s) {
+        // map标记字母出现的次数，visited标记字母是否已在res中
+        int map[26] = {0}, visited[26] = {0};
+        
+        // 初始化，'0'比所有字母都小
+        string res = "0";
+        
+        // 统计字母出现次数
+        for (char c : s) {
+            map[c-'a']++;
+        }
+        
+        for (char c : s) {
+            map[c-'a']--;
+            
+            // 如果已经在res中出现过，就跳过
+            if (visited[c-'a']) continue;
+            
+            // 如果顺序不对，并且该字符在s中后面还有
+            while (res.back() > c && map[res.back()-'a']) {
+                visited[res.back()-'a'] = 0;
+                res.pop_back();
+            }
+            
+            res += c;
+            visited[c-'a'] = 1;
+        }
+        
+        return res.substr(1);
+    }
+};
