@@ -1,0 +1,30 @@
+// Input: ["abcw","baz","foo","bar","xtfn","abcdef"]
+// Output: 16 
+// Explanation: The two words can be "abcw", "xtfn".
+
+class Solution {
+public:
+    int maxProduct(vector<string>& words) {
+        int size = words.size();
+        
+        // int有32位，可以涵盖26个英文字母的mask
+        vector<int> mask(size, 0);
+        int res = 0;
+        
+        for (int i = 0; i < size; i++) {
+            // 生成mask
+            for (char c : words[i]) {
+                mask[i] |= 1 << (c-'a');
+            }
+            // 依次遍历，判断是否有重复的字母
+            for (int j = 0; j < i; j++) {
+                if (!(mask[i] & mask[j])) {
+                    // 强制类型转化成int
+                    res = max(res, int(words[i].length()*words[j].length()));
+                }
+            }
+        }
+        
+        return res;
+    }
+};

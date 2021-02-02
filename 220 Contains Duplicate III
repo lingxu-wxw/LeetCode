@@ -1,0 +1,43 @@
+class Solution {
+// Input: nums = [1,0,1,1], k = 1, t = 2
+// Output: true
+
+// Input: nums = [1,5,9,1,5,9], k = 2, t = 3
+// Output: false
+
+public:
+    bool containsNearbyAlmostDuplicate(vector<int>& nums, int k, int t) {
+        // k是下标界限，t是数值界限
+        // 数组中数的值 -> 在数组中的坐标
+        // 数据结构不能是unordered_map，为满足-2^31 <= nums[i] <= 2^31 - 1，type需要是long long
+        map<long long, int> map;
+        int size = nums.size();
+        
+        // iterator lower_bound(const key_type &key ): 
+        // 返回一个迭代器，指向键值 >= key的第一个元素。
+        // iterator upper_bound( const key_type &key ):
+        // 返回一个迭代器，指向键值 > key的第一个元素。
+        
+        // j~i构成一个长度最大为k的滑动窗口
+        int j = 0;
+        
+        for (int i = 0; i < size; i++) {
+            // 移动滑动窗口，保证结果满足k的限制
+            if (i - j > k) {
+                map.erase(nums[j]);
+                j++;
+            }
+            
+            // 寻找在nums[i]±t范围内的值
+            auto iter = map.lower_bound((long long)nums[i]-t);
+            if (iter != map.end() && abs(iter->first - nums[i]) <= t) {
+                return true;
+            }
+            
+            // 如果这一轮没有找到，更新map
+            map[nums[i]] = i;
+        }
+        
+        return false;
+    }
+};

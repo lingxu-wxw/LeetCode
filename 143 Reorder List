@@ -1,0 +1,69 @@
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    
+    // Given a singly linked list L: L0→L1→…→Ln-1→Ln,
+    // reorder it to: L0→Ln→L1→Ln-1→L2→Ln-2→…
+    
+    // Given 1->2->3->4->5, reorder it to 1->5->2->4->3.
+    
+    public ListNode reserveList(ListNode head) {
+        if (head == null) return null;
+        
+        ListNode cur = head, last = cur.next;
+        ListNode tmp = null;
+        while (last != null) {
+            tmp = last.next;
+            last.next = cur;
+            cur = last;
+            last = tmp;
+        }
+        
+        head.next = null;
+        return cur;
+    }
+    
+    public void reorderList(ListNode head) {
+        // 第一步，将链表一分为二，用到快慢指针；
+        // 第二步，反转第二部分，反转链表是很重要的根基；
+        // 第三步，将两链表接起来
+        
+        if (head == null || head.next == null) return;
+        
+        // step 1
+        // eg. 1234 slow停在2; 12345 slow停在3; 前半段会稍微长一点
+        ListNode slow = head, fast = head;
+        ListNode frontpart = head;
+        while (fast.next != null && fast.next.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+    
+        // step 2
+        // 翻转后半部分
+        ListNode backpart = slow.next;
+        slow.next = null;
+        backpart = reserveList(backpart);
+        
+        // step 3
+        // 不需要考虑奇偶情况
+        ListNode tmp1, tmp2;
+        while (backpart != null) {
+            tmp1 = frontpart.next;
+            tmp2 = backpart.next;
+            
+            frontpart.next = backpart;
+            backpart.next = tmp1;
+            
+            frontpart = tmp1;
+            backpart = tmp2;
+        }
+    }
+}
+

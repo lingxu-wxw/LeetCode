@@ -1,0 +1,35 @@
+// Input: k = 2, prices = [3,2,6,5,0,3]
+// Output: 7
+// Explanation: Buy on day 2 (price = 2) and sell on day 3 (price = 6), profit = 6-2 = 4. Then buy on day 5 (price = 0) and sell on day 6 (price = 3), profit = 3-0 = 3.
+    
+class Solution {
+public:
+    
+    // 解法同123 Best Time to Buy and Sell Stock III
+    // You may complete at most k transactions.
+    
+    int maxProfit(int k, vector<int>& prices) {
+        
+        // local[i][j]为在到达第i天时最多可进行j次交易并且最后一次交易在最后一天卖出的最大利润，此为局部最优
+        // global[i][j]为在到达第i天时最多可进行j次交易的最大利润，此为全局最优
+        // 局部最优值是比较前一天并少交易一次的全局最优加上大于0的差值，和前一天的局部最优加上差值中取较大值
+        // 而全局最优比较局部最优和前一天的全局最优
+        // 局部最优确定最后一天要卖，区别在隔一天还是隔多天累计; 全局最优是考虑要不要卖
+        
+        if (prices.empty()) return 0;
+        
+        int m = prices.size();
+        vector<vector<int> > local(m, vector<int>(k+1, 0));
+        vector<vector<int> > global(m, vector<int>(k+1, 0));
+        
+        for (int i = 1; i < m; i++) {
+            int diff = prices[i] - prices[i-1];
+            for (int j = 1; j <= k; j++) {
+                local[i][j] = max(global[i-1][j-1]+max(diff,0), local[i-1][j]+diff);
+                global[i][j] = max(local[i][j], global[i-1][j]);
+            }
+        }
+        
+        return global[m-1][k];
+    }
+};

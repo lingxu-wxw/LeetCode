@@ -1,0 +1,65 @@
+/* Assume that the iterator is initialized to the beginning of the list: [1,2,3].
+ * Call next() gets you 1, the first element in the list.
+ * Now you call peek() and it returns 2, the next element. Calling next() after that still return 2.  
+ * You call next() the final time and it returns 3, the last element. 
+ * Calling hasNext() after that should return false.
+ */
+
+/*
+ * Below is the interface for Iterator, which is already defined for you.
+ * **DO NOT** modify the interface for Iterator.
+ *
+ *  class Iterator {
+ *		struct Data;
+ * 		Data* data;
+ *		Iterator(const vector<int>& nums);
+ * 		Iterator(const Iterator& iter);
+ *
+ * 		// Returns the next element in the iteration.
+ *		int next();
+ *
+ *		// Returns true if the iteration has more elements.
+ *		bool hasNext() const;
+ *	};
+ */
+
+class PeekingIterator : public Iterator {
+private:
+    // peek()和next()都返回的是下一个数，区别在于peek不会移动指针，next需要移动指针
+    // next()的返回值和当前指针是相同的位置，peek()的返回值会领先当前指针一个index
+    int nextVal;
+    bool hasGetNextVal;
+    
+public:
+	PeekingIterator(const vector<int>& nums) : Iterator(nums) {
+	    // Initialize any member here.
+	    // **DO NOT** save a copy of nums and manipulate it directly.
+	    // You should only use the Iterator interface methods.
+	    hasGetNextVal = false;
+	}
+	
+    // Returns the next element in the iteration without advancing the iterator.
+	int peek() {
+        if (!hasGetNextVal) {
+            // 上一轮是next()
+            nextVal = Iterator::next();
+        } 
+        hasGetNextVal = true;
+        return nextVal;
+	}
+	
+	// hasNext() and next() should behave the same as in the Iterator interface.
+	// Override them if needed.
+	int next() {
+	    if (!hasGetNextVal) {
+            // 上一轮是next()
+            return Iterator::next();
+        }
+        hasGetNextVal = false;
+        return nextVal;
+	}
+	
+	bool hasNext() const {
+	    return hasGetNextVal || Iterator::hasNext();
+	}
+};

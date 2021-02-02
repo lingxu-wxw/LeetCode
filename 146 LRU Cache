@@ -1,0 +1,97 @@
+/** Clock Algorithm
+ *  if hit(P)
+ *      res_block = block contains P
+ *      referenced_bit[res_block] ← True
+ *      clock_arm does not change
+ *  else
+ *      while referenced_bit[clock_arm]
+ *          referenced_bit[clock_arm] ← False
+ *          clock_arm ← next block
+ *      res_block = block[clock_arm]
+ *      referenced_bit[clock_arm] ← True
+ *      clock_arm ← next block
+ *  return res_block
+ */
+
+class ListNode {
+    
+    public int key;
+    public int value;
+    public ListNode pre;
+    public ListNode next;
+    
+    public ListNode(int key, int value) {
+        this.key = key;
+        this.value = value;
+    }
+}
+    
+class LRUCache {
+    
+    private int capacity;   // 限定容量
+    private HashMap<Integer, ListNode> map = new HashMap<Integer, ListNode>();
+    private ListNode head = null, tail = null;
+    
+    public LRUCache(int capacity) {
+        this.capacity = capacity;
+    }
+    
+    // 删除链表中的node
+    public void remove(ListNode node) {
+        if (node.pre != null) node.pre.next = node.next;
+        else head = node.next;
+        
+        if (node.next != null) node.next.pre = node.pre;
+        else tail = node.pre;
+    }
+    
+    // 将node设为链表的head，注意处理head原先为空的情况
+    public void sethead(ListNode node) {
+        node.next = head;
+        node.pre = null;
+        if (head != null) head.pre = node;  //非空链表限定
+        head = node;
+        if (tail == null) tail = head; //空链表限定
+    }
+    
+    // 获取node后，删除原先位置的node并移动到双向链表的head处
+    public int get(int key) {
+        if (map.containsKey(key)) {
+            ListNode node = map.get(key);
+            remove(node);
+            sethead(node);
+            return node.value;
+        } else {
+            return -1;
+        }
+    }
+    
+    // 放置node时，检查map中是否原先存在
+    // 然后检查map空间是否仍然有空余，如果不足六做一个evit
+    public void put(int key, int value) {
+        if (map.containsKey(key)) {
+            ListNode oldnode = map.get(key);
+            oldnode.value = value;
+            remove(oldnode);
+            sethead(oldnode);
+        } else {
+            ListNode newnode = new ListNode(key, value);
+            if (map.size() >= capacity) {
+                map.remove(tail.key);
+                remove(tail);
+                sethead(newnode);
+            } else {
+                sethead(newnode);
+            }
+            
+            map.put(key, newnode);
+        }
+    }
+}
+
+/**
+ * Your LRUCache object will be instantiated and called as such:
+ * LRUCache obj = new LRUCache(capacity);
+ * int param_1 = obj.get(key);
+ * obj.put(key,value);
+ */

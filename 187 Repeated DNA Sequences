@@ -1,0 +1,25 @@
+// Input: s = "AAAAACCCCCAAAAACCCCCCAAAAAGGGTTT"
+// Output: ["AAAAACCCCC", "CCCCCAAAAA"]
+
+class Solution {
+public:
+    // 找出重复出现过的10-letter-long sequence
+    vector<string> findRepeatedDnaSequences(string s) {
+        
+        vector<string> res;
+        int len = s.length();
+        if (len <= 10) return res;
+        
+        unordered_map<string, int> map;
+        
+        for (int i = 0; i < len - 9; i++) {
+            string seq = s.substr(i, 10);
+            if (map[seq] == 1) {
+                res.push_back(seq);
+            }
+            map[seq]++;
+        }
+        
+        return res;
+    }
+};

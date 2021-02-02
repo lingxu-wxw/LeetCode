@@ -1,0 +1,55 @@
+class Solution {
+public:
+    
+    //校验函数: i是行数, j是列数
+    bool isValidSudoku(vector<vector<char>>& board, int i, int j) {  
+        //判断同行冲突
+        for (int col = 0; col < 9; col++) 
+            if (col != j && board[i][j] == board[i][col]) return false;
+        
+        //判断同列冲突
+        for (int row = 0; row < 9; row++) 
+            if (row != i && board[i][j] == board[row][j]) return false;
+             
+        //判断同块冲突
+        for (int row = 3*(i/3); row < 3*(i/3)+3; row++){
+            for (int col = 3*(j/3); col < 3*(j/3)+3; col++){
+                if ((row != i || col != j) && board[i][j] == board[row][col]) return false;
+            }
+        }
+
+        return true;
+    }
+    
+    bool solveSudokuDFS(vector<vector<char>>& board, int i, int j) {
+        //遍历完成, 换行/换列
+        if (i == 9) return true;
+        if (j == 9) return solveSudokuDFS(board, i+1, 0);
+        
+        //方格已经有数字
+        if (board[i][j] != '.') 
+            return solveSudokuDFS(board, i, j+1);
+        
+        //遍历填进数字
+        for (int num = 1; num <= 9; num++){
+            board[i][j] = '0' + num;
+            
+            //当前格子有效且后面都有效, 返回真
+            if (isValidSudoku(board, i, j)){
+                if (solveSudokuDFS(board, i, j+1)) return true;
+            }
+            
+            board[i][j] = '.';
+        }
+        
+        //当前格子已经无解了, 必须倒退
+        return false;
+    }
+    
+    void solveSudoku(vector<vector<char>>& board) {
+        //总体思想: 从第一行开始, 一行一行遍历, DFS求解, 保证每一步都是正确的
+        if (board.empty() || board.size() != 9 || board[0].size() != 9) return;
+        
+        solveSudokuDFS(board, 0, 0);
+    }
+};

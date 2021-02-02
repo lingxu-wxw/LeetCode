@@ -1,0 +1,55 @@
+class Solution {
+public:
+  
+    // Input: 3
+    // Output:
+    // [
+    //  [ 1, 2, 3 ],
+    //  [ 8, 9, 4 ],
+    //  [ 7, 6, 5 ]
+    // ]
+
+    vector<vector<int>> generateMatrix(int n) {
+        //复用问题54
+        
+        if (n == 0) return {};
+        
+        vector<vector<int> > matrix(n, vector<int>(n, true));
+        
+        //矩阵当前的边缘
+        int up = 0, down = n-1, left = 0, right = n-1;
+        int count = 1;
+        
+        while (true) {
+            //向右
+            for (int i = left; i <= right; i++) {
+                matrix[up][i] = count;
+                count++;
+            }
+            if (++up > down) break;
+            
+            //向下
+            for (int i = up; i <= down; i++) {
+                matrix[i][right] = count;
+                count++;
+            }
+            if (--right < left) break;
+        
+            //向左
+            for (int i = right; i >= left; i--) {
+                matrix[down][i] = count;
+                count++;
+            }
+            if (--down < up) break;
+        
+            //向上
+            for (int i = down; i >= up; i--){
+                matrix[i][left] = count;
+                count++;
+            }
+            if (++left > right) break;
+        }
+        
+        return matrix;
+    }
+};

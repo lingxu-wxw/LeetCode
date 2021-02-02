@@ -1,0 +1,78 @@
+// Input: num = 1234567891
+// Output: "One Billion Two Hundred Thirty Four Million Five Hundred Sixty Seven Thousand Eight Hundred Ninety One"
+
+class Solution {
+public:
+    
+    string getHundredDigits(int num) {
+        // 取值范围：0 <= num < 1000
+        
+        vector<string> digits_s = {"", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine"};
+        vector<string> digits_t = {"Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", 
+                                   "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"};
+        vector<string> digits_d = {"", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"};
+        string HUNDRED = "Hundred";
+        
+        string res = "";
+        
+        int bit_h = num / 100;
+        int bit_d = (num / 10) % 10;
+        int bit_s = num % 10;
+        
+        // 处理百位
+        if (bit_h != 0) {
+            res = res + digits_s[bit_h] + " " + HUNDRED + " ";
+        }
+        // 处理十位和个位
+        if (bit_d == 0 && bit_s != 0) {
+            res = res + digits_s[bit_s] + " ";
+        }
+        else if (bit_d == 1) {
+            res = res + digits_t[bit_s] + " ";
+        } 
+        else if (bit_d > 1) {
+            // 处理个位
+            if (bit_s == 0) {
+                res = res + digits_d[bit_d] + " ";
+            } else {
+                res = res + digits_d[bit_d] + " " + digits_s[bit_s] + " ";
+            }
+        } 
+        
+        return res;
+    }
+    
+    
+    string numberToWords(int num) {
+        // 取值范围：-2,147,483,648 <= num <= 2,147,483,647
+        
+        if (num == 0) return "Zero";
+        
+        string BILLION = "Billion", MILLION = "Million", THOUSAND = "Thousand";
+        int factor_b = 1000000000, factor_m = 1000000, factor_t = 1000;
+        
+        string res = "";
+        int curnum;
+        
+        // 处理billion
+        if (num / factor_b) {
+            res = res + getHundredDigits(num / factor_b) + BILLION + " ";
+            num %= factor_b;
+        }
+        // 处理million
+        if (num / factor_m) {
+            res = res + getHundredDigits(num / factor_m) + MILLION + " ";
+            num %= factor_m;
+        }
+        // 处理thousand
+        if (num / factor_t) {
+            res = res + getHundredDigits(num / factor_t) + THOUSAND + " ";
+            num %= factor_t;
+        }
+        // 处理最后的余数
+        res = res + getHundredDigits(num); 
+        
+        // 去除末尾空格
+        return res.substr(0, res.size()-1);
+    }
+};

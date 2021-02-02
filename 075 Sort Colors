@@ -1,0 +1,30 @@
+class Solution {
+public:
+    
+    // Input: [2,0,2,1,1,0]
+    // Output: [0,0,1,1,2,2]
+    
+    void sortColors(vector<int>& nums) {
+        // 这道题的要求在于不给额外空间，要O(1)
+        // 只扫一遍，可以的左边存放0，右边存放2，不停的swap
+        
+        // 平移做法，ijk分别表示012可以存放的最靠前的位置，对于第i个数，移动前i-1个数的一部分使其符合标准
+        
+        int red = -1, white = -1, blue = -1;
+        
+        for(int i = 0; i < nums.size(); i++) {
+            if(nums[i] == 0) {
+                nums[++blue] = 2;    //2往后挪
+                nums[++white] = 1;   //1往后挪
+                nums[++red] = 0;     //0往后挪
+            }
+            else if (nums[i] == 1) {
+                nums[++blue] = 2;
+                nums[++white] = 1;
+            }
+            else {
+                nums[++blue] = 2;
+            }
+        }
+    }
+};

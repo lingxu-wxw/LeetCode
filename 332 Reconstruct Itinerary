@@ -1,0 +1,36 @@
+// Input: [["MUC", "LHR"], ["JFK", "MUC"], ["SFO", "SJC"], ["LHR", "SFO"]]
+// Output: ["JFK", "MUC", "LHR", "SFO", "SJC"]
+
+class Solution {
+public:
+    
+    void findItineraryDFS(string from, unordered_map<string, multiset<string>>& map, vector<string>& res) {
+        // 可能存在环，所以要用while
+        // corner case: [["JFK","KUL"],["JFK","NRT"],["NRT","JFK"]]
+        while (map[from].size() != 0) {
+            string to = *map[from].begin();
+            map[from].erase(map[from].find(to));
+            findItineraryDFS(to, map, res);
+        }
+        
+        // 找到当前一个没有next结点的点
+        res.push_back(from);
+        return;
+    }
+    
+    vector<string> findItinerary(vector<vector<string>>& tickets) {
+        // multiset默认是小顶堆，rbegin()最大（右），begin()最小
+        unordered_map<string, multiset<string>> map;
+        vector<string> res;
+        
+        for (auto ticket : tickets) {
+            map[ticket[0]].insert(ticket[1]);
+        }
+        
+        // always departs from JFK
+        findItineraryDFS("JFK", map, res);
+        
+        // 倒转
+        return vector<string>(res.rbegin(), res.rend());
+    }
+};

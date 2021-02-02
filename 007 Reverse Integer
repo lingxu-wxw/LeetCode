@@ -1,0 +1,18 @@
+class Solution {
+public:
+    //Input: 123
+    //Output: 321
+    
+    int reverse(int x) {
+        
+        long int res = 0;
+        
+        while (x != 0) {
+            res = 10 * res + x % 10;
+            x = x / 10;
+        }
+        
+        //判断是否越界
+        return (res < INT_MIN || res > INT_MAX) ? 0 : res;
+    }
+};

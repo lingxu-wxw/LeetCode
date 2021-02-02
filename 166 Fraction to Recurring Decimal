@@ -1,0 +1,63 @@
+// Input: numerator = 2, denominator = 1
+// Output: "2"
+
+// Input: numerator = 2, denominator = 3
+// Output: "0.(6)"
+
+class Solution {
+public:
+    // numerator and denominator 分子和分母
+    
+    string fractionToDecimal(int numerator, int denominator) {
+        
+        string res = "";
+        
+        // 处理分子0
+        if (numerator == 0) {
+            return "0";
+        }
+        
+        // 处理负数: 分子分母异号
+        if (numerator < 0 ^ denominator < 0) {
+            res += "-";
+        }
+        
+        // 分子分母转化为正数: 处理临界情况INT_MIN
+        long long n = numerator, d = denominator;
+        n = abs(n);
+        d = abs(d);
+        
+        // 整数部分: 商和余数
+        long long quotient = n / d;
+        long long remainder = n % d;
+        res += to_string(quotient);
+        
+        if (remainder == 0) {
+            return res;
+        } else {
+            res += ".";
+        }
+        
+        // 小数部分: 利用map记录每次计算后的余数
+        unordered_map<int, int> map;
+        
+        while (remainder) {
+            // 余数重复出现，循环小数
+            if (map.find(remainder) != map.end()) {
+                // 插入左右括号: 在index位置插入count个字符ch
+                res.insert(map[remainder], 1, '(');
+                res += ")";
+                break;
+            }
+            
+            // 记录余数在res中的位置
+            map[remainder] = res.size();
+            // 正常计算新的余数
+            remainder *= 10;
+            res += to_string(remainder / d);
+            remainder = remainder % d;
+        }
+        
+        return res;
+    }
+};

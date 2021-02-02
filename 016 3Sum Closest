@@ -1,0 +1,40 @@
+class Solution {
+public:
+    //Given array nums = [-1, 2, 1, -4], and target = 1.
+    //The sum that is closest to the target is 2. (-1 + 2 + 1 = 2).
+
+    int threeSumClosest(vector<int>& nums, int target) {
+        //复用3Sum问题
+        
+        int size = nums.size();
+        if (size < 3) return 0;
+        
+        int closesum = nums[0] + nums[1] + nums[2];
+        int mindiff = abs(closesum - target);
+        
+        //对数组进行排序
+        sort(nums.begin(), nums.end());
+        
+        for (int i = 0; i < size - 2; i++) {
+            
+            int left = i + 1, right = size - 1;
+
+            //近似2Sum问题
+            while (left < right){
+
+                int sum = nums[i] + nums[left] + nums[right];
+                int diff = abs(sum - target);
+                if (diff < mindiff) {
+                    mindiff = diff;
+                    closesum = sum;
+                }
+                
+                if (sum < target) left++;
+                else  right--;
+            }
+            
+        }
+        
+        return closesum;
+    }
+};

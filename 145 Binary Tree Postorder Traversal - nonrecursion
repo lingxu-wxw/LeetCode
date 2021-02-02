@@ -1,0 +1,54 @@
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    
+    public List<Integer> postorderTraversal(TreeNode root) {
+        // 后序遍历: 后序遍历左子树 -> 后序遍历右子树 -> 访问根结点
+        List<Integer> res = new ArrayList<Integer>();
+        
+        // state用于记录对应的右结点是否访问过
+        Stack<TreeNode> stack = new Stack<TreeNode>();
+		Stack<Integer> state = new Stack<Integer>();
+        
+        // 初始化栈
+        if (root != null) {
+            stack.push(root);
+            state.push(0);
+            root = root.left;
+        } else {
+            return res;
+        }
+        
+        // 深度优先搜索
+        while (!stack.isEmpty()) {
+            // 访问左结点
+            while (root != null) {
+                stack.push(root);
+                state.push(0);
+                root = root.left;
+            }
+            
+            // 访问右结点
+            if (state.peek() == 0) {
+                root = stack.peek().right;
+				state.pop();    //更改状态值 由0变1  
+				state.push(1);
+            } 
+            
+            // 访问根结点
+            else {
+                res.add(stack.pop().val);
+				state.pop();
+            }
+        }
+    
+        return res;
+    }
+}

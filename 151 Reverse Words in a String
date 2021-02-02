@@ -1,0 +1,22 @@
+// Input: s = "  hello world  "
+// Output: "world hello"
+// Explanation: Your reversed string should not contain leading or trailing spaces.
+
+class Solution {
+public:
+    string reverseWords(string s) {
+        if (s.empty()) {
+            return "";
+        }
+        
+        istringstream in(s);
+        string tmp, res;
+        
+        in >> res;
+        while (in >> tmp) {
+            res = tmp + " " + res;
+        }
+        
+        return res;
+    }
+};

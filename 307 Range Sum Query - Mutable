@@ -1,0 +1,62 @@
+// Given nums = [1, 3, 5]
+// sumRange(0, 2) -> 9
+// update(1, 2)
+// sumRange(0, 2) -> 8
+
+class NumArray {
+private:
+    int len; // 每个block的长度
+    vector<int> data, block;
+    
+public:
+    NumArray(vector<int>& nums) {
+        if (nums.empty()) return;
+
+        data = nums;
+        double root = sqrt(data.size()); // 平方根
+        int len = ceil(data.size() / root); // 向上取整，减少block长度
+        block.resize(len);
+        
+        for (int i = 0; i < data.size(); i++) {
+            block[i/len] += nums[i];   
+        }
+    }
+    
+    void update(int i, int val) {
+        int diff = val - data[i];
+        block[i/len] += diff;
+        data[i] = val;
+    }
+    
+    int sumRange(int i, int j) {
+        int sum = 0;
+        int lblock = i/len, rblock = j/len;
+        
+        // 全都在同一个block中
+        if (lblock == rblock) {
+            for (int k = i; k <= j; k++) {
+                sum += data[k];
+            }
+            return sum;
+        }
+        
+        // 不在一个block中
+        for (int k = i; k < (lblock+1)*len; k++) {
+            sum += data[k];
+        }
+        for (int k = lblock+1; k < rblock; k++) {
+            sum += block[k];
+        }
+        for (int k = rblock*len; k <= j; k++) {
+            sum += data[k];
+        }
+        return sum;
+    }
+};
+
+/**
+ * Your NumArray object will be instantiated and called as such:
+ * NumArray* obj = new NumArray(nums);
+ * obj->update(i,val);
+ * int param_2 = obj->sumRange(i,j);
+ */

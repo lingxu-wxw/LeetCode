@@ -1,0 +1,38 @@
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    
+    // Input: 1->2->3->3->4->4->5
+    // Output: 1->2->5
+    
+    ListNode* deleteDuplicates(ListNode* head) {
+        // 跟83题不同在于有可能head就没有了, 总之还是用dummy node
+        
+        if (! head || ! head->next) return head;
+        
+        ListNode* dummy = new ListNode(-1);
+        dummy->next = head;
+        ListNode* pre = dummy, *cur;
+        
+        while (pre->next) {
+            // 检测重复, 用cur记录
+            cur = pre->next;
+            while (cur->next && cur->val == cur->next->val) {
+                cur = cur->next;
+            }
+            // 如果后面有重复
+            if (cur != pre->next) pre->next = cur->next;
+            // 如果后面没有重复
+            else pre = cur;
+        }
+        
+        return dummy->next;
+    }
+};

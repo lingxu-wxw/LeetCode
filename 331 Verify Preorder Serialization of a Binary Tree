@@ -1,0 +1,36 @@
+// Input: "9,3,4,#,#,1,#,#,2,#,6,#,#"
+// Output: true
+
+// Input: "9,#,#,1"
+// Output: false
+
+class Solution {
+public:
+    bool isValidSerialization(string preorder) {
+        // 规律1：cnt(num) = cnt(#) - 1，最后一个是#
+        // 规律2：根节点为空，之后不能再有数字（从属于规律3）
+        // 规律3：在任意[0，len-1]内，cnt(num) >= cnt(#)
+        
+        vector<string> vec;
+        istringstream in(preorder);
+        string node = "";
+        
+        int cnt = 0;
+        
+        // 利用stringstream拆解
+        while (getline(in, node, ',')) {
+            vec.push_back(node);
+        }
+        
+        for (int i = 0; i < vec.size()-1; i++) {
+            if (vec[i] == "#") {
+                if (cnt <= 0) return false;
+                cnt--;
+            } else {
+                cnt++;
+            }
+        }
+        
+        return vec.back() == "#" && cnt == 0;
+    }
+};

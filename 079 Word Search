@@ -1,0 +1,82 @@
+class Solution {
+public:
+    
+    // Example:
+    //      board =
+    //      [
+    //        ['A','B','C','E'],
+    //        ['S','F','C','S'],
+    //        ['A','D','E','E']
+    //      ]
+    //      Given word = "ABCCED", return true.
+    //      Given word = "SEE", return true.
+    //      Given word = "ABCB", return false.
+    
+    // board的高和宽
+    int m, n, strlen;
+    
+    // 向上下左右格子移动, row/col
+    vector<vector<int>> step;
+    
+    // 格子访问标志, 不能将访问过的格子添加进去
+    vector<vector<bool>> visited;
+    
+    // 判断该坐标点在board范围内
+    bool inboard(int row, int col) {
+        return row >= 0 && row < m && col >= 0 && col < n; 
+    }
+    
+    // index表示已经找到匹配的字符数
+    bool existDFS(vector<vector<char>>& board, string word, int index, int row, int col) {
+        // 最后一个字符, 直接判断是否匹配
+        if (index == strlen - 1) {
+            return (board[row][col] == word[index]);
+        }
+             
+        // 如果当前格子匹配下一个字符
+        if (board[row][col] == word[index]) 
+        {
+            // 把当前格子设置为访问过
+            visited[row][col] = true;
+            
+            // 上下左右分别搜索
+            for (int i = 0; i < step.size(); i++) {
+                int newrow = row + step[i][0];
+                int newcol = col + step[i][1];
+                // 如果新格子在board内、没访问过、匹配, 返回真
+                if (inboard(newrow, newcol) && !visited[newrow][newcol] 
+                    && existDFS(board, word, index + 1, newrow, newcol)) {
+                    return true;
+                }
+            }
+            
+            // 走到这里说明路已经堵死了, 全部倒退
+            visited[row][col] = false;
+        }
+            
+        // 没有一致的匹配
+        return false;
+    }
+    
+    bool exist(vector<vector<char>>& board, string word) {
+        // 判空
+        if (board.empty() || board[0].empty()) return false;
+        
+        // 初始化全局变量
+        m = board.size(), n = board[0].size(), strlen = word.length();
+        step = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+        visited = vector<vector<bool> >(m, vector<bool>(n, false));  
+        
+        // 从任何一个格子开始匹配都是可以的
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                // 匹配成功
+                if (existDFS(board, word, 0, i, j))
+                    return true;
+            }
+        }
+        
+        // 没有一致的匹配
+        return false;
+    }
+};

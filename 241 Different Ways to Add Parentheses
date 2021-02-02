@@ -1,0 +1,45 @@
+// Input: "2*3-4*5"
+// Output: [-34, -14, -10, -10, 10]
+// Explanation: 
+// (2*(3-(4*5))) = -34 
+// ((2*3)-(4*5)) = -14 
+// ((2*(3-4))*5) = -10 
+// (2*((3-4)*5)) = -10 
+// (((2*3)-4)*5) = 10
+
+class Solution {
+public:
+    vector<int> diffWaysToCompute(string input) {
+        int len = input.length();
+        vector<int> res;
+        
+        // 递归，拆分成()?()的形式
+        for (int i = 0; i < len; i++) {
+            char c = input[i];
+            if (c == '+' || c == '-' || c == '*') {
+                vector<int> leftnums = diffWaysToCompute(input.substr(0, i));
+                vector<int> rightnums = diffWaysToCompute(input.substr(i+1));
+                
+                // 排列组合所有可能性
+                for (int j = 0; j < leftnums.size(); j++) {
+                    for (int k = 0; k < rightnums.size(); k++) {
+                        if (c == '+') {
+                            res.push_back(leftnums[j] + rightnums[k]);
+                        } else if (c == '-') {
+                            res.push_back(leftnums[j] - rightnums[k]);
+                        } else {
+                            res.push_back(leftnums[j] * rightnums[k]);
+                        }
+                    }
+                }
+            }
+        }
+        
+        // 递归返回条件，字符串是单个数字
+        if (res.empty()) {
+            res.push_back(stoi(input));
+        }
+        
+        return res;
+    }
+};

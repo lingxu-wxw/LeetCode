@@ -1,0 +1,33 @@
+class Solution {
+public:
+    
+    // Input: ["eat", "tea", "tan", "ate", "nat", "bat"],
+    // Output:
+    // [
+    //   ["ate","eat","tea"],
+    //   ["nat","tan"],
+    //   ["bat"]
+    // ]
+    
+    vector<vector<string>> groupAnagrams(vector<string>& strs) {
+        //主要想法: 用map映射str的有序排列
+        
+        unordered_map<string, vector<string>> anagrams;
+        
+        int size = strs.size();
+        for (string str : strs){
+            //有序排列
+            string t = str;
+            sort(t.begin(), t.end());
+            //map的优势: 没有这个元素的话就添加
+            anagrams[t].push_back(str);
+        }
+        
+        vector<vector<string>> res;
+        for (auto iter : anagrams){
+            res.push_back(iter.second);
+        }
+        
+        return res;
+    }
+};

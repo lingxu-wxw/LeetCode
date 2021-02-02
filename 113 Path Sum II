@@ -1,0 +1,48 @@
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+      
+    // Given the below binary tree and sum = 22,
+
+    //       5
+    //      / \
+    //     4   8
+    //    /   / \
+    //   11  13  4
+    //  /  \    / \
+    // 7    2  5   1
+    // Return:
+
+    // [
+    //    [5,4,11,2],
+    //    [5,8,4,5]
+    // ]
+    
+    void pathSumDFS(TreeNode* root, int sum, vector<int>& out, vector<vector<int>>& res) {
+        if (!root) return;
+        
+        out.push_back(root->val);
+        // 如果是叶子结点，且sum相等
+        if (!root->left && !root->right && root->val == sum)
+            res.push_back(out);
+  
+        pathSumDFS(root->left, sum - root->val, out, res);
+        pathSumDFS(root->right, sum - root->val, out, res);
+        out.pop_back();
+    }
+    
+    vector<vector<int>> pathSum(TreeNode* root, int sum) {
+        vector<vector<int>> res;
+        vector<int> out;
+        pathSumDFS(root, sum, out, res);
+        return res;
+    }
+};

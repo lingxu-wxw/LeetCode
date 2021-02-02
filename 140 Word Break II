@@ -1,0 +1,62 @@
+class Solution {
+    
+    // Input:
+    // s = "catsanddog"
+    // wordDict = ["cat", "cats", "and", "sand", "dog"]
+    // Output:
+    // [
+    //  "cats and dog",
+    //  "cat sand dog"
+    // ]
+    
+    public boolean hasWordBreak(String s, List<String> wordDict) {
+        // 判断是否存在可行解
+        int length = s.length();
+        boolean[] dp = new boolean[length+1];
+        dp[0] = true;
+        
+        for (int j = 1; j <= length; j++) {
+            for (int i = 0; i < j; i++) {
+                // str.substring 左闭右开
+                StringBuilder str = new StringBuilder(s.substring(i, j));
+                if (dp[i] && wordDict.contains(str.toString())) {
+                    dp[j] = true;
+                    break;
+                }
+            }
+        }
+        
+        return dp[length];
+    }
+    
+    public void wordBreakDFS(String s, int start, List<String> wordDict, String out, List<String> res) {
+        // 终止条件
+        if (start >= s.length()) {
+            res.add(out);
+            return;
+        }
+        
+        // 参考问题131，这题的主要区别在String不太好pop，而且现在能保证一定有解
+        StringBuilder str = new StringBuilder();
+        for (int i = start; i < s.length(); i++) {
+            str.append(s.charAt(i));
+            if (wordDict.contains(str.toString())) {
+                // Java的String不具备拼接功能，必须重新构造一个对象
+                String newout = new String();
+                if (out.length() == 0) newout = str.toString();
+                else newout = out + " " + str.toString();
+                wordBreakDFS(s, i+1, wordDict, newout, res);
+            }
+        }
+    }
+    
+    public List<String> wordBreak(String s, List<String> wordDict) {
+        List<String> res = new ArrayList<String>();
+        if (s == null || s.length() == 0) return res;
+        // 复用问题139
+        if (hasWordBreak(s, wordDict)) {
+            wordBreakDFS(s, 0, wordDict, "", res);
+        }
+        return res;
+    }
+}

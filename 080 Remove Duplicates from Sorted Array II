@@ -1,0 +1,32 @@
+class Solution {
+public:
+    
+    // Given nums = [1,1,1,2,2,3],
+    // Your function should return length = 5, with the first five elements of nums being 1, 1, 2, 2 and 3 respectively.
+    // It doesn't matter what you leave beyond the returned length.
+    
+    int removeDuplicates(vector<int>& nums) {
+        // 相似题目: 题目26
+        // count初始化为1，如果出现过一次重复，则count递减1，
+        // 下次再出现重复，快指针直接前进一步，如果这时候不是重复的，则count恢复1
+        
+        int size = nums.size();
+        if (size == 0) return 0;
+        
+        // count为计数符号
+        int pre = 0, cur = 1, count = 1;
+        
+        while (cur < size) {
+            if (nums[pre] == nums[cur] && count == 0) ++cur;
+            else {
+                if (nums[pre] == nums[cur]) count--;
+                else count = 1;
+                nums[++pre] = nums[cur++];
+            }
+        }
+        
+        //返回数组的前pre+1个
+        return pre + 1;
+    
+    }
+};

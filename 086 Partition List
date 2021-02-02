@@ -1,0 +1,47 @@
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    
+    // Input: head = 1->4->3->2->5->2, x = 3
+    // Output: 1->2->2->4->3->5
+    
+    ListNode* partition(ListNode* head, int x) {
+        // 想法: 把所有小于x的值提取为一个新链表，原链表里面删掉，最后拼起来
+        
+        if (!head || !head->next) return head;
+        
+        // 原链表和新链表
+        ListNode *dummy = new ListNode(-1);
+        dummy->next = head;
+        ListNode *newdummy = new ListNode(-1);
+        
+        ListNode *cur = dummy, *newcur = newdummy;
+        
+        // 从头到尾开始遍历
+        while (cur->next) {
+            // 需要进行操作
+            if (cur->next->val < x) {
+                // 顺序不能乱的
+                newcur->next = cur->next;
+                newcur = newcur->next;
+                cur->next = cur->next->next;
+                newcur->next = NULL;
+            }
+            // 不需要进行操作
+            else {
+                cur = cur->next;
+            }
+        }
+        
+        // 拼接
+        newcur->next = dummy->next;
+        return newdummy->next;
+    }
+};

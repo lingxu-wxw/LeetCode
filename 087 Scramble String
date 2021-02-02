@@ -1,0 +1,44 @@
+class Solution {
+public:
+    
+    // Input: s1 = "great", s2 = "rgeat"
+    // Output: true
+    
+    bool isScramble(string s1, string s2) {
+        // 特殊情况
+        if (s1.length() != s2.length()) return false;
+        if (s1 == s2) return true;
+        
+        // 动态规划，sceam[i][j][len]，表示s1从i开始，s2从j开始，长度len是不是scram
+        int n = s1.length();
+        vector<vector<vector<bool> > > scram (n, vector<vector<bool> >(n, vector<bool>(n + 1, false)));
+        
+        // 初始化len = 1情况
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (s1[i] == s2[j]) {
+                    scram[i][j][1] = true;
+                }
+            }
+        }
+        
+        // 长度迭代
+        for (int len = 2; len <= n; len++) {
+            // s1s2 index迭代
+            for (int i = 0; i <= n - len; i++) {
+                for (int j = 0; j <= n - len; j++) {
+                    // 分割点迭代
+                    for (int k = 1; k < len; k++) {
+                        // 如果前段对应前段scram 或 前段对应后段scram
+                        if ((scram[i][j][k] && scram[i+k][j+k][len-k]) 
+                            || (scram[i+k][j][len-k] && scram[i][j+len-k][k])) {
+                            scram[i][j][len] = true;
+                        }
+                    }
+                }
+            }
+        }
+        
+        return scram[0][0][n];
+    }
+};

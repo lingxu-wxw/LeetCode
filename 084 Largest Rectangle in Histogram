@@ -1,0 +1,28 @@
+class Solution {
+public:
+
+    // Input: [2,1,5,6,2,3]
+    // Output: 10
+
+    int largestRectangleArea(vector<int>& heights) {
+        // 方法一: 每找到一个局部峰值（只要当前的数字大于后面的一个数字，那么当前数字就看作一个局部峰值，跟前面的数字大小无关），然后向前遍历所有的值，算出共同的矩形面积，每次对比保留最大值。
+        
+        int size = heights.size();
+        
+        int maxarea = 0;
+        
+        for (int i = 0; i < size; i++) {
+            // 如果不是峰值
+            if (i + 1 < size && heights[i] <= heights[i+1]) continue; 
+            // 找到峰值，往前回看
+            int minedge = heights[i], area;
+            for (int j = i; j >= 0; j--) {
+                minedge = min(heights[j], minedge);
+                area = minedge * (i - j + 1);
+                maxarea = max(area, maxarea);
+            }    
+        }
+        
+        return maxarea;
+    }
+};

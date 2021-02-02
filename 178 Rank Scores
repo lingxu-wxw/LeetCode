@@ -1,0 +1,6 @@
+# Write your MySQL query statement below
+
+# 对于每一个分数，找出表中有多少个大于或等于该分数的不同的分数，然后按降序排列即可
+select Score,
+    (Select count(distinct Score) from Scores where Score >= s.Score) as Rank
+from Scores s order by Score desc;

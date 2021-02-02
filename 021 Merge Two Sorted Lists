@@ -1,0 +1,49 @@
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* mergeTwoLists(ListNode* l1, ListNode* l2) {
+        if (l1 == NULL) return l2;
+        if (l2 == NULL) return l1;
+        
+        //复制一份，安全起见
+        ListNode* pl1 = l1;
+        ListNode* pl2 = l2;
+        
+        ListNode* header = NULL;
+        ListNode* tailer = header;
+        ListNode* temp = NULL;
+        
+        while (pl1 != NULL && pl2 != NULL){
+            int val1 = pl1->val;
+            int val2 = pl2->val;
+            
+            int val = (val1 <= val2) ? val1 : val2;
+            temp = new ListNode(val);
+            
+            //如果首项为空
+            if (header == NULL){
+                header = temp;
+                tailer = header;
+            } else {
+                tailer->next = temp;
+                tailer = temp;
+            }
+            
+            pl1 = (val1 <= val2) ? pl1->next : pl1;
+            pl2 = (val1 <= val2) ? pl2 : pl2->next;
+        }
+        
+        //尾部直接衔接
+        if (pl1 != NULL) tailer->next = pl1;
+        else if (pl2 != NULL) tailer->next = pl2;
+        
+        return header;
+    }
+};
