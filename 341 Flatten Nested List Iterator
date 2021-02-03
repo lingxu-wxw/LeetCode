@@ -1,0 +1,71 @@
+// Input: [[1,1],2,[1,1]]
+// Output: [1,1,2,1,1]
+// Explanation: By calling next repeatedly until hasNext returns false, 
+//              the order of elements returned by next should be: [1,1,2,1,1].
+
+// Input: [1,[4,[6]]]
+// Output: [1,4,6]
+// Explanation: By calling next repeatedly until hasNext returns false, 
+//              the order of elements returned by next should be: [1,4,6].
+
+/**
+ * // This is the interface that allows for creating nested lists.
+ * // You should not implement it, or speculate about its implementation
+ * class NestedInteger {
+ *   public:
+ *     // Return true if this NestedInteger holds a single integer, rather than a nested list.
+ *     bool isInteger() const;
+ *
+ *     // Return the single integer that this NestedInteger holds, if it holds a single integer
+ *     // The result is undefined if this NestedInteger holds a nested list
+ *     int getInteger() const;
+ *
+ *     // Return the nested list that this NestedInteger holds, if it holds a nested list
+ *     // The result is undefined if this NestedInteger holds a single integer
+ *     const vector<NestedInteger> &getList() const;
+ * };
+ */
+
+class NestedIterator {
+private:
+    stack<NestedInteger> st;
+        
+public:
+    NestedIterator(vector<NestedInteger> &nestedList) {
+        // 逆序入栈
+        for (auto it = nestedList.rbegin(); it != nestedList.rend(); it++) {
+            st.push(*it);
+        }
+        solveTopElement();
+    }
+    
+    void solveTopElement() {
+        // 处理顶端是列表的情况
+        while (!st.empty() && !st.top().isInteger()) {
+            NestedInteger ni = st.top();
+            st.pop();
+            vector<NestedInteger> &list = ni.getList();
+            // 逆序入栈
+            for (auto it = list.rbegin(); it != list.rend(); it++) {
+                st.push(*it);
+            }
+        }
+    }
+    
+    int next() {
+        int integer = st.top().getInteger();
+        st.pop();
+        solveTopElement();
+        return integer;
+    }
+    
+    bool hasNext() {
+        return !st.empty();
+    }
+};
+
+/**
+ * Your NestedIterator object will be instantiated and called as such:
+ * NestedIterator i(nestedList);
+ * while (i.hasNext()) cout << i.next();
+ */
