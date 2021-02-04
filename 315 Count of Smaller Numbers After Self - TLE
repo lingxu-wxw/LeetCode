@@ -1,0 +1,35 @@
+// Input: nums = [5,2,6,1]
+// Output: [2,1,1,0]
+// Explanation:
+// To the right of 5 there are 2 smaller elements (2 and 1).
+// To the right of 2 there is only 1 smaller element (1).
+// To the right of 6 there is 1 smaller element (1).
+// To the right of 1 there is 0 smaller element.
+
+class Solution {
+public:
+    vector<int> countSmaller(vector<int>& nums) {
+        int size = nums.size();
+        vector<int> tmp, res(size, 0);
+        
+        for (int i = size-1; i >= 0; i--) {
+            int left = 0, right = tmp.size();
+            
+            // 获得nums[i]在新数组tmp中临时的位置（已插入的值都在nums[i]右边）
+            while (left < right) {
+                int mid = left + (right - left) / 2; // 防止int溢出
+                if (tmp[mid] >= nums[i]) {
+                    right = mid;
+                } else {
+                    left = mid + 1;
+                }
+            }
+            
+            // right是最终nums[i]插入tmp的位置
+            res[i] = right;
+            tmp.insert(tmp.begin() + right, nums[i]);
+        }
+        
+        return res;
+    }
+};
