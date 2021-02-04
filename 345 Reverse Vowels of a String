@@ -1,0 +1,25 @@
+// Input: "leetcode"
+// Output: "leotcede"
+
+class Solution {
+public:
+    
+    string reverseVowels(string s) {
+        unordered_set<char> vowels = {'a', 'e', 'i', 'o', 'u', 'A', 'E', 'I', 'O', 'U'};
+        int i = 0, j = s.size() - 1;
+        
+        while (i < j) {
+            // 不能用while, 防止没有元音的边界情况
+            if (!vowels.count(s[i])) i++;
+            if (!vowels.count(s[j])) j--;
+            if (vowels.count(s[i]) && vowels.count(s[j])) {
+                char tmp = s[i];
+                s[i] = s[j];
+                s[j] = tmp;
+                i++; j--;
+            }
+        }
+        
+        return s;
+     }
+};
