@@ -1,0 +1,70 @@
+// Input:
+// nums1 = [3, 4, 6, 5]
+// nums2 = [9, 1, 2, 5, 8, 3]
+// k = 5
+// Output:
+// [9, 8, 6, 5, 3]
+
+class Solution {
+public:
+    // 比较两个vector上每个位置的字母，当发现不同的且字典序小的，拥有该字母的vector判定为小
+    
+    // 从第i和第j位开始，判断nums1和nums2的大小关系
+    bool greater(vector<int>& nums1, int i, vector<int>& nums2, int j) {
+        while (i < nums1.size() && j < nums2.size() && nums1[i] == nums2[j]) {
+            i++; j++;
+        }
+        // nums2数量少遍历完了 或 nums1同位置更大
+        return (j == nums2.size()) || (i < nums1.size() && nums1[i] > nums2[j]);
+    }
+    
+    // 从数组nums中返回前k个最大的数字组成的数组，有序
+    vector<int> maxVector(vector<int>& nums, int k) {
+        // drop指需要从nums中扔掉的数量
+        int drop = nums.size() - k;
+        vector<int> res;
+        for (int num : nums) {
+            // 类似大顶堆
+            while (drop > 0 && !res.empty() && res.back() < num) {
+                res.pop_back();
+                drop--;
+            }
+            res.push_back(num);
+        }
+        res.resize(k);
+        return res;
+    }
+    
+    // 将nums1和nums2中最大的k个数字合并成新的数组，有序
+    vector<int> mergeVector(vector<int>& nums1, vector<int>& nums2, int k) {
+        vector<int> res(k);
+        int i = 0, j = 0;
+        // 合并数组
+        for (int r = 0; r < k; r++){
+            if (greater(nums1, i, nums2, j)) {
+                res[r] = nums1[i];
+                i++;
+            } else {
+                res[r] = nums2[j];
+                j++;
+            }
+        }
+        return res;
+    }
+    
+    vector<int> maxNumber(vector<int>& nums1, vector<int>& nums2, int k) {
+        int n1 = nums1.size(), n2 = nums2.size();
+        vector<int> res(k);
+        // i指在nums1中取的数字数量
+        for (int i = max(0, k-n2); i <= min(k, n1); i++){
+            auto v1 = maxVector(nums1, i);
+            auto v2 = maxVector(nums2, k-i);
+            vector<int> curres = mergeVector(v1, v2, k);
+            // 比较大小
+            if (greater(curres, 0, res, 0)) {
+                res = curres;
+            }
+        }
+        return res;
+    }
+};
