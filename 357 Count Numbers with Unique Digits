@@ -1,0 +1,34 @@
+// Input: 2
+// Output: 91 
+// Explanation: The answer should be the total numbers in the range of 0 ≤ x < 100, 
+//              excluding 11,22,33,44,55,66,77,88,99
+
+class Solution {
+public:
+    
+    // n位数中的unique digits
+    int countDigits(int n) {
+        if (n < 1) return 0;
+        if (n == 1) return 10;
+        
+        int res = 9;
+        for (int i = 9; i >= 11-n; i--) {
+            res *= i;
+        }
+        return res;
+    }
+    
+    int countNumbersWithUniqueDigits(int n) {
+        if (n == 0) return 1;
+        
+        int res = 0;
+        for (int i = 1; i <= n; i++) {
+            res += countDigits(i);
+        }
+        return res;
+    }
+};
+
+// n=1, 个位数 0-9，10个
+// n=2, 两位数部分，90-9=81个
+// n>=2, f(n) = 9*9*8*7*...*(9-n+2) (第一个9是个位数)
