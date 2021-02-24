@@ -1,0 +1,24 @@
+// Input: x = 3, y = 5, z = 4
+// Output: True
+
+// Input: x = 2, y = 6, z = 5
+// Output: False
+
+class Solution {
+public:
+    
+    // 用x升和y升的桶测量出z升水，最后有z升的水在一个或两个桶里
+    bool canMeasureWater(int x, int y, int z) {
+        return z == 0 || (x + y >= z && z % gcd(x, y) == 0);
+    }
+    
+    int gcd(int x, int y) {
+        return y == 0 ? x : gcd(y, x % y);
+    }
+};
+
+// x=3, y=5; fill y, y->x, empty x, y->x (x=2), fill y, y->x (y=4), empty x
+// 能够满足 z = m*x + n*y, m/n正表示fill次数，m/n负表示empty次数
+
+// 根据裴蜀定理，若a,b是整数,且gcd(a,b)=d，那么对于任意的整数x,y, ax+by都一定是d的倍数，特别地，一定存在整数x,y，使ax+by=d成立
+// 带入原问题中，即，mx + ny = d 的解为 d = gcd(x, y), z % d == 0即可
