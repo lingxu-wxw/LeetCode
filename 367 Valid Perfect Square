@@ -1,0 +1,20 @@
+class Solution {
+public:
+    
+    // 寻找完全平方数
+    bool isPerfectSquare(int num) {
+        if (num == 1) return true;
+        
+        long long x = num/2, tmp = x*x, numl = num;
+        while (tmp > numl) {
+            x = x/2;
+            tmp = x*x;
+        }
+        
+        for (long long i = x; i < 2*x; i++) {
+            if (i*i == numl) return true;
+        }
+        
+        return false;
+    }
+};
