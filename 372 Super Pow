@@ -1,0 +1,31 @@
+// Input: a = 2, b = [3]
+// Output: 8
+
+// Input: a = 2, b = [1,0]
+// Output: 1024
+
+class Solution {
+public:
+    int superPow(int a, vector<int>& b) {
+        if (a == 1) return 1;
+        
+        int size = b.size();
+        long long res = 1;
+        
+        // 按位来处理幂指数, 幂指数可以通过加法和乘法拆分
+        // 2^23 = (2^2)^10 * 2^3
+        for (int i = 0; i < size; i++) {
+            res = (pow(res, 10) * pow(a, b[i])) % 1337;
+        }
+        
+        return res;
+    }
+    
+    // 计算pow的方法参考 #050 Pow(x,n), 对幂指数进行折半
+    int pow(int x, int n) {
+        if (n == 0) return 1;
+        if (n == 1) return x % 1337;
+        
+        return (pow(x % 1337, n/2) * pow(x % 1337, n - n/2)) % 1337;
+    }
+};
