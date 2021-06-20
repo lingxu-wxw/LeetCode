@@ -1,0 +1,46 @@
+// Input: nums1 = [1,7,11], nums2 = [2,4,6], k = 3
+// Output: [[1,2],[1,4],[1,6]]
+// Explanation: The first 3 pairs are returned from the sequence: [1,2],[1,4],[1,6],[7,2],[7,4],[11,2],[7,6],[11,4],[11,6]
+
+class Solution {
+public:
+    struct cmp {
+        // 重载运算符，判断a能否放在b前面
+        bool operator()(const pair<int,int>& a, const pair<int,int>& b) {
+            return a.first + a.second < b.first + b.second;
+        }
+    };
+    
+    vector<vector<int>> kSmallestPairs(vector<int>& nums1, vector<int>& nums2, int k) {
+        // 优先级队列, top()返回最后面的元素，这里返回的是相加和最大的pair
+        priority_queue<pair<int,int>, vector<pair<int,int>>, cmp> pq;
+        
+        // 单个数组idx>k的元素肯定不会被用到
+        int size1 = min((int)nums1.size(), k);
+        int size2 = min((int)nums2.size(), k);
+        
+        vector<vector<int>> res;
+        
+        for (int i = 0; i < size1; i++) {
+            for (int j = 0; j < size2; j++) {
+                // 初始化阶段
+                if (pq.size() < k) {
+                    pq.push({nums1[i], nums2[j]});
+                }
+                // 修正阶段
+                else if (nums1[i] + nums2[j] < pq.top().first + pq.top().second) {
+                    pq.pop();
+                    pq.push({nums1[i], nums2[j]});
+                }
+            }
+        }
+        
+        while (!pq.empty()) {
+            res.push_back({pq.top().first, pq.top().second});
+            pq.pop();
+        }
+        
+        reverse(res.begin(), res.end());
+        return res;
+    }
+};
