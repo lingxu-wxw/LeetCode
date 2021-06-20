@@ -1,0 +1,54 @@
+// Input: nums = [1,2,3]
+// Output: [1,2]
+// Explanation: [1,3] is also accepted.
+
+class Solution {
+public:
+    vector<int> largestDivisibleSubset(vector<int>& nums) {
+        int len = nums.size();
+        if (len == 0) return {};
+        
+        // 将数组从小到大排序，方便遍历
+        sort(nums.begin(), nums.end(), greater<int>());
+        
+        // dp[i]表示如果nums[i]被选入，则当前有多少元素被选入
+        vector<int> dp(len, 1);
+        // 回溯，back[i]中存了上一个元素的idx，lastidx中是当前选入的最大idx
+        vector<int> back(len);
+        int lastidx = 0, maxlen = 1;
+        
+        vector<int> res;
+        
+        for (int i = 0; i < len; i++) {
+            back[i] = i;
+        }
+        
+        for (int i = 1; i < len; i++) {
+            for (int j = 0; j < i; j++) {
+                if (nums[j] % nums[i] != 0) {
+                    continue;
+                }
+                
+                // 更新dp[i]
+                if (dp[i] < dp[j] + 1) {
+                    back[i] = j;
+                    dp[i] = dp[j] + 1;
+                }
+                // 更新lastidx和maxlen
+                if (dp[i] > maxlen) {
+                    maxlen = dp[i];
+                    lastidx = i;
+                }
+            }
+        }
+        
+        // 回溯
+        while (back[lastidx] != lastidx) {
+            res.push_back(nums[lastidx]);
+            lastidx = back[lastidx];
+        }
+        res.push_back(nums[lastidx]);
+        
+        return res;
+    }
+};
