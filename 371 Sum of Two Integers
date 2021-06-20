@@ -1,0 +1,29 @@
+// Input: a = 2, b = 3
+// Output: 5
+
+class Solution {
+public:
+    int getSum(int a, int b) {
+        if (a == 0) return b;
+        if (b == 0) return a;
+        
+        // 位运算
+        // 异或运算是相同位为0，不同位为1，可以视作忽略进位的加法计算结果
+        // 与运算是两个1为1，其余为0，结果<<1后可以视作仅考虑仅为的加法计算结果
+        
+        // 进位标记
+        int carry = 0;
+    
+        while (b != 0) {
+            // 当a & b的结果是负数时，左移就会造成符号位的溢出
+            // 所以此处需要转换为unsigned int来避免可能出现的左移越界行为
+            auto carry = ((unsigned int) a&b) << 1;
+            
+            // 当没有进位出现时，循环结束
+            a = a ^ b;
+            b = carry;
+        }
+        
+        return a;
+    }
+};
