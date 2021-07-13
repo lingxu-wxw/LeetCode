@@ -1,0 +1,31 @@
+// Input: s = "babad"
+// Output: "bab"
+// Note: "aba" is also a valid answer.
+
+class Solution {
+public:
+    string longestPalindrome(string s) {
+        int size = s.size();
+        
+        int maxlen = 1, left = 0;
+        
+        // dp[i][j]表示字符串s[i]~s[j]是回文串
+        vector<vector<bool>> dp(size, vector<bool>(size));
+        
+        for (int j = 0; j < size; j++) {
+            for (int i = j; i >= 0; i--) {
+                // i=j时一定成立
+                // i!=j时，如果两头一样中间回文，那就是回文
+                // C++有保护机制，||如果前面满足了，后面就不会看了
+                dp[i][j] = (s[i] == s[j]) && (j-i<=2 || dp[i+1][j-1]);
+                
+                if (dp[i][j] && (j-i+1 > maxlen)) {
+                    maxlen = j-i+1;
+                    left = i;
+                }
+            }
+        }
+        
+        return s.substr(left, maxlen);
+    }
+};
