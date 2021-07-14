@@ -1,0 +1,44 @@
+// Input: 
+// order = "cba"
+// str = "abcd"
+// Output: "cbad"
+// Explanation: 
+// "a", "b", "c" appear in order, so the order of "a", "b", "c" should be "c", "b", and "a". 
+// Since "d" does not appear in order, it can be at any position in the returned string. "dcba", "cdba", "cbda" are also valid outputs.
+
+class Solution {
+public:
+    string customSortString(string order, string str) {
+        unordered_map<char, int> frequency;
+        string res = "";
+        
+        // 统计str中所有字符出现的频次
+        for (char c : str) {
+            if (frequency.count(c)) {
+                frequency[c]++;
+            } else {
+                frequency[c] = 1;
+            }
+        }
+        
+        // 去除order中出现的字符,多次出现就放在一起
+        for (char c : order) {
+            if (frequency.count(c)) {
+                for (int i = 0; i < frequency[c]; i++) {
+                    res.push_back(c);
+                }
+                frequency[c] = 0;
+            }
+        }
+        
+        for (auto iter : frequency) {
+            if (iter.second > 0) {
+                for (int i = 0; i < iter.second; i++) {
+                    res.push_back(iter.first);
+                }
+            }
+        }
+        
+        return res;
+    }
+};
