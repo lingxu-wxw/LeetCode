@@ -15,6 +15,7 @@ public:
             return root;
         }
         
+        // 在左半棵树找到p和q的common ancestor；如果没找到q，最后返回结果就是p；如果都没找到，返回结果就是null
         TreeNode* left = lowestCommonAncestor(root->left, p, q);
         TreeNode* right = lowestCommonAncestor(root->right, p, q);
         
