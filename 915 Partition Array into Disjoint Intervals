@@ -1,0 +1,35 @@
+// Input: nums = [5,0,3,8,6]
+// Output: 3
+// Explanation: left = [5,0,3], right = [8,6]
+
+// Input: nums = [1,1,1,0,6,12]
+// Output: 4
+// Explanation: left = [1,1,1,0], right = [6,12]
+
+class Solution {
+public:
+    int partitionDisjoint(vector<int>& nums) {
+        int size = nums.size();
+        
+        // 标记在遍历到i时（含i），之前的一个可能作为left最大值的元素
+        // 当出现一个小于val的元素，则disjoint至少要到idx(val)，则val=curmax
+        int val = nums[0];
+        // 标记在遍历到i时（含i），之前元素的最大值
+        int curmax = nums[0];
+        
+        // 切割点，如果nums[i]是最后一个在left的元素，则disjoint=i
+        int disjoint = 0;
+        
+        for (int i = 1; i < size; i++) {
+            curmax = max(curmax, nums[i]);
+            
+            if (nums[i] < val) {
+                val = curmax;
+                disjoint = i;
+            }
+        }
+        
+        // 返回的是left的size
+        return disjoint+1;
+    }
+};
