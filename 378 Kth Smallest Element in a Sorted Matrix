@@ -1,0 +1,23 @@
+// Input: matrix = [[1,5,9],[10,11,13],[12,13,15]], k = 8
+// Output: 13
+// Explanation: The elements in the matrix are [1,5,9,10,11,12,13,13,15], and the 8th smallest number is 13
+
+class Solution {
+public:
+    int kthSmallest(vector<vector<int>>& matrix, int k) {
+        // 优先队列是大顶堆，top()是最大的
+        priority_queue<int> pq;
+        
+        for (int i = 0; i < matrix.size(); i++) {
+            for (int j = 0; j < matrix[i].size(); j++) {
+                pq.push(matrix[i][j]);
+                // 当堆中的元素数量超过k时，就把最大的pop出去，保证堆中始终是k个元素
+                if (pq.size() > k) {
+                    pq.pop();
+                }
+            }
+        }
+        
+        return pq.top();
+    }
+};
