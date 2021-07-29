@@ -1,0 +1,53 @@
+// Input: mat = [[0,0,0],[0,1,0],[1,1,1]]
+// Output: [[0,0,0],[0,1,0],[1,2,1]]
+
+class Solution {
+public:
+    
+    bool nearBy(vector<vector<int>>& dist, int i, int j, int curnum) {
+        if (i-1 >= 0 && dist[i-1][j] == curnum) return true;
+        if (i+1 < dist.size() && dist[i+1][j] == curnum) return true;
+        if (j-1 >= 0 && dist[i][j-1] == curnum) return true;
+        if (j+1 < dist[i].size() && dist[i][j+1] == curnum) return true;
+        
+        return false;
+    }
+    
+    vector<vector<int>> updateMatrix(vector<vector<int>>& mat) {
+        int height = mat.size(), width = mat[0].size();
+        
+        vector<vector<int>> dist(height, vector<int>(width, -1));
+        
+        int curnum = 0;
+        bool isFinished = false;
+        
+        // 初始化
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                if (mat[i][j] == 0) {
+                    dist[i][j] = 0;
+                } 
+            }
+        }
+        
+        // 收敛遍历
+        while (!isFinished) {
+            isFinished = true;
+            
+            for (int i = 0; i < height; i++) {
+                for (int j = 0; j < width; j++) {
+                    if (dist[i][j] != -1) continue;
+                    
+                    if (nearBy(dist, i, j, curnum)) {
+                        dist[i][j] = curnum+1;
+                        isFinished = false;
+                    }
+                }
+            }
+            
+            curnum++;
+        }
+        
+        return dist;
+    }
+};
