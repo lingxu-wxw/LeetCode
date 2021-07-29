@@ -1,0 +1,60 @@
+// Input
+// ["RandomizedSet", "insert", "remove", "insert", "getRandom", "remove", "insert", "getRandom"]
+// [[], [1], [2], [2], [], [1], [2], []]
+// Output
+// [null, true, false, true, 2, true, false, 2]
+
+
+class RandomizedSet {
+public:
+    /** Initialize your data structure here. */
+    RandomizedSet() {
+        
+    }
+    
+    /** Inserts a value to the set. Returns true if the set did not already contain the specified element. */
+    bool insert(int val) {
+        // map查找val是否存在，val插入到nums队尾，然后更新map，都是O(1)的
+        if (map.count(val)) return false;
+        nums.push_back(val);
+        map[val] = nums.size()-1;
+        return true;
+    }
+    
+    /** Removes a value from the set. Returns true if the set contained the specified element. */
+    bool remove(int val) {
+        // map查找val是否存在，修改map使得val移到nums队尾，删除队尾
+        // 直接从数组中删除val是O(n)的
+        if (!map.count(val)) return false;
+        
+        // 将lastval和val换位置
+        int lastval = nums.back();
+        map[lastval] = map[val];
+        nums[map[lastval]] = lastval;
+        
+        nums.pop_back();
+        map.erase(val);
+        
+        return true;
+    }
+    
+    /** Get a random element from the set. */
+    int getRandom() {
+        return nums[rand() % nums.size()];
+    }
+
+private:
+    // vector数组存放set中已有的数字
+    vector<int> nums;
+    
+    // map表单存放 { 数值val - nums数组中的idx } 对
+    unordered_map<int, int> map;  
+};
+
+/**
+ * Your RandomizedSet object will be instantiated and called as such:
+ * RandomizedSet* obj = new RandomizedSet();
+ * bool param_1 = obj->insert(val);
+ * bool param_2 = obj->remove(val);
+ * int param_3 = obj->getRandom();
+ */
