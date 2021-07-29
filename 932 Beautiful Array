@@ -1,0 +1,48 @@
+// 答案不唯一
+// Input: n = 4
+// Output: [2,1,4,3]
+// Input: n = 5
+// Output: [3,1,2,5,4]
+
+class Solution {
+public:
+   
+    // 如果一个数组是漂亮数组，那么所有数字*2，也是一个漂亮数组，且组成部分全都是偶数
+    // 如果一个数组是漂亮数组，那么所有数字*2-1，也是一个漂亮数组，且组成部分全都是奇数
+    // 奇数+偶数 不会是 num*2，可以按照奇偶分堆
+    // 奇数内部或者偶数内部从之前的漂亮数组变幻而来，有一定继承关系
+    
+    vector<int> beautifulArray(int n) {
+        vector<int> res = {1};
+        
+        while (res.size() < n) {
+            vector<int> tmp;
+            
+            // 组成左半边奇数部分
+            for (int num : res) {
+                if (num*2-1 <= n) {
+                    tmp.push_back(num*2-1);
+                }
+            }
+            
+            // 组成右半边偶数部分
+            for (int num : res) {
+                if (num*2 <= n) {
+                    tmp.push_back(num*2);
+                }
+            }
+            
+            res = tmp;
+        }
+        
+        return res;
+    }
+};
+
+
+// N=9
+// {1}
+// {1,2}
+// {1,3,2,4}
+// {1,5,3,7,2,6,4,8}
+// {1,9,5,3,7,2,6,4,8}
