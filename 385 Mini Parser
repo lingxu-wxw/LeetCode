@@ -1,0 +1,98 @@
+// Input: s = "324"
+// Output: 324
+// Explanation: You should return a NestedInteger object which contains a single integer 324.
+
+// Input: s = "[123,[456,[789]]]"
+// Output: [123,[456,[789]]]
+// Explanation: Return a NestedInteger object containing a nested list with 2 elements:
+// 1. An integer containing value 123.
+// 2. A nested list containing two elements:
+//     i.  An integer containing value 456.
+//     ii. A nested list with one element:
+//         a. An integer containing value 789
+
+/**
+ * // This is the interface that allows for creating nested lists.
+ * // You should not implement it, or speculate about its implementation
+ * class NestedInteger {
+ *   public:
+ *     // Constructor initializes an empty nested list.
+ *     NestedInteger();
+ *
+ *     // Constructor initializes a single integer.
+ *     NestedInteger(int value);
+ *
+ *     // Return true if this NestedInteger holds a single integer, rather than a nested list.
+ *     bool isInteger() const;
+ *
+ *     // Return the single integer that this NestedInteger holds, if it holds a single integer
+ *     // The result is undefined if this NestedInteger holds a nested list
+ *     int getInteger() const;
+ *
+ *     // Set this NestedInteger to hold a single integer.
+ *     void setInteger(int value);
+ *
+ *     // Set this NestedInteger to hold a nested list and adds a nested integer to it.
+ *     void add(const NestedInteger &ni);
+ *
+ *     // Return the nested list that this NestedInteger holds, if it holds a nested list
+ *     // The result is undefined if this NestedInteger holds a single integer
+ *     const vector<NestedInteger> &getList() const;
+ * };
+ */
+class Solution {
+public:
+    NestedInteger deserialize(string s) {
+        if (s.length() == 0) return NestedInteger();
+        if (s[0] != '[') return NestedInteger(atoi(s.c_str()));
+        
+        stack<NestedInteger> stack;
+        int startidx = 0;   // 当前NestedInteger已经处理到的idx位置
+        
+        
+        for (int i = 0; i < s.length(); i++) {
+            char c = s[i];
+            
+            // 新的NestedInteger
+            if (c == '[') {
+                NestedInteger ni = NestedInteger();
+                stack.push(ni);
+                startidx = i+1;
+            }
+            // NestedInteger中段
+            else if (c == ',') {
+                if (i != startidx) {
+                    // 切割出来一个数字
+                    string str = s.substr(startidx, i);
+                    stack.top().add(NestedInteger(atoi(str.c_str())));
+                }
+                startidx = i+1;
+            }
+            // NestedInteger结束
+            else if (c == ']') {
+                if (i != startidx) {
+                    string str = s.substr(startidx, i);
+                    stack.top().add(NestedInteger(atoi(str.c_str())));
+                }
+                startidx = i+1;
+                
+                // 处理完成的NestedInteger，考虑嵌套和外层两种情况
+                NestedInteger ni = stack.top();
+                stack.pop();
+                if (stack.empty()) {
+                    stack.push(ni);
+                } else {
+                    stack.top().add(ni);
+                }
+            }
+            // 中间的数字，含正负号
+            else {
+                continue;
+            }
+        }
+        
+        
+        return stack.top();
+    }
+};
+
