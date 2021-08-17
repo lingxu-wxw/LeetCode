@@ -1,0 +1,51 @@
+// Input: s = "aaabb", k = 3
+// Output: 3
+// Explanation: The longest substring is "aaa", as 'a' is repeated 3 times.
+
+// Input: s = "ababbc", k = 2
+// Output: 5
+// Explanation: The longest substring is "ababb", as 'a' is repeated 2 times and 'b' is repeated 3 times.
+
+class Solution {
+public:
+    int longestSubstring(string s, int k) {
+        int len = s.length();
+        
+        // 遍历用的idx
+        int i = 0;
+        
+        int maxlen = 0;
+        
+        while (i + k <= len) {
+            // 数组用于标记当前遍历的字符串中每个字母出现的次数
+            // mask用位运算标记当前字符串中每个字母出现次数是否满足0或>=k
+            int map[26] = {0};
+            int mask = 0;
+            
+            // 在当前循环中，满足条件的substring的最后一位idx
+            int lastidx = i;
+            
+            for (int j = i; j < len; j++) {
+                int letter = s[j] - 'a';
+                map[letter]++;
+                
+                // 更新mask，判断是否满足条件
+                if (map[letter] < k) {
+                    mask |= 1 << letter;
+                } else {
+                    mask &= (~(1 << letter));
+                }
+                
+                // 满足条件k
+                if (mask == 0) {
+                    maxlen = max(maxlen, j-i+1);
+                    lastidx = j;
+                }
+            }
+            
+            i = lastidx + 1;
+        }
+        
+        return maxlen;
+    }
+};
