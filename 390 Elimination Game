@@ -1,0 +1,30 @@
+class Solution {
+public:
+    
+    int lastRemainingDFS(int n, bool left2right) {
+        if (n == 1) {
+            return 1;
+        }
+        
+        if (left2right) {
+            return 2 * lastRemainingDFS(n/2, false);
+        } else {
+            return 2 * lastRemainingDFS(n/2, true) - 1 + n%2;      // 偶数减一，奇数不减
+        }
+    }
+    
+    int lastRemaining(int n) {
+        return lastRemainingDFS(n, true);
+    }
+};
+
+// n=9  1,2,3,4,5,6,7,8,9, left 2*3 = 6     1,2,3,4,5,6,7,8,9      
+// n=4  1,2,3,4, right          2*2-1 = 3   2,4,6,8
+// n=2  1,2, left               2*1 = 2     2,6
+// n=1  1, right                1           6
+
+// n=15 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15, left   2*4 = 8     1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
+// n=7  1,2,3,4,5,6,7, right                        2*2 = 4     2,4,6,8,10,12,14
+// n=3  1,2,3, left                                 2*1 = 2     4,8,12
+// n=2  1,2, right                                  2*1-1 = 1   8
+// n=1  1, left                                     1
