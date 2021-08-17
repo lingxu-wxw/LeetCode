@@ -1,0 +1,55 @@
+// Input: input = "dir\n\tsubdir1\n\t\tfile1.ext\n\t\tsubsubdir1\n\tsubdir2\n\t\tsubsubdir2\n\t\t\tfile2.ext"
+// Output: 32
+// Explanation: We have two files:
+// "dir/subdir1/file1.ext" of length 21
+// "dir/subdir2/subsubdir2/file2.ext" of length 32.
+// We return 32 since it is the longest absolute path to a file.
+
+class Solution {
+public:    
+    
+    // 将input按照\n切分成数组
+    vector<string> split(string& input) {
+        vector<string> res;
+        stringstream ss(input);
+        string str;
+        
+        while (getline(ss, str)) {
+            res.push_back(str);
+        }
+        
+        return res;
+    }
+    
+    // 获取当前字符串的level
+    int getlevel(string& s) {
+        int level = 0;
+        
+        while (s[level] == '\t') {
+            level++;
+        }
+        
+        return level;
+    }
+    
+    
+    int lengthLongestPath(string input) {      
+        vector<string> fs = split(input);
+        vector<int> curlen(100, 0);
+        int maxlen = 0;
+        
+        for (auto name : fs) {
+            int level = getlevel(name); // int level = name.get_last_of('t')+1
+            
+            // 更新当前层数的长度，覆盖没关系
+            curlen[level+1] = curlen[level] + name.length() - level + 1;   // +1加的是dir/file.txt的'/'
+            
+            // 如果是文件
+            if (name.find('.') != -1) {
+                maxlen = max(maxlen, curlen[level+1] - 1);
+            }            
+        }
+        
+        return maxlen;
+    }
+};
