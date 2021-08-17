@@ -1,0 +1,36 @@
+// Input: n = 13
+// Output: [1,10,11,12,13,2,3,4,5,6,7,8,9]
+
+class Solution {
+public:
+    
+    // 辞典序
+    vector<int> lexicalOrder(int n) {
+        
+        vector<int> res;
+        int num = 1;
+        
+        for (int i = 0; i < n; i++) {
+            res.push_back(num);
+            
+            // e.g. 1,10,100
+            if (num * 10 <= n) {
+                num = num * 10;
+            }
+            else {
+                // e.g. 1,10,11,12,13,2
+                if (num >= n) {
+                    num = num / 10;
+                }
+                // e.g. 1,10,11,12
+                num++;
+                // e.g. 1,10,100,101,...,109,11,110
+                while (num % 10 == 0) {
+                    num = num / 10;
+                }
+            }
+        }
+        
+        return res;
+    }
+};
