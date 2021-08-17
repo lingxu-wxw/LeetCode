@@ -1,0 +1,50 @@
+class Solution {
+public:
+    
+    int integerReplacementDFS(unsigned int n) {
+        if (n == 1) {
+            return 0;
+        }
+        
+        if (n % 2 == 0) {
+            return integerReplacementDFS(n/2) + 1; 
+        } else {
+            return min(integerReplacementDFS(n+1), integerReplacementDFS(n-1)) + 1;    
+        }
+    }
+    
+    int integerReplacement(int n) {
+        // static_cast 强制类型转换，应对极端情况 n=INT_MAX
+        return integerReplacementDFS(static_cast<unsigned int>(n));
+    }
+    
+    /* 错误解法
+    int integerReplacement(int n) {
+        
+        int cnt = 0;
+        
+        while (n != 1) {
+            // 偶数
+            if (n % 2 == 0) {
+                n = n/2;
+            }
+            // 奇数：寻找最近的2次幂
+            else {
+                double lg = log(n)/log(2);  // c++提供以e为底的log()和以10为底的log10()
+                double ceil = std::ceil(lg) - lg;   // 向上取整
+                double floor = lg - std::floor(lg); // 向下取整
+                
+                if (ceil < floor) {
+                    n++;
+                } else {
+                    n--;
+                }
+            }
+            
+            cnt++;
+        }
+        
+        return cnt;
+    }
+    */
+};
