@@ -1,0 +1,54 @@
+// Input: s = "3[a]2[bc]"
+// Output: "aaabcbc"
+
+class Solution {
+public:
+    
+    // i是本次迭代的起始idx, 传引用，在迭代中修改
+    string decodeStringDFS(string s, int& i) {
+        
+        string res = "";
+        
+        // 处理一个[]结构
+        while (i < s.length() && s[i] != ']') {
+            
+            // 单个字母
+            if (s[i] < '0' || s[i] > '9') {
+                res += s[i];
+                i++;
+            } 
+
+            else {
+                // 次数k
+                int k = 0;
+                while (s[i] >= '0' && s[i] <= '9') {
+                    k = k*10 + (s[i]-'0');
+                    i++;
+                }
+                
+                // 跳过'['
+                i++;
+                
+                // 递归[]结构
+                string str = decodeStringDFS(s, i);
+                
+                // 跳过']'
+                i++;
+                
+                // 重复k次[]结构
+                while (k > 0) {
+                    res += str;
+                    k--;
+                }
+            }
+        }
+        
+        return res;
+    }
+    
+    
+    string decodeString(string s) {
+        int i = 0;
+        return decodeStringDFS(s, i);
+    }
+};
