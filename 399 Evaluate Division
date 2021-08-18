@@ -1,0 +1,74 @@
+// Input: equations = [["a","b"],["b","c"]], values = [2.0,3.0], queries = [["a","c"],["b","a"],["a","e"],["a","a"],["x","x"]]
+// Output: [6.00000,0.50000,-1.00000,1.00000,-1.00000]
+// Explanation: 
+// Given: a / b = 2.0, b / c = 3.0
+// queries are: a / c = ?, b / a = ?, a / e = ?, a / a = ?, x / x = ?
+// return: [6.0, 0.5, -1.0, 1.0, -1.0 ]
+
+class Solution {
+public:
+    
+    // Numerator 分子，denominator 分母
+    // 分母在传递过程中不变
+    double calcEquationDFS(string numerator, string denominator, unordered_map<string, unordered_map<string, double>>& map, unordered_set<string>& visited) {
+        
+        // 步骤三：深度优先搜索
+        
+        // 终止条件
+        if (numerator == denominator) {
+            return 1.0;
+        }
+        
+        visited.insert(numerator);       
+        unordered_map<string, double> m = map[numerator];
+
+        // 持续迭代寻找分母
+        for (auto iter : m) {
+            if (visited.count(iter.first)) {
+                continue;
+            }
+
+            double res = calcEquationDFS(iter.first, denominator, map, visited);  // a/b = a/c * c/b
+            if (res != -1.0) {
+                return res * iter.second;
+            }
+        }
+           
+        return -1.0;
+    }
+    
+    
+    vector<double> calcEquation(vector<vector<string>>& equations, vector<double>& values, vector<vector<string>>& queries) {
+        
+        // 步骤一：生成equations邻接表
+        
+        unordered_map<string, unordered_map<string, double>> map;   // 记录各个字符串之间的相除关系
+        
+        for (int i = 0; i < equations.size(); i++) {
+            // a/b 和 b/a   
+            // 双重map的初始化要一步到位
+            map[equations[i][0]][equations[i][1]] = values[i];
+            map[equations[i][1]][equations[i][0]] = 1.0 / values[i];
+        }
+        
+        // 步骤二：计算queries结果
+        
+        vector<double> output;
+        
+        for (int i = 0; i < queries.size(); i++) {
+            // 特殊情况，不存在字符串
+            if (!map.count(queries[i][0]) || !map.count(queries[i][1])) {
+                output.push_back(-1.0);
+                continue;
+            }
+            
+            unordered_set<string> visited;  // 记录出现过的字符串，每次都要新建
+            
+            // 深度优先搜索
+            double res = calcEquationDFS(queries[i][0], queries[i][1], map, visited);
+            output.push_back(res);
+        }
+        
+        return output;
+    }
+};
