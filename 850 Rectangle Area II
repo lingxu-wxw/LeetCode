@@ -1,0 +1,72 @@
+// We are given a list of (axis-aligned) rectangles. Each rectangle[i] = [xi1, yi1, xi2, yi2] , 
+// where (xi1, yi1) are the coordinates of the bottom-left corner, and (xi2, yi2) are the coordinates of the top-right corner of the ith rectangle.
+// Find the total area covered by all rectangles in the plane. Since the answer may be too large, return it modulo 109 + 7.
+
+// Input: rectangles = [[0,0,2,2],[1,0,2,3],[1,0,3,1]]
+// Output: 6
+// Explanation: As illustrated in the picture.
+
+class Solution {
+public:
+    
+    // 通过递归的方法，按照遍历的顺序，将所有矩形切分成为不互相重叠的小块，最后来计算面积
+    // rect[x左下，y左下，x右上，y右上]
+    
+    void rectangleAreaDFS(vector<vector<int>>& pieces, vector<int> currect, int idx) {
+        if (idx >= pieces.size()) {
+            pieces.push_back(currect);
+            return;
+        }
+        
+        // 将currect与pieces中的所有小块矩形都做处理
+        vector<int> rect = pieces[idx];
+        
+        // case 0: 没有重叠的部分，继续遍历pieces中的下一个
+        // case 0如果满足就不需要判断后面的case的，可以提前返回；但case 1-4是可以同时出现的
+        if (currect[2] <= rect[0] || currect[0] >= rect[2] || currect[3] <= rect[1] || currect[1] >= rect[3]) {
+            rectangleAreaDFS(pieces, currect, idx+1);
+            return;
+        }
+        
+        // case 1: 在rect左边可以切出小块矩形
+        if (currect[0] < rect[0]) {
+            rectangleAreaDFS(pieces, {currect[0], currect[1], rect[0], currect[3]}, idx+1);
+        }
+        
+        // case 2: 在rect右边可以切出小块矩形
+        if (currect[2] > rect[2]) {
+            rectangleAreaDFS(pieces, {rect[2], currect[1], currect[2], currect[3]}, idx+1);
+        }
+        
+        // case 3: 在rect下边可以切出小块矩形，注意不要和case 1/2有重叠
+        if (currect[1] < rect[1]) {
+            rectangleAreaDFS(pieces, {max(currect[0],rect[0]), currect[1], min(currect[2],rect[2]), rect[1]}, idx+1);
+        }
+        
+        // case 4: 在rect上边可以切出小块矩形，注意不要和case 1/2有重叠
+        if (currect[3] > rect[3]) {
+            rectangleAreaDFS(pieces, {max(currect[0],rect[0]), rect[3], min(currect[2],rect[2]), currect[3]}, idx+1);
+        }
+        
+    }
+    
+    int rectangleArea(vector<vector<int>>& rectangles) {
+        
+        long long res = 0, M = 1e9 + 7;
+        
+        // 存放所有零碎不重叠的小块矩形
+        vector<vector<int>> pieces;
+        
+        // 遍历所有矩形块
+        for (auto rect : rectangles) {
+            rectangleAreaDFS(pieces, rect, 0);
+        }
+        
+        // 计算矩形总面积
+        for (auto piece : pieces) {
+            res = (res + (long long)(piece[2]-piece[0]) * (long long)(piece[3]-piece[1])) % M;
+        }
+        
+        return res;
+    }
+};
