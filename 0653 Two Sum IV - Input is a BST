@@ -1,0 +1,43 @@
+// Input: root = [5,3,6,2,4,null,7], k = 9
+// Output: true
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    
+    void findTargetDFS(TreeNode* node, int k, unordered_set<int>& set, bool& hasfound) {
+        if (node == NULL) return;
+        
+        if (set.count(k - node->val)) {
+            hasfound = true;
+            return;
+        } 
+        
+        set.insert(node->val);
+        
+        findTargetDFS(node->left, k, set, hasfound);
+        if (hasfound) return;
+        
+        findTargetDFS(node->right, k, set, hasfound);
+        if (hasfound) return;
+    }
+    
+    bool findTarget(TreeNode* root, int k) {
+        unordered_set<int> set;
+        bool hasfound = false;
+        
+        findTargetDFS(root, k, set, hasfound);
+        
+        return hasfound;
+    }
+};
