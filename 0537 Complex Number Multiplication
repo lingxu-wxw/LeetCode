@@ -1,0 +1,31 @@
+// Input: num1 = "1+1i", num2 = "1+1i"
+// Output: "0+2i"
+// Explanation: (1 + i) * (1 + i) = 1 + i2 + 2 * i = 2i, and you need convert it to the form of 0+2i.
+
+class Solution {
+public:
+    string complexNumberMultiply(string num1, string num2) {
+        vector<int> vec1, vec2;
+        
+        vector<int> res(2, 0);
+        string strres = "";
+        
+        // 分割实数虚数
+        int idx1 = num1.find("+");
+        vec1.push_back(atoi(num1.substr(0, idx1).c_str()));
+        vec1.push_back(atoi(num1.substr(idx1+1, num1.length()).c_str()));
+        
+        int idx2 = num2.find("+");
+        vec2.push_back(atoi(num2.substr(0, idx2).c_str()));
+        vec2.push_back(atoi(num2.substr(idx2+1, num2.length()).c_str()));
+        
+        // 计算结果
+        res[0] = vec1[0] * vec2[0] - vec1[1] * vec2[1];
+        res[1] = vec1[0] * vec2[1] + vec1[1] * vec2[0];
+        
+        // 组装结果
+        strres = to_string(res[0]) + "+" + to_string(res[1]) + "i";
+
+        return strres;
+    }
+};
