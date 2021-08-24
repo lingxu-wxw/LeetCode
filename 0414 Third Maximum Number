@@ -1,0 +1,32 @@
+// Input: nums = [2,2,3,1]
+// Output: 1
+// Explanation: Note that the third maximum here means the third maximum distinct number.
+// Both numbers with value 2 are both considered as second maximum.
+
+class Solution {
+public:
+    int thirdMax(vector<int>& nums) {
+        
+        int size = nums.size();
+        
+        // 避免数组中就有INT_MIN
+        long max = LONG_MIN, sndmax = LONG_MIN, trdmax = LONG_MIN;
+    
+        for (int num : nums) {
+            if (num > max) {
+                trdmax = sndmax;
+                sndmax = max;
+                max = num;
+            }
+            else if (num > sndmax && num < max) {
+                trdmax = sndmax;
+                sndmax = num;
+            }
+            else if (num > trdmax && num < sndmax) {
+                trdmax = num;
+            }
+        }
+        
+        return (trdmax == LONG_MIN) ? max : trdmax;
+    }
+};
