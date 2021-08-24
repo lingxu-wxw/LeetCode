@@ -1,0 +1,66 @@
+// Input: heights = [[1,2,2,3,5],[3,2,3,4,4],[2,4,5,3,1],[6,7,1,4,5],[5,1,1,2,4]]
+// Output: [[0,4],[1,3],[1,4],[2,2],[3,0],[3,1],[4,0]]
+
+class Solution {
+public:
+    
+    // m == heights.length
+    // n == heights[r].length
+    
+    void pacificAtlanticDFS(vector<vector<int>>& heights, vector<vector<bool>>& visited, int i, int j, int lastheight) {
+        int m = heights.size(), n = heights[0].size();
+        
+        // 数组越界，已经访问过，或者不如之前遍历的海拔高
+        if (i < 0 || i >= m || j < 0 || j >= n) {
+            return;
+        }
+        if (visited[i][j] || heights[i][j] < lastheight) {
+            return;
+        }
+        
+        visited[i][j] = true;
+        
+        // 继续向四周遍历
+        pacificAtlanticDFS(heights, visited, i, j-1, heights[i][j]);
+        pacificAtlanticDFS(heights, visited, i, j+1, heights[i][j]);
+        pacificAtlanticDFS(heights, visited, i+1, j, heights[i][j]);
+        pacificAtlanticDFS(heights, visited, i-1, j, heights[i][j]);
+    }
+
+    
+    vector<vector<int>> pacificAtlantic(vector<vector<int>>& heights) {
+        if (heights.empty() || heights[0].empty()) return {};
+        
+        int m = heights.size(), n = heights[0].size();
+        
+        // 从边缘开始遍历
+        vector<vector<bool>> pacific(m, vector<bool>(n, false));
+        vector<vector<bool>> atlantic(m, vector<bool>(n, false));
+        
+        vector<vector<int>> res;
+        
+        // 左边太平洋，右边大西洋
+        for (int i = 0; i < m; i++) {
+            pacificAtlanticDFS(heights, pacific, i, 0, INT_MIN);
+            pacificAtlanticDFS(heights, atlantic, i, n-1, INT_MIN);
+        }
+        
+        // 上边太平洋，下边大西洋
+        for (int j = 0; j < n; j++) {
+            pacificAtlanticDFS(heights, pacific, 0, j, INT_MIN);
+            pacificAtlanticDFS(heights, atlantic, m-1, j, INT_MIN);
+        }
+        
+        // 整理结果
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                // 两边都遍历到过
+                if (pacific[i][j] && atlantic[i][j]) {
+                    res.push_back({i,j});
+                }
+            }
+        }
+        
+        return res;
+    }
+};
