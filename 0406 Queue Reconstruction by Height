@@ -1,0 +1,32 @@
+// Input: people = [[7,0],[4,4],[7,1],[5,0],[6,1],[5,2]]
+// Output: [[5,0],[7,0],[5,2],[6,1],[4,4],[7,1]]
+// Explanation:
+// Person 0 has height 5 with no other people taller or the same height in front.
+// Person 1 has height 7 with no other people taller or the same height in front.
+// Person 2 has height 5 with two persons taller or the same height in front, which is person 0 and 1.
+// Person 3 has height 6 with one person taller or the same height in front, which is person 1.
+// Person 4 has height 4 with four people taller or the same height in front, which are people 0, 1, 2, and 3.
+// Person 5 has height 7 with one person taller or the same height in front, which is person 1.
+// Hence [[5,0],[7,0],[5,2],[6,1],[4,4],[7,1]] is the reconstructed queue.
+
+class Solution {
+public:
+    vector<vector<int>> reconstructQueue(vector<vector<int>>& peoples) {
+        // 将数组按照指定规则排序
+        // return的内容表示，当满足如下条件时，a排在b前面
+        sort(peoples.begin(), peoples.end(), [](vector<int>& a, vector<int>& b) {
+            return (a[0] > b[0]) || ((a[0] == b[0]) && (a[1] < b[1]));
+        });
+             
+        // 数值越大的优先处理，数值相同的第二位小的优先处理
+        // 这样后遍历到的people的height一定小于等于已经在res里的height
+        
+        vector<vector<int>> res;
+        
+        for (auto people : peoples) {
+            res.insert(res.begin()+people[1], people);
+        }
+        
+        return res;
+    }
+};
