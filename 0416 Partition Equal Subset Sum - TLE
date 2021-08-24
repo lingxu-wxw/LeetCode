@@ -1,0 +1,41 @@
+// Input: nums = [1,5,11,5]
+// Output: true
+// Explanation: The array can be partitioned as [1, 5, 5] and [11].
+
+class Solution {
+public:
+    
+    // hasfound=1表示找到
+    bool canPartitionDFS(vector<int>& nums, vector<bool>& visited, int target, int start) {
+        if (target < 0) return false;
+        if (target == 0) return true;
+        
+        for (int i = start; i < nums.size(); i++) {
+            visited[i] = true;
+            if (canPartitionDFS(nums, visited, target-nums[i], i+1)) {
+                return true;
+            }
+            visited[i] = false;
+        }
+        
+        return false;
+    }
+    
+    bool canPartition(vector<int>& nums) {
+        int size = nums.size();
+        
+        // 求和同时筛选
+        int sum = 0;
+        for (int num : nums) {
+            sum += num;
+        }
+        if (sum % 2 != 0) {
+            return false;
+        }
+        
+        // 在vector中判断是否有subset和为sum
+        vector<bool> visited(size, false);
+        
+        return canPartitionDFS(nums, visited, sum/2, 0);
+    }
+};
