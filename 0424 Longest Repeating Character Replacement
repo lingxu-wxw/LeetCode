@@ -1,0 +1,38 @@
+// Input: s = "ABAB", k = 2
+// Output: 4
+// Explanation: Replace the two 'A's with two 'B's or vice versa.
+
+// Input: s = "AABABBA", k = 1
+// Output: 4
+// Explanation: Replace the one 'A' in the middle with 'B' and form "AABBBBA".
+// The substring "BBBB" has the longest repeating letters, which is 4.
+
+class Solution {
+public:
+    int characterReplacement(string s, int k) {
+        
+        // 字符出现的次数
+        vector<int> map(26, 0);
+        
+        int start = 0, maxcnt = 0;
+        int res = 0;
+        
+        for (int i = 0; i < s.size(); i++) {
+            // 更新遍历到当前为止，出现的次数最多的字符数量
+            map[s[i]-'A']++;
+            maxcnt = max(maxcnt, map[s[i]-'A']);
+            
+            // [start, i] 是当前滑动窗口的区间，start和i都是单调递增的
+            // 如果这个区间的长度 - maxcnt > k，表示替换k次这个区间也无法变成repeat，区间太大了，需要移动start
+            while (i-start+1 - maxcnt > k) {
+                map[s[start]-'A']--;
+                start++;
+            }
+            
+            // 到这一步表明 [start, i] k次替换后可以满足repeat条件
+            res = max(res, i-start+1);
+        }
+        
+        return res;
+    }
+};
