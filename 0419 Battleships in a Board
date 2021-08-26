@@ -1,0 +1,27 @@
+// Input: board = [["X",".",".","X"],[".",".",".","X"],[".",".",".","X"]]
+// Output: 2
+
+class Solution {
+public:
+    
+    int countBattleships(vector<vector<char>>& board) {
+        int m = board.size(), n = board[0].size();
+        
+        int battleships = 0;
+        
+        // 战舰的起始位置（左/上）的左边和上边一定是'.'
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (board[i][j] == '.') continue;
+                
+                // 战舰的延申还没结束
+                if ((i > 0 && board[i-1][j] == 'X') || (j > 0 && board[i][j-1] == 'X')) continue; 
+                
+                // 战舰起始位置
+                battleships++;
+            }
+        }
+        
+        return battleships;
+    }
+};
