@@ -1,0 +1,63 @@
+// Input: start = "AACCGGTT", end = "AAACGGTA", bank = ["AACCGGTA","AACCGCTA","AAACGGTA"]
+// Output: 2
+
+class Solution {
+public:
+    
+    // 腺嘌呤（A）、鸟嘌呤（G）、胸腺嘧啶（T）、胞嘧啶（C）
+    // mutation 突变
+    
+    // 0127 word ladder, BFS遍历
+    
+    int minMutation(string start, string end, vector<string>& bank) {
+        
+        if (start == end) return 0;
+        
+        // 基因集 dict
+        unordered_set<string> dict(bank.begin(), bank.end());
+        
+        // 碱基集
+        unordered_set<char> bases = {'A', 'C', 'G', 'T'};
+        
+        // 已遍历基因集 q
+        queue<string> queue;
+        
+        queue.push(start);
+        dict.erase(start);
+        
+        // mutation记录循环中当前遍历的深度，突变次数
+        int mutation = 0;
+        
+        // BFS遍历
+        while (!queue.empty()) {
+            int size = queue.size();
+            
+            for (int i = 0; i < size; i++) {
+                string gene = queue.front(); queue.pop();
+                
+                // 找到最终结果
+                if (gene == end) return mutation;
+                
+                // 逐个碱基替换
+                for (int j = 0; j < gene.size(); j++) {
+                    string newgene = gene;
+                    
+                    for (char base : bases) {
+                        newgene[j] = base;
+                    
+                        // 基因集中不会存在gene；如果newgene不在基因集中，就跳过
+                        if (!dict.count(newgene)) continue;
+
+                        // 如果newgene在基因集中
+                        queue.push(newgene);
+                        dict.erase(newgene);
+                    }
+                }
+            }
+            
+            mutation++;
+        }
+        
+        return -1;
+    }
+};
