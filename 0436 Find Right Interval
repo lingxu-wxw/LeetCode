@@ -1,0 +1,50 @@
+// Input: intervals = [[3,4],[2,3],[1,2]]
+// Output: [-1,0,1]
+// Explanation: There is no right interval for [3,4].
+// The right interval for [2,3] is [3,4] since start0 = 3 is the smallest start that is >= end1 = 3.
+// The right interval for [1,2] is [2,3] since start1 = 2 is the smallest start that is >= end2 = 2.
+
+class Solution {
+public:
+    
+    // 还可以通过 STL 的 lower_bound 函数来找第一个不小于目标值的位置
+    // auto it = map.lower_bound(interval[1]);
+    // if (it == map.end()) res.push_back(-1);
+    // else res.push_back(it->second);
+    
+    vector<int> findRightInterval(vector<vector<int>>& intervals) {
+        int size = intervals.size();
+        
+        // start value - interval idx
+        unordered_map<int, int> map;
+        
+        // start value的集合，由于starti是唯一的，不考虑重复的问题
+        vector<int> starts;
+        vector<int> res;
+        
+        // 初始化
+        for (int i = 0; i < size; i++) {
+            map[intervals[i][0]] = i;
+            starts.push_back(intervals[i][0]);
+        }
+        
+        // 降序排序
+        sort(starts.rbegin(), starts.rend());
+        
+        // 依次寻找右区间
+        for (auto interval : intervals) {
+            int i = 0;
+            
+            for (; i < size; i++) {
+                if (starts[i] < interval[1]) {
+                    break;
+                }
+            }
+            
+            // 两种情况分开考虑
+            res.push_back((i > 0) ? map[starts[i-1]] : -1);
+        }
+        
+        return res;
+    }
+};
