@@ -1,0 +1,39 @@
+// Input: intervals = [[1,2],[2,3],[3,4],[1,3]]
+// Output: 1
+// Explanation: [1,3] can be removed and the rest of the intervals are non-overlapping.
+
+class Solution {
+public:
+    int eraseOverlapIntervals(vector<vector<int>>& intervals) {
+    
+        int size = intervals.size();
+        
+        // 对区间进行排序，start的越小的放在越前面
+        sort(intervals.begin(), intervals.end());
+        
+        // 上一次需要比较的对象，intervals中idx小于last的都处理好了，已经被删掉或者不可能有重叠
+        int last = 0;
+        
+        int res = 0;
+
+        for (int i = 1; i < size; i++) {
+            // 找到重叠, last.end > cur.start
+            if (intervals[last][1] > intervals[i][0]) {
+                // 至少需要删掉其中一个
+                res++;
+                // 删掉last.end和cur.end中end比较大的哪个，end大表示影响力更大，可能和后面的还有重叠
+                // 并没有真的删除，只是修改了last的指向
+                if (intervals[last][1] > intervals[i][1]) {
+                    last = i;
+                }
+            }
+            
+            // 没有找到重叠，i处理好了
+            else {
+                last = i;
+            }
+        }
+        
+        return res;
+    }
+};
