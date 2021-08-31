@@ -1,0 +1,39 @@
+// Input: nums = [3,4,5,1,2]
+// Output: 1
+// Explanation: The original array was [1,2,3,4,5] rotated 3 times.
+
+class Solution {
+public:
+    int findMin(vector<int>& nums) {
+        // 二分法
+        
+        int size = nums.size();
+        if (size == 1) return nums[0];
+        
+        int left = 0, right = size-1;
+        int mid = left + (right-left)/2;
+        
+        // 特殊情况，没有rotate
+        if (nums[mid] >= nums[left] && nums[mid] <= nums[right]) {
+            return nums[0];
+        }
+        
+        while (left < right) {
+            mid = left + (right-left)/2;
+            
+            // 只剩两个数字，找到了断点，右边是最小值
+            if (left == right-1) {
+                return nums[right];
+            }
+            
+            // 转移条件，移除不可能有断点的半边
+            if (nums[mid] >= nums[left]) {
+                left = mid;
+            } else {
+                right = mid;
+            }
+        }
+        
+        return nums[0];
+    }
+};
