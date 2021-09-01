@@ -1,0 +1,67 @@
+// Input: s = "cbaebabacd", p = "abc"
+// Output: [0,6]
+// Explanation:
+// The substring with start index = 0 is "cba", which is an anagram of "abc".
+// The substring with start index = 6 is "bac", which is an anagram of "abc".
+
+class Solution {
+public:
+    
+    // 极简写法
+    // while (right < slen) {
+    //     if (map[s[right++]]-- >= 1) --match;
+    //     if (match == 0) res.push_back(left);
+    //     if (right - left == plen && map[s[left++]]++ >= 0) ++match;
+    // }
+    
+    vector<int> findAnagrams(string s, string p) {
+        if (s.empty()) return {};
+        int slen = s.length(), plen = p.length();
+        
+        // Anagram的组成部分, ASCII码哈希表
+        vector<int> map(256, 0);
+        vector<int> res;
+        
+        for (char c : p) {
+            map[c]++;
+        }
+        
+        // slide window的思想
+        int left = 0, right = 0;
+        // 字符串p中还需要匹配的字符个数
+        int match = plen;
+        
+        while (right < slen) {
+            // 窗口右边界匹配或是不匹配，都需要更新map和拓宽右边界
+            // 这样p中不存在s中存在的字符在map中的值就会变为-1，p中存在s中存在的字符会≥0
+            if (map[s[right]] >= 1) {
+                map[s[right]]--;
+                right++;
+                match--;
+            } else {
+                map[s[right]]--;
+                right++;
+            }
+            
+            // 达成完全匹配
+            if (match == 0) {
+                res.push_back(left);
+            }
+            
+            // 窗口长度等于plen，左边界缩短
+            // 通过map[s[left]]判断左边界的字符是否是p所需要的，如果是，后面还需要找补回来
+            if (right - left == plen) {
+                if (map[s[left]] >= 0) {
+                    map[s[left]]++;
+                    left++;
+                    match++;
+                } else {
+                    map[s[left]]++;
+                    left++;
+                }
+            }
+        }
+        
+        return res;
+    }
+};
