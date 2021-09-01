@@ -1,0 +1,46 @@
+// Input: s = "cbaebabacd", p = "abc"
+// Output: [0,6]
+// Explanation:
+// The substring with start index = 0 is "cba", which is an anagram of "abc".
+// The substring with start index = 6 is "bac", which is an anagram of "abc".
+
+class Solution {
+public:
+    vector<int> findAnagrams(string s, string p) {
+        if (s.empty()) return {};
+        int slen = s.length(), plen = p.length();
+        
+        // Anagram的组成部分, ASCII码哈希表
+        vector<int> map(128, 0);
+        vector<int> res;
+        
+        for (char c : p) {
+            map[c]++;
+        }
+        
+        // 匹配的思想
+        int i = 0;
+        
+        while (i < slen) {
+            bool success = true;
+            vector<int> tmp = map;
+            
+            for (int j = i; j < i+plen; j++) {
+                // 先做--再比较
+                // 出现不能匹配的字符才算错，不需要tmp[s[j]]最终都为0的完美匹配
+                if (--tmp[s[j]] < 0) {
+                    success = false;
+                    break;
+                }   
+            }
+            
+            if (success) {
+                res.push_back(i);
+            }
+            
+            i++;
+        }
+        
+        return res;
+    }
+};
