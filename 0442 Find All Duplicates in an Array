@@ -1,0 +1,29 @@
+// Input: nums = [4,3,2,7,8,2,3,1]
+// Output: [2,3]
+
+// You must write an algorithm that runs in O(n) time and uses only constant extra space.
+
+class Solution {
+public:
+    
+    // 特殊条件：1 <= nums[i] <= n
+    // 这种条件下 nums[i] 和 nums[nums[i] - 1] 就会有关联
+    
+    vector<int> findDuplicates(vector<int>& nums) {
+        vector<int> res;
+        
+        for (int i = 0; i < nums.size(); ++i) {
+            // 这样处理后的0 <= idx <= n-1，是刚好可取的idx范围
+            int idx = abs(nums[i]) - 1;
+            
+            // 说明之前访问过
+            if (nums[idx] < 0) {
+                res.push_back(idx + 1);
+            }
+            
+            nums[idx] = -nums[idx];
+        }
+        
+        return res;
+    }
+};
