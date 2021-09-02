@@ -1,0 +1,18 @@
+// Input: n = 5
+// Output: 2
+// Explanation: Because the 3rd row is incomplete, we return 2.
+
+class Solution {
+public:
+    int arrangeCoins(int n) {
+        int cnt = 0;
+        
+        while (n > 0) {
+            cnt++;
+            n -= cnt;
+        }
+        
+        // n<0说明incomplete
+        return (n < 0) ? cnt - 1 : cnt;
+    }
+};
