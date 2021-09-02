@@ -1,0 +1,35 @@
+// Input: nums = [5,4,0,3,1,6,2]
+// Output: 4
+// Explanation: 
+// nums[0] = 5, nums[1] = 4, nums[2] = 0, nums[3] = 3, nums[4] = 1, nums[5] = 6, nums[6] = 2.
+// One of the longest sets s[k]:
+// s[0] = {nums[0], nums[5], nums[6], nums[2]} = {5, 6, 2, 0}
+
+class Solution {
+public:
+    int arrayNesting(vector<int>& nums) {
+        int size = nums.size();
+        
+        // 出现重复的idx一定在一串idx的首部
+        // 而且这一圈里的所有idx最终得到的结果是相同的，只需要计算一次
+        vector<bool> visited(size, false);
+        int res = INT_MIN;
+        
+        for (int i = 0; i < size; i++) {
+            if (visited[i]) continue;
+            
+            int cnt = 0, k = i;
+            
+            // cnt == 0 用作第一次进入循环
+            while (cnt == 0 || k != i) {
+                visited[k] = true;
+                k = nums[k];
+                cnt++;
+            }
+            
+            res = max(res, cnt);
+        }
+        
+        return res;
+    }
+};
