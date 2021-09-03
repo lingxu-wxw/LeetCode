@@ -1,0 +1,108 @@
+// Input: points = [[1,1],[2,2],[2,0],[2,4],[3,3],[4,2]]
+// Output: [[1,1],[2,0],[3,3],[2,4],[4,2]]
+
+class Solution {
+public:
+    
+    // 在平面图上找一个凸多边形的包围
+    
+    // 叉乘的结果是正数，说明向量a到向量b是逆时针，反之顺时针
+    int crossProduct(vector<int>& A, vector<int>& B, vector<int>& C) {
+        int BAx = A[0] - B[0];
+        int BAy = A[1] - B[1];
+        int BCx = C[0] - B[0];
+        int BCy = C[1] - B[1];
+        
+        return BAx * BCy - BAy * BCx;
+    }
+    
+    // 计算距离（平方）
+    int dist(vector<int>& A, vector<int>& B) {
+        return (A[0] - B[0]) * (A[0] - B[0]) + (A[1] - B[1]) + (A[0] - B[0]);
+    }
+    
+    // 判断结点是否在res中，防止重复
+    bool check(vector<vector<int>>& res, vector<int>& A) {
+        for (auto tree : res) {
+            if (A[0] == tree[0] && A[1] == tree[1]) {
+                return false;
+            }
+        }
+        
+        return true;
+    }
+    
+    
+    vector<vector<int>> outerTrees(vector<vector<int>>& trees) {
+        int size = trees.size();
+        
+        vector<vector<int>> res;
+        
+        // 找到横坐标最小的结点，作为后续遍历的起始结点
+        // 此外，这个结点也一定会在res中
+        vector<int> first = trees[0];
+        int firstIdx = 0;
+        
+        for (int i = 0; i < size; i++) {
+            if (trees[i][0] < first[0]) {
+                first = trees[i];
+                firstIdx = i;
+            }
+        }
+        
+        res.push_back(first);
+        
+        // cur表示当前确定的凸包结点，初始化为first
+        vector<int> cur = first;
+        int curIdx = firstIdx;
+        
+        while (true) {
+            // 通过next来寻找下一个凸包的结点，初始化为trees[0]
+            vector<int> next = trees[0];
+            int nextIdx = 0;
+            
+            // 修正next的位置到下一个凸包结点
+            for (int i = 1; i < size; i++) {
+                if (i == curIdx) continue;
+                
+                // 计算叉乘，向量a为tree->cur，向量b为tree->next
+                int cross = crossProduct(cur, trees[i], next);
+                
+                // 修正过程是循序渐进的，cross<0表示BA-BC是顺时针，这样找next的方向是从cur往逆时针找，逐渐压平
+                // cross=0表示BA和BC共线，但相互位置不确定，移到离cur较远的位置即可
+                if (nextIdx == curIdx || cross < 0 || 
+                    (cross == 0 && dist(trees[i], cur) > dist(trees[i], next))) {
+                    next = trees[i];
+                    nextIdx = i;
+                }
+            }
+            
+            // 如果不存在共线的情况，可以直接把next加入res中
+            // 有共线的情况，中间结点起始也算在结果里，所以只能再遍历一次
+            for (int i = 0; i < size; i++) {
+                if (i == curIdx) continue;
+                
+                int cross = crossProduct(cur, trees[i], next);
+                if (cross == 0) {
+                    if (check(res, trees[i])) {
+                        res.push_back(trees[i]);
+                    }
+                }
+            }
+            
+            // next是下一个凸包结点，继续循环直至cur回到first
+            cur = next;
+            curIdx = nextIdx;
+            
+            if (curIdx == firstIdx) {
+                break;
+            }
+        }
+        
+        
+        return res;
+    }
+};
+
+
+
