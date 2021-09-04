@@ -1,0 +1,31 @@
+// Input: nums = [4,3,2,7,8,2,3,1]
+// Output: [5,6]
+
+class Solution {
+public:
+    
+    // 1 <= nums[i] <= n 的特性
+    
+    vector<int> findDisappearedNumbers(vector<int>& nums) {
+        int size = nums.size();
+        
+        vector<int> res;
+        
+        for (int i = 0; i < size; i++) {
+            // 把数组数字的缺失 转移到 idx的缺失上去
+            int idx = abs(nums[i]) - 1;
+            
+            // 例如，nums[0]=4，则把nums[4-1]置为负，通过idx表示数字4存在
+            nums[idx] = (nums[idx] > 0) ? -nums[idx] : nums[idx];
+        }
+
+        
+        for (int i = 0; i < size; i++) {
+            if (nums[i] > 0) {
+                res.push_back(i+1);
+            }
+        }
+        
+        return res;
+    }
+};
