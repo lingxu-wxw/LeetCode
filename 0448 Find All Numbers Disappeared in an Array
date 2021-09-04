@@ -1,0 +1,35 @@
+// Input: nums = [4,3,2,7,8,2,3,1]
+// Output: [5,6]
+
+class Solution {
+public:
+    
+    // 1 <= nums[i] <= n 的特性
+    
+    vector<int> findDisappearedNumbers(vector<int>& nums) {
+        int size = nums.size();
+        
+        vector<int> res;
+        
+        for (int i = 0; i < size; i++) {
+            if (nums[i] != nums[nums[i]-1]) {
+                // 将nums[i]交换到正确的位置上去
+                int tmp = nums[nums[i]-1];
+                nums[nums[i]-1] = nums[i];
+                nums[i] = tmp;
+                
+                // 这时候有可能会引入新的错误，所以要i--处理新交换过来的数字
+                i--;
+            }
+        }
+
+        
+        for (int i = 0; i < size; i++) {
+            if (nums[i] != i+1) {
+                res.push_back(i+1);
+            }
+        }
+        
+        return res;
+    }
+};
