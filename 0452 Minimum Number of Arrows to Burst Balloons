@@ -1,0 +1,42 @@
+// Input: points = [[10,16],[2,8],[1,6],[7,12]]
+// Output: 2
+// Explanation: One way is to shoot one arrow for example at x = 6 (bursting the balloons [2,8] and [1,6]) and another arrow at x = 11 (bursting the other two balloons).
+
+class Solution {
+public:
+    
+    // 参考思路：0435 Non-overlapping Intervals
+    
+    int findMinArrowShots(vector<vector<int>>& points) {
+        
+        int size = points.size();
+        
+        // 对气球进行排序，start的越小的放在越前面
+        sort(points.begin(), points.end());
+        
+        // 上一次需要比较的对象，points中idx小于last的都处理好了，已经被删掉或者不可能有重叠
+        int last = 0;
+        
+        int res = size;
+
+        for (int i = 1; i < size; i++) {
+            // 找到重叠, last.end > cur.start
+            if (points[last][1] >= points[i][0]) {
+                // 至少可以节省一支箭
+                res--;
+                // 删掉last.end和cur.end中end比较大的哪个，end大表示影响力更大，可能和后面的还有重叠
+                // 并没有真的删除，只是修改了last的指向
+                if (points[last][1] > points[i][1]) {
+                    last = i;
+                }
+            }
+            
+            // 没有找到重叠，i处理好了
+            else {
+                last = i;
+            }
+        }
+        
+        return res;
+    }
+};
