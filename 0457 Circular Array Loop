@@ -1,0 +1,53 @@
+// Input: nums = [2,-1,1,2,2]
+// Output: true
+// Explanation:
+// There is a cycle from index 0 -> 2 -> 3 -> 0 -> ...
+// The cycle's length is 3.
+
+// A cycle in the array consists of a sequence of indices seq of length k where:
+// 1. Following the movement rules above results in the repeating index sequence seq[0] -> seq[1] -> ... -> seq[k - 1] -> seq[0] -> ...
+// 2. Every nums[seq[j]] is either all positive or all negative.
+// 3. k > 1
+
+class Solution {
+public:
+    bool circularArrayLoop(vector<int>& nums) {
+        int size = nums.size();
+        
+        // 访问状态
+        vector<bool> visited(size, false);
+        
+        for (int i = 0; i < size; i++) {
+            if (visited[i]) continue;
+            
+            visited[i] = true;
+            
+            // cur idx - next idx
+            unordered_map<int, int> map;
+            int cur = i;
+            
+            while (true) {
+                // 第一个%处理正向溢出，第二个%处理负向溢出
+                int next = ((cur + nums[cur]) % size + size) % size;
+                
+                // next = cur表示循环节k为1，不符合要求; nums[cur]和nums[next]不同号也不符合要求
+                if (next == cur || nums[cur] * nums[next] < 0) {
+                    break;
+                }
+                
+                // 如果在后继表中已经存在过next - xxx，表示形成循环
+                if (map.count(next)) {
+                    return true;
+                }
+                
+                // 更新后继表
+                visited[next] = true;
+                
+                map[cur] = next;
+                cur = next;
+            }
+        }
+        
+        return false;
+    }
+};
