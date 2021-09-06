@@ -1,0 +1,34 @@
+// Input: s = "abab"
+// Output: true
+// Explanation: It is the substring "ab" twice.
+
+class Solution {
+public:
+    bool repeatedSubstringPattern(string s) {
+        
+        int size = s.length();
+        
+        // 循环节的长度
+        for (int len = 1; len <= size/2; len++) {
+            // 除不尽肯定不行
+            if (size % len != 0) continue;
+            
+            string loop = s.substr(0, len);
+            int i = 0;
+            
+            // 依次截取len长度进行比较
+            for (; i < size; i += len) {
+                string str = s.substr(i, len);
+                if (loop != str) {
+                    break;
+                }
+            }
+            
+            if (i == size) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+};
