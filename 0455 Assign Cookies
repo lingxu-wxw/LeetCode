@@ -1,0 +1,36 @@
+// Input: g = [1,2,3], s = [1,1]
+// Output: 1
+// Explanation: You have 3 children and 2 cookies. The greed factors of 3 children are 1, 2, 3. 
+// And even though you have 2 cookies, since their size is both 1, you could only make the child whose greed factor is 1 content.
+// You need to output 1.
+
+class Solution {
+public:
+    
+    // you should give each child at most one cookie
+    
+    int findContentChildren(vector<int>& g, vector<int>& s) {
+        // 贪心算法
+        
+        int res = 0;
+        int idx = 0;
+        
+        sort(g.begin(), g.end());   // greed
+        sort(s.begin(), s.end());   // size
+        
+        // 遍历cookie
+        for (int i = 0; i < s.size(); i++) {
+            // 能够满足一个小孩
+            if (s[i] >= g[idx]) {
+                res++;
+                idx++;
+                
+                if (idx == g.size()) {
+                    break;
+                }
+            }
+        }
+        
+        return res;
+    }
+};
