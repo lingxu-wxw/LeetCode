@@ -1,0 +1,32 @@
+// Input: nums = [-1,3,2,0]
+// Output: true
+// Explanation: There are three 132 patterns in the sequence: [-1, 3, 2], [-1, 3, 0] and [-1, 2, 0].
+
+class Solution {
+public:
+    bool find132pattern(vector<int>& nums) {
+        
+        // 能够满足条件的最大的third，这样更容易找到一个符合条件的first
+        // 随着遍历的进行，third只会单调递增
+        int third = INT_MIN;
+        
+        // 能够满足条件的所有second，越栈底越大，保证栈里的所有数字都大于当前的third
+        stack<int> stack;
+        
+        for (int i = nums.size()-1; i >= 0; i--) {
+            if (nums[i] < third) {
+                return true;
+            }
+            
+            // 能进栈的数字不可能比third小，否则会在上一步return true
+            while (!stack.empty() && nums[i] > stack.top()) {
+                third = stack.top();
+                stack.pop();
+            }
+            
+            stack.push(nums[i]);
+        }
+        
+        return false;
+    }
+};
