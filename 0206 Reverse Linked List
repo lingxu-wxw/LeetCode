@@ -13,6 +13,13 @@
  */
 class Solution {
 public:
+
+    // 从尾部开始生成
+    // 1 -> NULL
+    // 2 -> 1 - > NULL
+    // ...
+    // 5 -> 4 - > 3 -> 2 - > 1 -> NULL
+
     ListNode* reverseList(ListNode* head) {
         if (!head) return NULL;
         
