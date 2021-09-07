@@ -1,0 +1,39 @@
+// Input: p = "zab"
+// Output: 6
+// Explanation: There are six substrings ("z", "a", "b", "za", "ab", and "zab") of p in s.
+
+class Solution {
+public:
+    
+    // 因为要求unique non-empty substrings，所以重复出现是不需要纳入考虑的
+    // 考虑以每个字母结尾的substring个数，因为结尾的字母的原因，互相之间是不会重复的
+    
+    int findSubstringInWraproundString(string p) {
+        
+        // 以'a'为结尾的substring个数，只需要考虑最长的
+        vector<int> map(26, 0);
+        
+        int len = 0;
+        int res = 0;
+        
+        for (int i = 0; i < p.size(); i++) {
+            // 'ab' 'za'
+            if ((i > 0) && (p[i] - p[i-1] == 1 || p[i-1] - p[i] == 25)) {
+                len++;
+            } else {
+                len = 1;
+            }
+            
+            map[p[i]-'a'] = max(map[p[i]-'a'], len);
+        }
+        
+        // Sum all element in vector and another number
+        // int res = accumulate(map.begin(), map.end(), 0);
+        
+        for (int cnt : map) {
+            res += cnt;
+        }
+        
+        return res;
+    }
+};
