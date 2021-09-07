@@ -1,0 +1,26 @@
+// Input: nums = [1,2,3]
+// Output: 2
+// Explanation:
+// Only two moves are needed (remember each move increments or decrements one element):
+// [1,2,3]  =>  [2,2,3]  =>  [2,2,2]
+
+class Solution {
+public:
+    int minMoves2(vector<int>& nums) {
+        
+        // 大家都移动到中位数
+        // 平均数的话有可能结果更大，例如 1 4 4，中位数4移动3次，平均数3移动4次
+        int size = nums.size();
+        
+        sort(nums.begin(), nums.end());
+        
+        int mid = nums[size/2];
+        int res = 0;
+        
+        for (int num : nums) {
+            res += abs(num - mid);
+        }
+        
+        return res;
+    }
+};
