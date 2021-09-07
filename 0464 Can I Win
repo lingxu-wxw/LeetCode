@@ -1,0 +1,58 @@
+// Input: maxChoosableInteger = 10, desiredTotal = 11
+// Output: false
+// Explanation:
+// No matter which integer the first player choose, the first player will lose.
+// The first player can choose an integer from 1 up to 10.
+// If the first player choose 1, the second player can only choose integers from 2 up to 10.
+// The second player will win by choosing 10 and get a total = 11, which is >= desiredTotal.
+// Same with other integers chosen by the first player, the second player will always win.
+
+class Solution {
+public:
+    
+    // 类似的题目 0292 Nim Game
+    
+    bool canIWinDFS(int maxChoosableInteger, int desiredTotal, int used, unordered_map<int, bool>& map) {
+        // 如果map中已经记录了这种情况的后续，直接返回
+        if (map.count(used)) {
+            return map[used];
+        }
+        
+        // 依次遍历所有的可能性然后递归
+        for (int i = 0; i < maxChoosableInteger; i++) {
+            // 当前想选的数字已经用过了
+            int cur = 1 << i;
+            if ((used & cur) != 0) continue;
+            
+            // 当前数字没有使用过
+            // 当前回合可以直接结束，或者选掉i+1后，对方继续上手赢不了
+            if (i+1 >= desiredTotal || !canIWinDFS(maxChoosableInteger, desiredTotal - (i+1), used | cur, map)) {
+                map[used] = true;
+                return true;
+            }
+        }
+        
+        // 当前的使用情况无论如何都赢不了
+        map[used] = false;
+        return false;
+    }
+    
+    
+    bool canIWin(int maxChoosableInteger, int desiredTotal) {
+        // 初始desire小于等于maxchoose，先手直接获胜
+        if (maxChoosableInteger >= desiredTotal) {
+            return true;
+        }
+        
+        // maxchoose的总和仍然小于desire，双方都无法获胜
+        if (maxChoosableInteger * (maxChoosableInteger+1) / 2 < desiredTotal) {
+            return false;
+        }
+        
+        // used mask - can first person win
+        // 如果当前使用状态是used，现在上手的玩家能够获胜
+        unordered_map<int, bool> map;
+        
+        return canIWinDFS(maxChoosableInteger, desiredTotal, 0, map);
+    }
+};
