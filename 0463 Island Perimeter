@@ -1,0 +1,33 @@
+// Input: grid = [[0,1,0,0],[1,1,1,0],[0,1,0,0],[1,1,0,0]]
+// Output: 16
+// Explanation: The perimeter is the 16 yellow stripes in the image above.
+
+class Solution {
+public:
+    
+    // there is exactly one island
+    
+    int islandPerimeter(vector<vector<int>>& grid) {
+        int height = grid.size(), width = grid[0].size();
+        
+        int res = 0;
+        
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                if (grid[i][j] == 0) continue;
+                
+                // 先假设没有重叠边，再往上和左看，如果有相邻的话需要减2
+                res += 4;
+                
+                if (i > 0 && grid[i-1][j] == 1) {
+                    res -= 2;
+                }
+                if (j > 0 && grid[i][j-1] == 1) {
+                    res -= 2;
+                }
+            }
+        }
+        
+        return res;
+    }
+};
