@@ -1,0 +1,39 @@
+// Input: houses = [1,2,3,4], heaters = [1,4]
+// Output: 1
+// Explanation: The two heater was placed in the position 1 and 4. We need to use radius 1 standard, then all the houses can be warmed.
+
+class Solution {
+public:
+    int findRadius(vector<int>& houses, vector<int>& heaters) {
+        
+        // 因为题目中的houses默认是有序的，就不用sort了
+        sort(heaters.begin(), heaters.end());
+        
+        int minRadius = INT_MIN;
+        
+        for (int i = 0; i < houses.size(); i++) {
+            // 通过二分法找到第一个坐标大于等于houses[i]的heater
+            int left = 0, right = heaters.size();
+            
+            while (left < right) {
+                int mid = left + (right - left)/2;
+                if (heaters[mid] < houses[i]) {
+                    left = mid + 1;
+                } else {
+                    right = mid;
+                }
+            }
+            
+            // 此时的left/right就是第一个坐标大于等于houses[i]的heater
+            
+            // 如果right不是第一个，就比较一下right和right-1到house的距离
+            // dist1的异常，所有heater都比house大；dist2的异常，所有heater都比house小
+            int dist1 = (right == 0) ? INT_MAX : houses[i] - heaters[right-1];
+            int dist2 = (right == heaters.size()) ? INT_MAX : heaters[right] - houses[i];
+            
+            minRadius = max(minRadius, min(dist1, dist2));
+        }
+        
+        return minRadius;
+    }
+};
