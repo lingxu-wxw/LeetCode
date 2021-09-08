@@ -1,0 +1,29 @@
+// Input: s = "abc", shifts = [3,5,9]
+// Output: "rpl"
+// Explanation: We start with "abc".
+// After shifting the first 1 letters of s by 3, we have "dbc".
+// After shifting the first 2 letters of s by 5, we have "igc".
+// After shifting the first 3 letters of s by 9, we have "rpl", the answer.
+
+class Solution {
+public:
+    string shiftingLetters(string s, vector<int>& shifts) {
+        int size = shifts.size();
+        
+        // 计算出每一位需要shift的位数
+        int sum = 0;
+        for (int i = size-1; i >= 0; i--) {
+            sum = (sum + shifts[i]) % 26;
+            shifts[i] = sum;
+        }
+        
+        // 修改字符串
+        for (int i = 0; i < s.length(); i++) {
+            if (i >= size) break;
+            
+            s[i] = 'a' + ((s[i] - 'a' + shifts[i]) % 26);
+        }
+        
+        return s;
+    }
+};
