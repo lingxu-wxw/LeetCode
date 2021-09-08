@@ -22,8 +22,8 @@ public:
         // 拒绝采样法
         while (true) {
             // 假定的半径, 前面一串的范围是[-1.0, 1.0]
-            double x = (2 * (double)rand() / RAND_MAX - 1.0) * this->radius;
-            double y = (2 * (double)rand() / RAND_MAX - 1.0) * this->radius;
+            double x = (2 * (double)rand() / RAND_MAX - 1.0) * radius;
+            double y = (2 * (double)rand() / RAND_MAX - 1.0) * radius;
             
             if (x * x + y * y <= this->radius * this->radius) {
                 return {x_center + x, y_center + y};
