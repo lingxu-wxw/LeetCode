@@ -1,0 +1,67 @@
+// Input: strs = ["10","0001","111001","1","0"], m = 5, n = 3
+// Output: 4
+// Explanation: The largest subset with at most 5 0's and 3 1's is {"10", "0001", "1", "0"}, so the answer is 4.
+// Other valid but smaller subsets include {"0001", "1"} and {"10", "1", "0"}.
+// {"111001"} is an invalid subset because it contains 4 1's, greater than the maximum of 3.
+
+class Solution {
+public:
+    
+    void findMaxFormDFS(vector<pair<int, int>>& nums, int index, int max0, int max1, int cur0, int cur1, int cnt, int& maxcnt) {
+        int size = nums.size();
+        
+        if (index == size) {
+            if (cur0 <= max0 && cur1 <= max1 && cnt > maxcnt) {
+                maxcnt = cnt;
+            }
+            return;
+        }
+        
+        if (cur0 + nums[index].first > max0 || cur1 + nums[index].second > max1) {
+            findMaxFormDFS(nums, index+1, max0, max1, cur0, cur1, cnt, maxcnt);
+            return;
+        }
+        
+        // 选用
+        cur0 += nums[index].first;
+        cur1 += nums[index].second;
+        
+        findMaxFormDFS(nums, index+1, max0, max1, cur0, cur1, cnt+1, maxcnt);
+        
+        // 不选用
+        cur0 -= nums[index].first;
+        cur1 -= nums[index].second;
+        
+        findMaxFormDFS(nums, index+1, max0, max1, cur0, cur1, cnt, maxcnt);
+    }
+    
+    
+    int findMaxForm(vector<string>& strs, int m, int n) {
+        int size = strs.size();
+        
+        // 先统计所有str的0/1数量
+        vector<pair<int, int>> nums;
+        int cnt0 = 0, cnt1 = 0;
+        
+        for (string str: strs) {
+            for (char c : str) {
+                if (c == '0') {
+                    cnt0++;
+                } else if (c == '1') {
+                    cnt1++;
+                }
+            }
+            
+            nums.push_back({cnt0, cnt1});
+            
+            cnt0 = 0, cnt1 = 0;
+        }
+        
+        // 递归遍历的准备工作
+        int maxcnt = 0;
+        
+        findMaxFormDFS(nums, 0, m, n, 0, 0, 0, maxcnt);
+        
+        return maxcnt;
+    }
+};
