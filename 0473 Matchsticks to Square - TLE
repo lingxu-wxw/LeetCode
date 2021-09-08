@@ -1,0 +1,60 @@
+// Input: matchsticks = [1,1,2,2,2]
+// Output: true
+// Explanation: You can form a square with length 2, one side of the square came two sticks with length 1.
+
+class Solution {
+public:
+    
+    bool makesquareDFS(vector<int>& matchsticks, vector<int>& sums, int index, int len) {
+        // 已经遍历过所有的元素
+        if (index == matchsticks.size()) {
+            for (int sum : sums) {
+                if (sum != len) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        
+        // 开始遍历把index放在哪一个sum里
+        for (int i = 0; i < 4; i++) {
+            if (sums[i] + matchsticks[index] > len) {
+                continue;
+            }
+            
+            sums[i] += matchsticks[index];
+            
+            if (makesquareDFS(matchsticks, sums, index+1, len)) {
+                return true;
+            } else {
+                sums[i] -= matchsticks[index];
+            }
+        }
+        
+        return false;
+    }
+    
+    bool makesquare(vector<int>& matchsticks) {
+        int size = matchsticks.size();
+        if (size < 4) {
+            return false;
+        }
+    
+        // 计算所有stick的和能够被4整除
+        int sum = 0, len = 0;
+    
+        for (int stick : matchsticks) {
+            sum += stick;
+        }
+        
+        if (sum % 4 != 0) {
+            return false;
+        }
+        len = sum / 4;
+
+        // 依次组成4个和为len的组        
+        vector<int> sums(4, 0);
+        
+        return makesquareDFS(matchsticks, sums, 0, len);
+    }
+};
