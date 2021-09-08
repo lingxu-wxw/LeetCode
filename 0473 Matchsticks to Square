@@ -1,0 +1,88 @@
+// Input: matchsticks = [1,1,2,2,2]
+// Output: true
+// Explanation: You can form a square with length 2, one side of the square came two sticks with length 1.
+
+class Solution {
+public:
+    
+    bool makesquareDFS(vector<int>& matchsticks, int visited, int allvisited, int len, int cnt, int tmp) {
+        // cnt表示当前找到的边数
+        if (cnt == 4) {
+            if (visited == allvisited) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+        
+        // 应该不会出现这种异常状态
+        if (cnt > 4 || visited == allvisited) {
+            return false;
+        }
+        
+        int size = matchsticks.size();
+        
+        for (int i = 0; i < size; i++) {
+            if (visited & (1<<i)) continue;
+        
+            int newtmp = tmp + matchsticks[i];
+            
+            // 找到一条新的边，继续遍历
+            if (newtmp == len) {
+                if (makesquareDFS(matchsticks, visited | (1<<i), allvisited, len, cnt+1, 0)) {
+                    return true;
+                }
+            }
+            // 已经过头了，倒带
+            else if (newtmp > len) {
+                return false;
+            }
+            // 继续遍历
+            else {
+                if (makesquareDFS(matchsticks, visited | (1<<i), allvisited, len, cnt, newtmp)) {
+                    return true;
+                }
+            }
+            
+            // 如果走到这里说明tmp和matchsticks[i]不应该放在一起，如果后续还有相同的值，可以直接跳过去
+            while (i+1 < size && matchsticks[i+1] == matchsticks[i]) {
+                i++;
+            }
+        }
+        
+        return false;
+    }
+    
+    
+    bool makesquare(vector<int>& matchsticks) {
+        int size = matchsticks.size();
+        if (size < 4) {
+            return false;
+        }
+    
+        // 计算所有stick的和能够被4整除
+        int sum = 0, len = 0;
+        int allvisited = 0;
+    
+        for (int i = 0; i < size; i++) {
+            sum += matchsticks[i];
+            allvisited = allvisited | (1 << i);
+        }
+        
+        if (sum % 4 != 0) {
+            return false;
+        }
+        len = sum / 4;
+
+        // 给stick数组排序
+        sort(matchsticks.begin(), matchsticks.end());
+        
+        // 如果有大于len的stick，因为不能折断，直接false
+        if (matchsticks[size-1] > len) {
+            return false;
+        }
+        
+        
+        return makesquareDFS(matchsticks, 0, allvisited, len, 0, 0);
+    }
+};
