@@ -1,0 +1,43 @@
+// Input
+// ["Solution", "randPoint", "randPoint", "randPoint"]
+// [[1.0, 0.0, 0.0], [], [], []]
+// Output
+// [null, [-0.02493, -0.38077], [0.82314, 0.38945], [0.36572, 0.17248]]
+
+// Explanation
+// Solution solution = new Solution(1.0, 0.0, 0.0);
+// solution.randPoint(); // return [-0.02493, -0.38077]
+// solution.randPoint(); // return [0.82314, 0.38945]
+// solution.randPoint(); // return [0.36572, 0.17248]
+
+class Solution {
+public:
+    Solution(double radius, double x_center, double y_center) {
+        this->radius = radius;
+        this->x_center = x_center;
+        this->y_center = y_center;
+    }
+    
+    vector<double> randPoint() {
+        // 拒绝采样法
+        while (true) {
+            // 假定的半径, 前面一串的范围是[-1.0, 1.0]
+            double x = (2 * (double)rand() / RAND_MAX - 1.0) * this->radius;
+            double y = (2 * (double)rand() / RAND_MAX - 1.0) * this->radius;
+            
+            if (x * x + y * y <= this->radius * this->radius) {
+                return {x_center + x, y_center + y};
+            }
+        }
+    }
+
+private:
+    double radius;
+    double x_center, y_center;
+};
+
+/**
+ * Your Solution object will be instantiated and called as such:
+ * Solution* obj = new Solution(radius, x_center, y_center);
+ * vector<double> param_1 = obj->randPoint();
+ */
