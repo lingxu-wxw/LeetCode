@@ -1,0 +1,33 @@
+// Input: num = 5
+// Output: 2
+// Explanation: The binary representation of 5 is 101 (no leading zero bits), and its complement is 010. So you need to output 2.
+
+class Solution {
+public:
+    int findComplement(int num) {
+        
+        // 1 <= num < 2^31，有可能有溢出的问题
+        
+        // int power = 2;
+        // while (power <= num) {
+        //     power = power * 2;
+        // }
+        // return power - 1 - num;
+        
+        bool start = false;
+        
+        for (int i = 31; i >= 0; i--) {
+            // 找到第一个非零位
+            if (num & (1 << i)) {
+                start = true;
+            }
+            
+            // 异或1，1变成0，0变成1
+            if (start) {
+                num = num ^ (1 << i);
+            }
+        }
+        
+        return num;
+    }
+};
