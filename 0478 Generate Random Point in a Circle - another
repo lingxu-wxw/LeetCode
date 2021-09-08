@@ -1,0 +1,41 @@
+// Input
+// ["Solution", "randPoint", "randPoint", "randPoint"]
+// [[1.0, 0.0, 0.0], [], [], []]
+// Output
+// [null, [-0.02493, -0.38077], [0.82314, 0.38945], [0.36572, 0.17248]]
+
+// Explanation
+// Solution solution = new Solution(1.0, 0.0, 0.0);
+// solution.randPoint(); // return [-0.02493, -0.38077]
+// solution.randPoint(); // return [0.82314, 0.38945]
+// solution.randPoint(); // return [0.36572, 0.17248]
+
+class Solution {
+public:
+    Solution(double radius, double x_center, double y_center) {
+        this->radius = radius;
+        this->x_center = x_center;
+        this->y_center = y_center;
+    }
+    
+    vector<double> randPoint() {
+        // 极坐标系
+        
+        // 得到[-2pi, 2pi]的范围
+        double theta = 2 * M_PI * ((double)rand() / RAND_MAX);
+        // 得到当前theta对应的半径, 平方根是用于保证等概率
+        double len = sqrt((double)rand() / RAND_MAX) * radius;
+        
+        return {x_center + len * cos(theta), y_center + len * sin(theta)};
+    }
+
+private:
+    double radius;
+    double x_center, y_center;
+};
+
+/**
+ * Your Solution object will be instantiated and called as such:
+ * Solution* obj = new Solution(radius, x_center, y_center);
+ * vector<double> param_1 = obj->randPoint();
+ */
