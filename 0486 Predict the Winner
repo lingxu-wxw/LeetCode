@@ -1,0 +1,45 @@
+// Input: nums = [1,5,2]
+// Output: false
+// Explanation: Initially, player 1 can choose between 1 and 2. 
+// If he chooses 2 (or 1), then player 2 can choose from 1 (or 2) and 5. If player 2 chooses 5, then player 1 will be left with 1 (or 2). 
+// So, final score of player 1 is 1 + 2 = 3, and player 2 is 5. 
+// Hence, player 1 will never be the winner and you need to return false.
+    
+class Solution {
+public:
+    
+    // 如果当前player能赢，返回true，不能赢返回false
+    bool PredictTheWinnerDFS(vector<int>& nums, int left, int right, int sum1, int sum2, int player) {
+        
+        // 还剩最后一个数字没有被取走
+        if (left == right) {
+            if (player == 1) {
+                return sum1 + nums[left] >= sum2;
+            } 
+            else if (player == 2) {
+                return sum2 + nums[left] > sum1;
+            }
+        }
+        
+        
+        if (player == 1) {
+            // 当前player1做选择，两种路线中，只要有一条路线自己选了以后对面赢不了，那自己就能赢
+            if (!PredictTheWinnerDFS(nums, left+1, right, sum1+nums[left], sum2, 2) || 
+               !PredictTheWinnerDFS(nums, left, right-1, sum1+nums[right], sum2, 2)) {
+                return true;
+            }
+        }
+        else if (player == 2) {
+            if (!PredictTheWinnerDFS(nums, left+1, right, sum1, sum2+nums[left], 1) || 
+               !PredictTheWinnerDFS(nums, left, right-1, sum1, sum2+nums[right], 1)) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+    
+    bool PredictTheWinner(vector<int>& nums) {
+        return PredictTheWinnerDFS(nums, 0, nums.size()-1, 0, 0, 1);
+    }
+};
