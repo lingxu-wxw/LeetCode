@@ -1,0 +1,49 @@
+// The first few elements of s is s = "1221121221221121122……". 
+// If we group the consecutive 1's and 2's in s, it will be "1 22 11 2 1 22 1 22 11 2 11 22 ......" 
+// and the occurrences of 1's or 2's in each group are "1 2 2 1 1 2 1 2 2 1 2 2 ......". 
+// You can see that the occurrence sequence is s itself.
+
+// Input: n = 6
+// Output: 3
+// Explanation: The first 6 elements of magical string s is "122112" and it contains three 1's, so return 3.
+
+class Solution {
+public:
+    int magicalString(int n) {
+        if (n <= 3) return 1;
+        
+        vector<int> str(n+1, 0);
+        str[0] = 1;
+        str[1] = 2;
+        str[2] = 2;
+        
+        // [head,tail)表示当前轮次要处理的
+        int head = 2, tail = 3;
+        int next = 1;
+        int cnt1 = 1;
+        
+        while (tail < n) {
+            
+            // 一步一个脚印的往前增加
+            for(int i = 0; i < str[head]; i++) {
+                str[tail] = next;
+                
+                if (next == 1 && tail < n) {
+                    cnt1++;
+                }
+                
+                tail++;
+            }
+            
+            // 01 ^ 11 = 10
+            next = next ^ 3;
+            
+            head++;
+        }
+        
+        return cnt1;
+    }
+};
+
+// 1 2  2, 1 1, 2 1, 2 2 1, 2 2 1 1 2, 1 1 2 2 1 2 1 1, 2 1 2 2 1 1 2 1 1 2 1,  
+// 1 2, 2, 1 1, 2 1, 2 2 1, 2 2 1 1 2, 1 1 2 2 1 2 1 1, 
