@@ -1,0 +1,47 @@
+// Input: s = "2-5g-3-J", k = 2
+// Output: "2-5G-3J"
+// Explanation: The string s has been split into three parts, each part has 2 characters except the first part as it could be shorter as mentioned above.
+
+class Solution {
+public:
+    string licenseKeyFormatting(string s, int k) {
+        
+        string res = "";
+        
+        // 除去'-'以外的字符数
+        int total = 0;
+        
+        for (char c : s) {
+            if (c != '-') {
+                total++;
+            }
+        }
+        
+        // 初始值设为余数，因为第一个group可以不完整
+        int cnt = (total % k == 0) ? k : total % k;
+        
+        for (char c : s) {
+            if (c == '-') continue;
+            
+            // 小写转大写
+            // 'A'~'Z':65~90, 'a'~'z':97~122
+            if (c >= 'a' && c <= 'z') {
+                c -= 32;
+            }
+            
+            // group中
+            if (cnt > 0) {
+                res += c;  
+                cnt--;
+            }
+            // group结束，需要开始一个新的group
+            else if (cnt == 0) {
+                res += '-';
+                res += c;
+                cnt = k-1;
+            }
+        }
+        
+        return res;
+    }
+};
