@@ -4,43 +4,33 @@
 class Solution {
 public:
     
-    void findSubsequencesDFS(vector<int>& nums, int idx, vector<vector<int>>& res, vector<int> cur) {
-        if (idx == nums.size()) {
-            return;
+    void findSubsequencesDFS(vector<int>& nums, int start, vector<vector<int>>& res, vector<int>& cur) {
+        if (cur.size() >= 2) {
+            res.push_back(cur);
         }
         
-        // 子序列的第一个元素
-        if (cur.empty()) {
-            cur.push_back(nums[idx]);
-            findSubsequencesDFS(nums, idx+1, res, cur);
-                
-            cur.pop_back();
-            findSubsequencesDFS(nums, idx+1, res, cur);
-        }
-        // 子序列的后续元素
-        else {
-            if (nums[idx] < cur.back()) {
-                findSubsequencesDFS(nums, idx+1, res, cur);
-            } 
-            else {
-                cur.push_back(nums[idx]);
-                res.push_back(cur);
-                findSubsequencesDFS(nums, idx+1, res, cur);
-                
-                cur.pop_back();
-                findSubsequencesDFS(nums, idx+1, res, cur);
+        // 用于在一轮循环中去重
+        unordered_set<int> set;
+        
+        for (int i = start; i < nums.size(); i++) {
+            if ((!cur.empty() && cur.back() > nums[i]) || set.count(nums[i])) {
+                continue;
             }
+            
+            cur.push_back(nums[i]);
+            set.insert(nums[i]);
+            findSubsequencesDFS(nums, i + 1, res, cur);
+            cur.pop_back();
         }
     }
     
     
     vector<vector<int>> findSubsequences(vector<int>& nums) {
-        vector<vector<int>> res;    
-        findSubsequencesDFS(nums, 0, res, {});
-    
-        // unique只能删除相邻的重复元素
-        sort(res.begin(), res.end());
-        res.erase(unique(res.begin(), res.end()), res.end());
+        vector<vector<int>> res;
+        vector<int> cur;
+        
+        findSubsequencesDFS(nums, 0, res, cur);
+        
         return res;
     }
 };
