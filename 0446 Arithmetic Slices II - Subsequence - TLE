@@ -1,0 +1,47 @@
+// Input: nums = [2,4,6,8,10]
+// Output: 7
+// Explanation: All arithmetic subsequence slices are:
+// [2,4,6]
+// [4,6,8]
+// [6,8,10]
+// [2,4,6,8]
+// [4,6,8,10]
+// [2,4,6,8,10]
+// [2,6,10]
+
+class Solution {
+public:
+    
+    void numberOfArithmeticSlicesDFS(vector<int>& nums, int start, vector<int> &out, int& cnt) {
+        if (out.size() >= 3) {
+            cnt++;
+        }
+        
+        if (start == nums.size()) {
+            return;
+        }
+        
+        for (int i = start; i < nums.size(); i++) {
+            // 加上nums[i]就要进入判断的时候，提前剪枝掉一部分
+            if (out.size() >= 2) {
+                // 防止int溢出
+                long diff1 = long(nums[i]) - long(out.back());
+                long diff2 = long(out[1]) - long(out[0]);
+                if (diff1 != diff2) continue;
+            } 
+            
+            out.push_back(nums[i]);
+            numberOfArithmeticSlicesDFS(nums, i+1, out, cnt);
+            out.pop_back();
+        }
+    }
+    
+    int numberOfArithmeticSlices(vector<int>& nums) {
+        vector<int> out = {};
+        int cnt = 0;
+        
+        numberOfArithmeticSlicesDFS(nums, 0, out, cnt);
+        
+        return cnt;
+    }
+};
