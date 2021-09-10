@@ -1,0 +1,28 @@
+// Input: timeSeries = [1,2], duration = 2
+// Output: 3
+// Explanation: Teemo's attacks on Ashe go as follows:
+// - At second 1, Teemo attacks, and Ashe is poisoned for seconds 1 and 2.
+// - At second 2 however, Teemo attacks again and resets the poison timer. Ashe is poisoned for seconds 2 and 3.
+// Ashe is poisoned for seconds 1, 2, and 3, which is 3 seconds in total.
+
+class Solution {
+public:
+    int findPoisonedDuration(vector<int>& timeSeries, int duration) {
+        int size = timeSeries.size();
+        
+        int poisoned = 0;
+        
+        for (int i = size-1; i >= 0; i--) {
+            // 完整的poison
+            if (i == size-1 || timeSeries[i]+duration-1 < timeSeries[i+1]) {
+                poisoned += duration;
+            }
+            // 不完整的poison
+            else if (timeSeries[i]+duration-1 >= timeSeries[i+1]) {
+                poisoned += timeSeries[i+1] - timeSeries[i];
+            }
+        }
+    
+        return poisoned;
+    }
+};
