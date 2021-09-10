@@ -1,0 +1,31 @@
+// Input: nums = [1,3,4,2,2]
+// Output: 2
+
+class Solution {
+public:
+    int findDuplicate(vector<int>& nums) {
+        // 通过找多出来的那一半边，不断缩短范围
+        int left = 1, right = nums.size();
+        
+        while (left < right){
+            int mid = left + (right - left) / 2;
+            int cnt = 0;
+            
+            for (int num : nums) {
+                if (num <= mid) {
+                    cnt++;
+                }
+            }
+            
+            // 例如12342,mid=2,cnt=3; 12343,mid=2,cnt=2
+            if (cnt <= mid) {
+                left = mid + 1;
+            }
+            else {
+                right = mid;
+            }
+        }    
+        
+        return right;
+    }
+};
