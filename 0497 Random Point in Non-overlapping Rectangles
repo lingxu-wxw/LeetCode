@@ -1,0 +1,52 @@
+// Input
+// ["Solution", "pick", "pick", "pick", "pick", "pick"]
+// [[[[-2, -2, 1, 1], [2, 2, 4, 6]]], [], [], [], [], []]
+// Output
+// [null, [1, -2], [1, -1], [-1, -2], [-2, -2], [0, 0]]
+
+// Explanation
+// Solution solution = new Solution([[-2, -2, 1, 1], [2, 2, 4, 6]]);
+// solution.pick(); // return [1, -2]
+// solution.pick(); // return [1, -1]
+// solution.pick(); // return [-1, -2]
+// solution.pick(); // return [-2, -2]
+// solution.pick(); // return [0, 0]
+
+class Solution {
+public:
+    Solution(vector<vector<int>>& rects) {
+        this->rects = rects;
+    }
+    
+    vector<int> pick() {
+        // 为了保证等概率，用范围内点的个数作为索引来选择长方形
+        // 通过类似计算面积的方法计算范围内点的个数
+        int sumarea = 0;
+        vector<int> selected;
+        
+        for (auto rect : rects) {
+            int area = (rect[2] - rect[0] + 1) * (rect[3] - rect[1] + 1);
+            sumarea += area;
+            
+            // 比较奇怪的随机方式
+            if (rand() % sumarea < area) {
+                selected = rect;
+            }
+        }
+        
+        // 选定长方形后继续选点
+        int x = (rand() % (selected[2] - selected[0] + 1)) + selected[0];
+        int y = (rand() % (selected[3] - selected[1] + 1)) + selected[1];
+        
+        return {x, y};
+    }
+
+private:
+    vector<vector<int>> rects;
+};
+
+/**
+ * Your Solution object will be instantiated and called as such:
+ * Solution* obj = new Solution(rects);
+ * vector<int> param_1 = obj->pick();
+ */
