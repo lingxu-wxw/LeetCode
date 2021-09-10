@@ -1,0 +1,70 @@
+// Input: mat = [[1,2,3],[4,5,6],[7,8,9]]
+// Output: [1,2,4,7,5,3,6,8,9]
+
+class Solution {
+public:
+    vector<int> findDiagonalOrder(vector<vector<int>>& mat) {
+        int height = mat.size();
+        int width = mat[0].size();
+        
+        int cnt = height * width;
+        
+        // 右上：i越界 往右，j越界 往下，i/j越界 往下，i只会越<0，j只会越>n
+        // 左下：i越界 往右，j越界 往下，i/j越界 往右，i只会越>m，j只会越<0
+        
+        int i = 0, j = 0;
+        int nexti, nextj;
+        int rightup = 1;
+        
+        vector<int> res;
+        
+        while (cnt > 0) {
+            res.push_back(mat[i][j]);
+            cnt--;
+            
+            if (i == height-1 && j == width-1) {
+                break;
+            }
+            
+            // 右上方向
+            if (rightup) {
+                // j越界，往下
+                if (j+1 >= width) {
+                    nexti = i+1; nextj = j;
+                    rightup = 0;
+                }
+                // i越界，往右
+                else if (i-1 < 0) {
+                    nexti = i; nextj = j+1;
+                    rightup = 0;
+                }
+                // 没有越界
+                else {
+                    nexti = i-1; nextj = j+1;
+                }
+            }
+            // 左下方向
+            else {
+                // i越界，往右
+                if (i+1 >= height) {
+                    nexti = i; nextj = j+1;
+                    rightup = 1;
+                }
+                // j越界，往下
+                else if (j-1 < 0) {
+                    nexti = i+1; nextj = j;
+                    rightup = 1;
+                }
+                // 没有越界
+                else {
+                    nexti = i+1; nextj = j-1;
+                }
+            }
+            
+            // 更新下一个遍历的i和j
+            i = nexti; j = nextj;
+        }
+        
+        return res;
+    }
+};
