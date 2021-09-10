@@ -1,0 +1,36 @@
+// Input: nums1 = [4,1,2], nums2 = [1,3,4,2]
+// Output: [-1,3,-1]
+// Explanation: The next greater element for each value of nums1 is as follows:
+// - 4 is underlined in nums2 = [1,3,4,2]. There is no next greater element, so the answer is -1.
+// - 1 is underlined in nums2 = [1,3,4,2]. The next greater element is 3.
+// - 2 is underlined in nums2 = [1,3,4,2]. There is no next greater element, so the answer is -1.
+
+class Solution {
+public:
+    vector<int> nextGreaterElement(vector<int>& nums1, vector<int>& nums2) {
+        
+        // val - idx in nums2
+        // All integers in nums1 and nums2 are unique
+        unordered_map<int, int> map;
+        
+        for (int i = 0; i < nums2.size(); i++) {
+            map[nums2[i]] = i;
+        }
+        
+        // 开始寻找next greater
+        vector<int> res(nums1.size(), -1);
+        
+        for (int j = 0; j < nums1.size(); j++) {
+            int idx = map[nums1[j]];
+            
+            for (int i = idx+1; i < nums2.size(); i++) {
+                if (nums2[i] > nums1[j]) {
+                    res[j] = nums2[i];
+                    break;
+                }
+            }
+        }
+        
+        return res;
+    }
+};
