@@ -1,0 +1,66 @@
+// Input: nums = [5,2,6,1]
+// Output: [2,1,1,0]
+// Explanation:
+// To the right of 5 there are 2 smaller elements (2 and 1).
+// To the right of 2 there is only 1 smaller element (1).
+// To the right of 6 there is 1 smaller element (1).
+// To the right of 1 there is 0 smaller element.
+
+class Solution {
+   
+    // 如果我们对数组进行排序，那么对于某个特定的数据，其后面的逆序数等于在排序过程中需要移动到该数前面的个数 
+    private void sort(int[] nums, int[] smaller, int[] pos, int from, int to) {
+        if (from >= to) return;
+        
+        int mid = (from + to) / 2;
+        sort(nums, smaller, pos, from, mid);
+        sort(nums, smaller, pos, mid+1, to);
+        
+        int[] merged = new int[to-from+1];
+        int i = from, j = mi+1, k = 0, jump = 0;
+        
+        while (i <= mid || j <= to) {
+            if (i > mid) {
+                jump++;
+                merged[k++] = pos[j++];
+            } 
+            else if (j > to) {
+                smaller[pos[i]] += jump;
+                merged[k++] = pos[i++];
+            } 
+            else if (nums[pos[i]] <= nums[pos[j]]) {
+                smaller[pos[i]] += jump;
+                merged[k++] = pos[i++];
+            } 
+            else {
+                jump++;
+                merged[k++] = pos[j++];
+            }
+        }
+        
+        for(int p = 0; p < merged.length; p++) {
+            pos[from+p] = merged[p];
+        }
+    }
+    
+    
+    public List<Integer> countSmaller(int[] nums) {
+        int[] smaller = new int[nums.length];
+        int[] pos = new int[nums.length];
+        
+        for(int i = 0; i < pos.length; i++) {
+            pos[i] = i;
+        }
+        
+        sort(nums, smaller, pos, 0, nums.length - 1);
+        
+        // 输出结果
+        List<Integer> result = new ArrayList<>(nums.length);
+        
+        for(int i = 0; i < nums.length; i++) {
+            result.add(smaller[i]);
+        }
+        
+        return result;
+    }
+}
