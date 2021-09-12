@@ -1,0 +1,59 @@
+// Input: root = [1,null,2,2]
+// Output: [2]
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    
+    // 中序遍历
+    void inorder(TreeNode* root) {
+        if (!root) {
+            return;
+        }
+        
+        // 左孩子
+        inorder(root->left);
+        
+        // visit 当前结点
+        if (cnt > 0 && root->val == val) {
+            cnt++;
+        } else {
+            cnt = 1;
+            val = root->val;
+        }
+        
+        if (cnt > maxcnt) {
+            maxcnt = cnt;
+            res.clear();
+        }
+        if (cnt == maxcnt) {
+            res.push_back(val);
+        }
+        
+        // 右孩子
+        inorder(root->right);
+    }
+    
+    vector<int> findMode(TreeNode* root) {
+        inorder(root);
+        return res;
+    }
+    
+    
+private:
+    vector<int> res;
+
+    int val = 0;
+    int cnt = 0;
+    int maxcnt = 0;
+};
