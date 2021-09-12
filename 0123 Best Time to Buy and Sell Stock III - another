@@ -1,0 +1,74 @@
+// Input: prices = [3,3,5,0,0,3,1,4]
+// Output: 6
+// Explanation: Buy on day 4 (price = 0) and sell on day 6 (price = 3), profit = 3-0 = 3.
+// Then buy on day 7 (price = 1) and sell on day 8 (price = 4), profit = 4-1 = 3.
+
+class Solution {
+public:
+    int maxProfit(vector<int>& prices) {
+        int size = prices.size();
+        
+        // step 1: 从左往右遍历，遍历当前见到过的最低股价
+        vector<int> minprices(size, 0);
+        int minprice = INT_MAX;
+        
+        for (int i = 0; i < size; i++) {
+            if (prices[i] < minprice) {
+                minprice = prices[i];
+            }
+            minprices[i] = minprice;
+        }
+        
+        // step 2: 从右往左遍历，遍历当前见到过的最高股价
+        vector<int> maxprices(size, 0);
+        int maxprice = INT_MIN;
+        
+        for (int i = size-1; i >= 0; i--) {
+            if (prices[i] > maxprice) {
+                maxprice = prices[i];
+            }
+            maxprices[i] = maxprice;
+        }
+        
+        // step 3: prices - minprices, 得到当天及当天之前买入，当天卖出，所获得的最大收益
+        // 同时比较maxpreprofit，修正为当天及当天之前买入，当天及当天之前卖出，所获得的最大收益
+        vector<int> preprofit(size, 0);
+        int maxpreprofit = INT_MIN;
+        
+        for (int i = 0; i < size; i++) {
+            preprofit[i] = prices[i] - minprices[i];
+            
+            if (preprofit[i] < maxpreprofit) {
+                preprofit[i] = maxpreprofit;
+            } else {
+                maxpreprofit = preprofit[i];
+            }
+        }
+        
+        // step 4: maxprices - prices, 得到当天买入，当天及当天之前卖出，所获得的最大收益
+        // 同时比较maxpostprofit，修正为当天及当天之后买入，当天及当天之后卖出，所获得的最大收益
+        vector<int> postprofit(size, 0);
+        int maxpostprofit = INT_MIN;
+        
+        for (int i = size-1; i >= 0; i--) {
+            postprofit[i] = maxprices[i] - prices[i];
+            
+            if (postprofit[i] < maxpostprofit) {
+                postprofit[i] = maxpostprofit;
+            } else {
+                maxpostprofit = postprofit[i];
+            }
+        }
+        
+        // step 5: preprofit + postprofit, 得到在当天及当天之前完成一次交易，当天及当天之后完成一次交易，所获得的最大收益
+        int res = INT_MIN;
+        
+        for (int i = 0; i < size; i++) {
+            if (preprofit[i] + postprofit[i] > res) {
+                res = preprofit[i] + postprofit[i];
+            }    
+        }
+        
+        return res;
+    }
+};
