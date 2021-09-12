@@ -1,0 +1,42 @@
+// Input: nums = [2,4,6,8,10]
+// Output: 7
+// Explanation: All arithmetic subsequence slices are:
+// [2,4,6]
+// [4,6,8]
+// [6,8,10]
+// [2,4,6,8]
+// [4,6,8,10]
+// [2,4,6,8,10]
+// [2,6,10]
+
+class Solution {
+public:
+    
+    int numberOfArithmeticSlices(vector<int>& nums) {
+        int size = nums.size();
+        
+        // 遍历到idx为止，各种diff对应的情况数目
+        vector<unordered_map<int, int>> dp(size);
+        int res = 0;
+        
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < i; j++) {
+                // 避免溢出
+                // corner case: [0,2000000000,-294967296]
+                long delta = (long)nums[i] - (long)nums[j];
+                if (delta > INT_MAX || delta < INT_MIN) continue;
+                
+                int diff = (int)delta;
+                dp[i][diff]++;
+                
+                // 这样至少能够形成 x-nums[j]-nums[i]的等差数列，数量为dp[j][diff]个
+                if (dp[j].count(diff)) {
+                    res += dp[j][diff];
+                    dp[i][diff] += dp[j][diff];
+                }
+            }
+        }
+        
+        return res;
+    }
+};
