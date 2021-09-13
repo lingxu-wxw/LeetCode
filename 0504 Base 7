@@ -1,0 +1,27 @@
+// Input: num = 100
+// Output: "202"
+
+// Input: num = -7
+// Output: "-10"
+
+class Solution {
+public:
+    string convertToBase7(int num) {
+        string res = (num < 0) ? "-" : "";
+        
+        num = abs(num);
+        
+        int level = 1;
+        while (level*7 <= num) {
+            level = level * 7;
+        }
+        
+        while (level >= 1) {
+            res += to_string(num / level);
+            num = num % level;
+            level = level / 7;
+        }
+        
+        return res;
+    }
+};
