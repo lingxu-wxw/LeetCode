@@ -1,0 +1,42 @@
+// Input: score = [10,3,8,9,4]
+// Output: ["Gold Medal","5","Bronze Medal","Silver Medal","4"]
+// Explanation: The placements are [1st, 5th, 3rd, 2nd, 4th].
+
+class Solution {
+public:
+    vector<string> findRelativeRanks(vector<int>& score) {
+        // 优先队列，堆排序，大顶堆
+        // map也有自动排序功能，但是是小顶堆，升序排列，从大到小读取的话要用rbegin
+        
+        int size = score.size();
+        
+        // val - idx
+        priority_queue<pair<int, int>> queue;
+        int rank = 1;
+        
+        vector<string> res(size, "");
+        
+        for (int i = 0; i < size; i++) {
+            queue.push({score[i], i});
+        }
+        
+        for (int i = 0; i < size; i++) {
+            int idx = queue.top().second;
+            queue.pop();
+            
+            if (rank == 1) {
+                res[idx] = "Gold Medal";
+            } else if (rank == 2) {
+                res[idx] = "Silver Medal";               
+            } else if (rank == 3) {
+                res[idx] = "Bronze Medal"; 
+            } else {
+                res[idx] = to_string(rank);
+            }
+            
+            rank++;
+        }
+        
+        return res;
+    }
+};
