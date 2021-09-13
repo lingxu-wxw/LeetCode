@@ -1,0 +1,26 @@
+// Input: text = "loonbalxballpoon"
+// Output: 2
+
+class Solution {
+public:
+    int maxNumberOfBalloons(string text) {
+        unordered_map<char, int> map;
+        int res = 0;
+        
+        for (char c : text) {
+            map[c]++;
+        }
+        
+        // balloon
+        while (map['b'] >= 1 && map['a'] >= 1 && map['l'] >= 2 && map['o'] >= 2 && map['n'] >= 1) {
+            res++;
+            map['b'] -= 1;
+            map['a'] -= 1;
+            map['l'] -= 2;
+            map['o'] -= 2;
+            map['n'] -= 1;
+        } 
+        
+        return res;
+    }
+};
