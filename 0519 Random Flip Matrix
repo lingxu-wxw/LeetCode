@@ -1,0 +1,50 @@
+// Input
+// ["Solution", "flip", "flip", "flip", "reset", "flip"]
+// [[3, 1], [], [], [], [], []]
+// Output
+// [null, [1, 0], [2, 0], [0, 0], null, [2, 0]]
+
+// Explanation
+// Solution solution = new Solution(3, 1);
+// solution.flip();  // return [1, 0], [0,0], [1,0], and [2,0] should be equally likely to be returned.
+// solution.flip();  // return [2, 0], Since [1,0] was returned, [2,0] and [0,0]
+// solution.flip();  // return [0, 0], Based on the previously returned indices, only [0,0] can be returned.
+// solution.reset(); // All the values are reset to 0 and can be returned.
+// solution.flip();  // return [2, 0], [0,0], [1,0], and [2,0] should be equally likely to be returned.
+
+class Solution {
+public:
+    
+    // m = 3, n = 2, [0, 0], [0, 1], [1, 0], [1, 1], [2, 0], [2, 1]
+    
+    Solution(int m, int n) {
+        this->m = m;
+        this->n = n;
+    }
+    
+    vector<int> flip() {
+        while (true) {
+            int idx = rand() % (m * n);
+            
+            if (!fliped.count(idx)) {
+                fliped.insert(idx);
+                return {idx / n, idx % n};
+            }
+        }
+    }
+    
+    void reset() {
+        fliped.clear();
+    }
+
+private:
+    unordered_set<int> fliped;
+    int m, n;
+};
+
+/**
+ * Your Solution object will be instantiated and called as such:
+ * Solution* obj = new Solution(m, n);
+ * vector<int> param_1 = obj->flip();
+ * obj->reset();
+ */
