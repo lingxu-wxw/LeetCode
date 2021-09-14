@@ -1,0 +1,61 @@
+// Input: matrix = [[9,9,4],[6,6,8],[2,1,1]]
+// Output: 4
+// Explanation: The longest increasing path is [1, 2, 6, 9].
+
+class Solution {
+public:
+    
+    vector<vector<int>> directions = {{1,0}, {-1,0}, {0,1}, {0,-1}};
+    
+    // 顶点{i,j}出发得到的最长递增path
+    int longestIncreasingPathDFS(vector<vector<int>>& matrix, unordered_map<int, int>& map, int i, int j) {
+        int height = matrix.size();
+        int width = matrix[0].size();
+        
+        if (i < 0 || i >= height || j < 0 || j >= width) {
+            return 0;
+        }
+        
+        // 已经记录过该结果
+        if (map.count(i*width + j)) {
+            return map[i*width + j];
+        }
+        
+        int longest = 0;
+        
+        for (auto direction : directions) {
+            int newi = i + direction[0];
+            int newj = j + direction[1];
+            
+            if (newi >= 0 && newi < height && newj >= 0 && newj < width) {
+                if (matrix[newi][newj] > matrix[i][j]) {
+                    longest = max(longest, longestIncreasingPathDFS(matrix, map, newi, newj));
+                }
+            }
+        }
+        
+        // 记录当前结果
+        map[i*width + j] = longest + 1;
+        
+        // 包含当前结点的长度，返回
+        return longest + 1;
+    }
+    
+    int longestIncreasingPath(vector<vector<int>>& matrix) {
+        int height = matrix.size();
+        int width = matrix[0].size();
+        
+        // 记录已经计算得出的点的最大path，用于剪枝
+        unordered_map<int, int> map;
+        
+        int res = 0;
+        
+        for (int i = 0; i < height; i++) {
+            for (int j = 0 ; j < width; j++) {
+                res = max(res, longestIncreasingPathDFS(matrix, map, i, j));
+            }
+        }
+        
+        return res;
+    }
+};
