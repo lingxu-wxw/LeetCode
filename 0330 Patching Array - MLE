@@ -1,0 +1,64 @@
+// Input: nums = [1,3], n = 6
+// Output: 1
+// Explanation:
+// Combinations of nums are [1], [3], [1,3], which form possible sums of: 1, 3, 4.
+// Now if we add/patch 2 to nums, the combinations are: [1], [2], [3], [1,3], [2,3], [1,2,3].
+// Possible sums are 1, 2, 3, 4, 5, 6, which now covers the range [1, 6].
+// So we only need 1 patch.
+
+class Solution {
+public:
+    
+    // 补全n个数字，使得nums中能组成 [1,n]的所有数字
+    
+    int minPatches(vector<int>& nums, int n) {
+        // 初始化已有的sums
+        unordered_set<int> sums;
+        
+        // 如果已经有该sum，covered记为0，反之记为1
+        vector<int> covered((long)n+1, 1);
+        covered[0] = 0;
+        
+        for (int num : nums) {
+            for (int sum : sums) {
+                if (num + sum > n) continue;
+                
+                sums.insert(num + sum);
+                covered[num + sum] = 0;
+            }
+            
+            sums.insert(num);
+            covered[num] = 0;
+        }
+        
+        // 开始尝试补全，从最小的缺失的开始补，因为没办法通过求和获取
+        int res = 0;
+      
+        // 找数组中第一个不小于给定值的数(包括等于情况), 如果不存在则idx = covered.size()
+        int idx = lower_bound(covered.begin(), covered.end(), 1) - covered.begin();
+        
+        while (idx != n+1) {
+            int num = idx;
+            
+            for (int sum : sums) {
+                if (num + sum > n) continue;
+                
+                sums.insert(num + sum);
+                covered[num + sum] = 0;
+            }
+            
+            sums.insert(num);
+            covered[num] = 0;
+            
+            idx = lower_bound(covered.begin(), covered.end(), 1) - covered.begin();
+            
+            res++;
+        }
+        
+        return res;
+    }
+};
+
+// 1 x 3 4 x x
+
+// 1 x x x 5 6 x x x 10 11 x x x x 16 x x x x
