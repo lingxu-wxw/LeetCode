@@ -1,0 +1,36 @@
+// Input: amount = 5, coins = [1,2,5]
+// Output: 4
+// Explanation: there are four ways to make up the amount:
+// 5=5
+// 5=2+2+1
+// 5=2+1+1+1
+// 5=1+1+1+1+1
+
+class Solution {
+public:
+    
+    int change(int amount, vector<int>& coins) {
+        int size = coins.size();
+        
+        // dp[i][j]表示使用前i个硬币组成j元有几种解法
+        vector<vector<int>> dp(size+1, vector<int>(amount+1, 0));
+        dp[0][0] = 1;
+        
+        for (int i = 1; i <= size; i++) {
+            int coin = coins[i-1];
+            dp[i][0] = 1;
+            
+            for (int j = 1; j <= amount; j++) {
+                // 不使用新的硬币coin
+                dp[i][j] += dp[i-1][j];
+                
+                // 使用新的硬币coin
+                if (coin <= j) {
+                    dp[i][j] += dp[i][j-coin];
+                }
+            }
+        }
+        
+        return dp[size][amount];
+    }
+};
