@@ -1,0 +1,37 @@
+// Input: nums = [23,2,4,6,7], k = 6
+// Output: true
+// Explanation: [2, 4] is a continuous subarray of size 2 whose elements sum up to 6.
+
+// Input: nums = [23,2,6,4,7], k = 6
+// Output: true
+// Explanation: [23, 2, 6, 4, 7] is an continuous subarray of size 5 whose elements sum up to 42.
+// 42 is a multiple of 6 because 42 = 7 * 6 and 7 is an integer.
+
+class Solution {
+public:
+    bool checkSubarraySum(vector<int>& nums, int k) {
+        int size = nums.size();
+        
+        // dp[i][j]表示[i,j]的和
+        vector<vector<int>> dp(size, vector<int>(size, 0));
+        
+        // 初始化对角线
+        for (int i = 0; i < size; i++) {
+            dp[i][i] = nums[i];
+        }
+        
+        // 转移方程，一条一条斜着更新
+        for (int len = 1; len < size; len++) {
+            for (int i = 0; i < size-len; i++) {
+                int j = i + len;
+                dp[i][j] = dp[i][j-1] + dp[i+1][j] - dp[i+1][j-1];
+                
+                if (dp[i][j] % k == 0) {
+                    return true;
+                }
+            }
+        }
+        
+        return false;
+    }
+};
