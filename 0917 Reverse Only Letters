@@ -1,0 +1,25 @@
+// Input: s = "a-bC-dEf-ghIj"
+// Output: "j-Ih-gfE-dCba"
+
+class Solution {
+public:
+    string reverseOnlyLetters(string s) {
+        string letters = "";
+        
+        for (int i = s.length()-1; i >= 0; i--) {
+            if ((s[i] >= 'a' && s[i] <= 'z') || (s[i] >= 'A' && s[i] <= 'Z')) {
+                letters += s[i];
+            }
+        }
+        
+        for (int i = 0; i < s.length(); i++) {
+            if (!(s[i] >= 'a' && s[i] <= 'z') && !(s[i] >= 'A' && s[i] <= 'Z')) {
+                string str = "";
+                str += s[i];
+                letters.insert(i, str);
+            } 
+        }
+        
+        return letters;
+    }
+};
