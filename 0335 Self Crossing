@@ -1,0 +1,33 @@
+class Solution {
+public:
+    bool isSelfCrossing(vector<int>& distance) { 
+        // 如果图形不相交，那么一定是一圈一圈绕的更大或者一圈一圈绕的更小
+        // 如果图形相交，那么一定是最近几步就能判断出来的
+        
+        int size = distance.size();
+        
+        // 情况1
+        if (size <= 3) return false;
+        
+        for (int i = 3; i < size; i++) {
+            // 情况2：[2,1,1,2]
+            if (distance[i-1] <= distance[i-3] && distance[i] >= distance[i-2]) {
+                return true;
+            }
+            
+            // 情况3：[1,1,2,1,1], [1,1,2,2,2,1]
+            if (i >= 4 && distance[i-1] == distance[i-3] && distance[i] + distance[i-4] >= distance[i-2]) {
+                return true;
+            }
+            
+            // 情况3：[1,1,2,2,1,1], [1,1,2,2,3,1,1]
+            
+            if (i >= 5 && distance[i-3] >= distance[i-1] && distance[i-1] + distance[i-5] >= distance[i-3] 
+                && distance[i-2] >= distance[i-4] && distance[i] + distance[i-4] >= distance[i-2]) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+};
