@@ -1,0 +1,65 @@
+// Input: strs = ["aba","cdc","eae"]
+// Output: 3
+
+// Input: strs = ["aaa","aaa","aa"]
+// Output: -1
+
+class Solution {
+public:
+    
+    // 长度大的字符串排在前面，相同长度的话按照字母序
+    static bool comp(string& s1, string& s2) {
+        if (s1.length() == s2.length()) {
+            return s1 > s2;
+        }
+        return s1.length() > s2.length();
+    }
+    
+    
+    int findLUSlength(vector<string>& strs) {
+        int size = strs.size();
+        
+        // 将字符串按照长度排序
+        sort(strs.begin(), strs.end(), comp);
+        
+        // 用来存在已经遍历过相同的字符串
+        unordered_set<string> set;
+        
+        for (int i = 0; i < size; i++) {
+            // 如果遍历到最后一个/防止溢出，或者出现不相同
+            if (i == size-1 || strs[i] != strs[i+1]) {
+                // 判断strs[i-1]是否是set中某个字符串的子串
+                bool notSubsequence = true;
+                
+                for (auto str : set) {
+                    int j = 0;
+                    
+                    for (char c : str) {
+                        if (strs[i][j] == c) {
+                            j++;
+                        }
+                        // strs[i]是str的子串
+                        if (j == strs[i].length()) {
+                            break;
+                        }
+                    }
+                    
+                    if (j == strs[i].length()) {
+                        notSubsequence = false;
+                        break;
+                    }
+                }
+                
+                // 如果strs[i]不是set中任何一个的子串，那它就是最长非公共子序列
+                if (notSubsequence) {
+                    return strs[i].length();
+                }
+            }
+            
+            // set有去重功能，可以节省时间
+            set.insert(strs[i]);
+        }
+        
+        return -1;
+    }
+};
