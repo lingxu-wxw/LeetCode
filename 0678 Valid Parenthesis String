@@ -1,0 +1,43 @@
+// The following rules define a valid string:
+
+// Any left parenthesis '(' must have a corresponding right parenthesis ')'.
+// Any right parenthesis ')' must have a corresponding left parenthesis '('.
+// Left parenthesis '(' must go before the corresponding right parenthesis ')'.
+// '*' could be treated as a single right parenthesis ')' or a single left parenthesis '(' or an empty string "".
+
+class Solution {
+public:
+    bool checkValidString(string s) {
+        int slen = s.length();
+        
+        // 先从左往右遍历，看看有没有可能出现右括号太多的情况
+        int left = 0, right = 0, star = 0;
+        
+        for (int i = 0; i < slen; i++) {
+            if (s[i] == '(')  left++;
+            else if (s[i] == ')')  right++;
+            else if (s[i] == '*')  star++;
+            
+            // 任何一刻如果出现这种情况就失衡了
+            if (left + star < right) {
+                return false;
+            }
+        }
+        
+        // 再从右往左遍历，看看有没有可能出现左括号太多的情况
+        left = 0, right = 0, star = 0;
+        
+        for (int i = slen-1; i >= 0; i--) {
+            if (s[i] == '(')  left++;
+            else if (s[i] == ')')  right++;
+            else if (s[i] == '*')  star++;
+            
+            // 任何一刻如果出现这种情况就失衡了
+            if (right + star < left) {
+                return false;
+            }
+        }
+        
+        return true;
+    }
+};
