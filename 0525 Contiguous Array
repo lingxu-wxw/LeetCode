@@ -1,0 +1,33 @@
+// Input: nums = [0,1,0]
+// Output: 2
+// Explanation: [0, 1] (or [1, 0]) is a longest contiguous subarray with equal number of 0 and 1.
+
+class Solution {
+public:
+    int findMaxLength(vector<int>& nums) {
+        int size = nums.size();
+        
+        // 记录一个cnt，遇见1 加一，遇见0 减一
+        int cnt = 0;
+        
+        // cnt值 - [0,i]的末位idx值i
+        // 如果出现相同的cnt值，两段区间相减中间的区间就是0；但map中仍然记录较小值
+        unordered_map<int, int> map;
+        map[0] = -1;
+        
+        int res = 0;
+        
+        for (int i = 0; i < size; i++) {
+            cnt = (nums[i] == 1) ? cnt+1 : cnt-1;
+            
+            if (map.count(cnt)) {
+                res = max(res, i - map[cnt]);
+            }
+            else {
+                map[cnt] = i;
+            }
+        }
+        
+        return res;
+    }
+};
