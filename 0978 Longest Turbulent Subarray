@@ -1,0 +1,30 @@
+// Input: arr = [9,4,2,10,7,8,8,1,9]
+// Output: 5
+// Explanation: arr[1] > arr[2] < arr[3] > arr[4] < arr[5]
+
+class Solution {
+public:
+    int maxTurbulenceSize(vector<int>& arr) {
+        int size = arr.size();
+        
+        // 到idx i为止，最后一位是上升或下降，这样能维持的最长的subarray长度
+        // 单独一个数字也是subarray
+        vector<int> inc(size, 1);
+        vector<int> dec(size, 1);
+        
+        int res = 1;
+        
+        for (int i = 1; i < size; i++) {
+            if (arr[i] > arr[i-1]) {
+                inc[i] = dec[i-1] + 1;
+            }
+            else if (arr[i] < arr[i-1]) {
+                dec[i] = inc[i-1] + 1;
+            }
+            
+            res = max(res, max(inc[i], dec[i]));
+        }
+        
+        return res;
+    }
+};
