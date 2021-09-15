@@ -1,0 +1,47 @@
+// Input: words = ["abcd","dcba","lls","s","sssll"]
+// Output: [[0,1],[1,0],[3,2],[2,4]]
+// Explanation: The palindromes are ["dcbaabcd","abcddcba","slls","llssssll"]
+
+class Solution {
+public:
+    vector<vector<int>> palindromePairs(vector<string>& words) {
+        int size = words.size();
+        if (size <= 1) return {};
+        
+        vector<vector<int>> res;
+        
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                // 不能是相同的字符串
+                if (i == j) continue;
+                
+                // words[i]放前面, words[j]放后面
+                int ilen = words[i].length();
+                int jlen = words[j].length();
+                
+                int step = 0;
+                char ci, cj;
+                
+                bool ispair = true;
+                
+                while (step < (ilen + jlen) / 2) {
+                    ci = (step < ilen) ? words[i][step] : words[j][step - ilen];
+                    cj = (step < jlen) ? words[j][jlen-1 - step] : words[i][ilen-1 + jlen - step];
+                    
+                    if (ci != cj) {
+                        ispair = false;
+                        break;
+                    }
+                    
+                    step++;
+                }
+                
+                if (ispair) {
+                    res.push_back({i, j});
+                }
+            }
+        }
+        
+        return res;
+    }
+};
