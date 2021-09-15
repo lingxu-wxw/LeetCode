@@ -1,0 +1,44 @@
+// Input: n = 2
+// Output: 2
+// Explanation: 
+// The first beautiful arrangement is [1,2]:
+//     - perm[1] = 1 is divisible by i = 1
+//     - perm[2] = 2 is divisible by i = 2
+// The second beautiful arrangement is [2,1]:
+//     - perm[1] = 2 is divisible by i = 1
+//     - i = 2 is divisible by perm[2] = 1
+
+class Solution {
+public:
+    
+    // n表示当前操作前n个数之间的交换
+    int countArrangementDFS(int n, vector<int>& nums) {
+        if (n <= 0) {
+            return 1;
+        }
+        
+        int res = 0;
+        
+        for (int i = 0; i < n; i++) {
+            // 每次都跟最后一位比是否能除，这样可以缩短nums递归的长度
+            if (n % nums[i] == 0 || nums[i] % n == 0) {
+                swap(nums[i], nums[n-1]);
+                res += countArrangementDFS(n-1, nums);
+                swap(nums[i], nums[n-1]);
+            }
+        }
+        
+        return res;
+    }
+    
+    int countArrangement(int n) {
+        vector<int> nums(n);
+        
+        // 初始化一个规整排列
+        for (int i = 0; i < n; i++) {
+            nums[i] = i + 1;
+        }
+        
+        return countArrangementDFS(n, nums);
+    }
+};
