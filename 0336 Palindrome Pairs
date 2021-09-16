@@ -1,0 +1,75 @@
+// Input: words = ["abcd","dcba","lls","s","sssll"]
+// Output: [[0,1],[1,0],[3,2],[2,4]]
+// Explanation: The palindromes are ["dcbaabcd","abcddcba","slls","llssssll"]
+
+class Solution {
+public:
+    
+    // 判断长串的部分是否是回文
+    bool isValid(string str, int left, int right) {
+        while (left < right) {
+            if (str[left] != str[right]) {
+                return false;
+            }
+            
+            left++;
+            right--;
+        }
+        
+        return true;
+    }
+    
+    vector<vector<int>> palindromePairs(vector<string>& words) {
+        int size = words.size();
+        if (size <= 1) return {};
+        
+        // word - idx
+        unordered_map<string, int> map;
+        // set中存放已经遍历过的word的长度，set<int>是自动升序排序的
+        set<int> set;
+        
+        vector<vector<int>> res;
+        
+        // 初始化map和set
+        for (int i = 0; i < size; i++) {
+            map[words[i]] = i;
+            set.insert(words[i].length());
+        }
+        
+        // 遍历是否有符合的回文对
+        for (int i = 0; i < size; i++) {
+            string word = words[i];
+            int len = word.length();
+            
+            // 翻转word
+            reverse(word.begin(), word.end());
+            
+            // 情况1：长度相同的回文对，abcd dcba，要注意abba单个是不能计入的
+            if (map.count(word) && map[word] != i) {
+                res.push_back({i, map[word]});
+            }
+            
+            // 情况2：长度不同的会问对，lls s，sll s，长串找匹配的短串，但匹配方式有短串在前和短串在后两种
+            auto iter = set.find(len);
+            
+            // 在长度比word小的串中寻找，注意word此时翻转过
+            for (auto it = set.begin(); it != iter; it++) {
+                // short length
+                int slen = *it;
+                
+                // 最终结果短串在前，长串翻转后，长串后半部分自己匹配，前半部分匹配短串，e.g lllts st, 翻转后为stlll st
+                if (isValid(word, slen, len-1) && map.count(word.substr(0, slen))) {
+                    res.push_back({map[word.substr(0, slen)], i});
+                }
+                
+                // 最终结果短串在后，长串翻转后，长串前半部分自己匹配，后半部分匹配短串，e.g stlll ts, 翻转后为lllts ts
+                if (isValid(word, 0, len-1 - slen) && map.count(word.substr(len - slen))) {
+                    res.push_back({i, map[word.substr(len - slen)]});
+                }
+            }
+        }
+        
+        
+        return res;
+    }
+};
