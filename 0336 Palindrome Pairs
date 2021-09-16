@@ -49,7 +49,7 @@ public:
                 res.push_back({i, map[word]});
             }
             
-            // 情况2：长度不同的会问对，lls s，sll s，长串找匹配的短串，但匹配方式有短串在前和短串在后两种
+            // 情况2：长度不同的回文对，lls s，sll s，长串找匹配的短串，但匹配方式有短串在前和短串在后两种
             auto iter = set.find(len);
             
             // 在长度比word小的串中寻找，注意word此时翻转过
