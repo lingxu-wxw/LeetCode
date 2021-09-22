@@ -1,0 +1,61 @@
+// Input: arr = ["un","iq","ue"]
+// Output: 4
+// Explanation: All possible concatenations are "","un","iq","ue","uniq" and "ique".
+// Maximum length is 4.
+
+class Solution {
+public:
+    
+    // 返回num二进制中 bit=1 的位数
+    int bitCount(int num) {
+        int cnt = 0;
+        
+        while (num > 0) {
+            // 去除最低位的1
+            // 10100 & 10011 = 10000
+            num = num & (num - 1);
+            cnt++;
+        }
+        
+        return cnt;
+    }
+    
+    // masks中的值递归讨论
+    void maxLengthDFS(vector<int>& masks, int idx, int curmask, int& maxlen) {
+        // 先比较统计maxlen
+        maxlen = max(maxlen, bitCount(curmask));
+        
+        for (int i = idx; i < masks.size(); i++) {
+            // 如果当前的masks[i] 可以加入curmask
+            // 1001 & 0110 = 0000
+            if ((masks[i] & curmask) == 0) {
+                maxLengthDFS(masks, i + 1, curmask | masks[i], maxlen);
+            }
+        }
+    }
+    
+    int maxLength(vector<string>& arr) {
+        vector<int> masks;
+        int maxlen = 0;
+        
+        // 先把每个字符串都转化称一个map
+        for (string str : arr) {
+            int mask = 0;
+           
+            for (char c : str) {
+                mask = mask | (1 << (c - 'a'));
+            }
+            
+            // 如果字符串本身就有重复字符，就不再参与后续讨论
+            if (bitCount(mask) != str.length()) {
+                continue;
+            }
+            
+            masks.push_back(mask);
+        }
+        
+        maxLengthDFS(masks, 0, 0, maxlen);
+        
+        return maxlen;
+    }
+};
