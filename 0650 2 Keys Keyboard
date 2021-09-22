@@ -1,0 +1,44 @@
+// Input: n = 3
+// Output: 3
+// Explanation: Intitally, we have one character 'A'.
+// In step 1, we use Copy All operation.
+// In step 2, we use Paste operation to get 'AA'.
+// In step 3, we use Paste operation to get 'AAA'.
+
+class Solution {
+public:
+    
+    // 找到num除了自己外最大的因数
+    int maxFactor(int num) {
+        for (int i = 2; i <= (int)sqrt(num); i++) {
+            if (num % i == 0) {
+                return num / i;
+            }
+        }
+        
+        return 1;
+    }
+    
+    int minSteps(int n) {
+        // 如果当前数字是1，直接结束
+        if (n == 1) {
+            return 0;
+        }
+        
+        // 如果当前数字是素数，那只能copy + (n-1)*paste
+        int factor = maxFactor(n);
+        if (factor == 1) {
+            return n;
+        }
+        
+        // n/factor是到达factor之后需要操作的次数
+        return n / factor + minSteps(factor);
+    }
+    
+};
+
+// 1: A
+// 2: A, Copy, Paste-AA
+// 5: A, Copy, Paste-AA, Paste-AAA, Paste-AAAA, Paste-AAAAA
+// 8: A, Copy, Paste-AA, Copy, Paste-AAAA, Copy, Paste-AAAAAAAA
+// 9: A, Copy, Paste-AA, Paste-AAA, Copy, Paste-AAAAAA, Paste-AAAAAAAAA
