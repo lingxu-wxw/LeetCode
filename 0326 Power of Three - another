@@ -1,0 +1,12 @@
+class Solution {
+public:
+    bool isPowerOfThree(int n) {
+        // 投机取巧
+        // int数字中最大的3的幂
+        // return (n > 0 && 1162261467 % n == 0);
+        
+        // 换底公式
+        // 判断log3n是否是整数，转化成为log3n = log10n / log103是否是整数
+        return (n > 0 && int(log10(n) / log10(3)) - log10(n) / log10(3) == 0);
+    }
+};
