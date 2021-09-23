@@ -1,0 +1,65 @@
+// Input: head = [1,2,3,4,5,6,7,8,9,10], k = 3
+// Output: [[1,2,3,4],[5,6,7],[8,9,10]]
+// Explanation:
+// The input has been split into consecutive parts with size difference at most 1, and earlier parts are a larger size than the later parts.
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    vector<ListNode*> splitListToParts(ListNode* head, int k) {
+        
+        // 获取链表长度
+        ListNode* cur = head;
+        int totalLen = 0;
+        
+        while (cur) {
+            totalLen++;
+            cur = cur->next;
+        }
+        
+        // 获取平均avg和余数rem
+        int avg = totalLen / k;
+        int rem = totalLen % k;
+        
+        // 拆分链表
+        vector<ListNode*> res;
+        cur = head;
+        
+        while (k > 0) {
+            ListNode* tmp = cur;
+            ListNode* pre = NULL;
+            int len = 0;
+
+            // 获取一个链表单元
+            while (cur && len < avg) {
+                len++;
+                pre = cur;
+                cur = cur->next;
+            }
+            if (rem > 0) {
+                rem--;
+                pre = cur;
+                cur = cur->next;
+            }
+            
+            // 将链表单元加入res
+            if (pre) {
+                pre->next = NULL;
+            }
+            res.push_back(tmp);
+            
+            k--;
+        }
+        
+        return res;
+    }
+};
