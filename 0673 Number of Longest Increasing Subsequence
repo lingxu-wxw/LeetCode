@@ -1,0 +1,45 @@
+// Input: nums = [1,3,5,4,7]
+// Output: 2
+// Explanation: The two longest increasing subsequences are [1, 3, 4, 7] and [1, 3, 5, 7].
+
+class Solution {
+public:
+    int findNumberOfLIS(vector<int>& nums) {
+        int size = nums.size();
+        
+        // len[i]表示subsequence最后一位是idx i时的最大长度
+        // cnt[i]表示subsequence最后一位是idx i时最大长度的个数
+        // 初始化，只选择自己作为subsequence
+        vector<int> len(size, 1);
+        vector<int> cnt(size, 1);
+        
+        int maxlen = 0;
+        int maxcnt = 0;
+        
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < i; j++) {
+                if (nums[i] <= nums[j]) continue;
+                
+                // nums[i]可以作为j子串的后续
+                if (len[i] < len[j] + 1) {
+                    len[i] = len[j] + 1;
+                    cnt[i] = cnt[j];
+                } 
+                else if (len[i] == len[j] + 1) {
+                    cnt[i] += cnt[j];
+                }
+            }
+            
+            // 遍历完一个idx后，统计一下当前maxlen
+            if (len[i] == maxlen) {
+                maxcnt += cnt[i];
+            }
+            else if (len[i] > maxlen) {
+                maxlen = len[i];
+                maxcnt = cnt[i];
+            }
+        }
+        
+        return maxcnt;
+    }
+};
