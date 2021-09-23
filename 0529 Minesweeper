@@ -1,0 +1,73 @@
+// Input: board = [["E","E","E","E","E"],["E","E","M","E","E"],["E","E","E","E","E"],["E","E","E","E","E"]], click = [3,0]
+// Output: [["B","1","E","1","B"],["B","1","M","1","B"],["B","1","1","1","B"],["B","B","B","B","B"]]
+
+class Solution {
+public:
+    
+    // 方向：上 下 左 右 左上 左下 右上 右下
+    vector<vector<int>> directions = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}, {-1, -1}, {1, -1}, {-1, 1}, {1, 1}};
+    
+    // 八个方向中是否有雷
+    int adjacentMines(vector<vector<char>>& board, int i, int j) {
+        int height = board.size();
+        int width = board[0].size();
+    
+        int mines = 0;
+        
+        for (auto dir : directions) {
+            int newi = i + dir[0];
+            int newj = j + dir[1];
+            
+            if (newi >= height || newi < 0 || newj >= width || newj < 0) continue;
+            
+            if (board[newi][newj] == 'M') {
+                mines++;
+            }
+        }
+        
+        return mines;
+    }
+    
+    // 向八个方向开始拓展遍历
+    void traverse(vector<vector<char>>& board, int i, int j) {
+        int height = board.size();
+        int width = board[0].size();
+        
+        if (i >= height || i < 0 || j >= width || j < 0) return;
+        
+        // 当前点位已经遍历过，跳过
+        if (board[i][j] != 'E') return;
+        
+        // 当前点位周边的雷数
+        int mines = adjacentMines(board, i, j);
+        
+        // 当前点位是empty, 翻成B, 继续DFS
+        if (mines == 0) {
+            board[i][j] = 'B';
+            
+            for (auto dir : directions) {
+                int newi = i + dir[0];
+                int newj = j + dir[1];
+                traverse(board, newi, newj);
+            }
+        }
+        // 当前点位是数字, 翻成数字
+        else if (mines > 0) {
+            board[i][j] = '0' + mines;
+        }
+    }
+    
+    vector<vector<char>> updateBoard(vector<vector<char>>& board, vector<int>& click) {
+        int i = click[0], j = click[1];
+        
+        // 直接点到雷, 直接结束
+        if (board[i][j] == 'M') {
+            board[i][j] = 'X';
+            return board;
+        }
+        
+        traverse(board, i, j);
+        
+        return board;
+    }
+};
