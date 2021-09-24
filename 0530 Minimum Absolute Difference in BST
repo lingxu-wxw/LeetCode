@@ -1,0 +1,46 @@
+// Input: root = [4,2,6,1,3]
+// Output: 1
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    
+    // pre表示当前遍历到的结点在inorder顺序中的前一个
+    void inorder(TreeNode* root, int& pre, int& res) {
+        if (!root) return;
+        
+        // 遍历左子树的全部部分，会先深入到最小的数
+        inorder(root->left, pre, res);
+        
+        // 第一个数不会进入这里
+        if (pre != -1) {
+            res = min(res, root->val - pre);
+        }
+        
+        pre = root->val;
+        
+        // 遍历右子树的全部部分
+        inorder(root->right, pre, res);
+    }
+    
+    // 由于求absolute difference，而且BST，通过先序遍历后，这个值一定在一组相邻的数中出现
+    int getMinimumDifference(TreeNode* root) {
+        // 这道题BST的值[2,10^4]，所以pre用-1标记
+        int res = INT_MAX;
+        int pre = -1;
+        
+        inorder(root, pre, res);
+        
+        return res;
+    }
+};
