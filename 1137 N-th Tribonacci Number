@@ -1,0 +1,27 @@
+// Input: n = 4
+// Output: 4
+// Explanation:
+// T_3 = 0 + 1 + 1 = 2
+// T_4 = 1 + 1 + 2 = 4
+
+class Solution {
+public:
+    int tribonacci(int n) {
+        if (n == 0) return 0;
+        if (n == 1) return 1;
+        if (n == 2) return 1;
+        
+        int num0 = 0, num1 = 1, num2 = 1;
+        int res;
+        
+        while (n >= 3) {
+            res = num0 + num1 + num2;
+            num0 = num1;
+            num1 = num2;
+            num2 = res;
+            n--;
+        }
+        
+        return res;
+    }
+};
