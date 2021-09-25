@@ -1,0 +1,35 @@
+// Input: word1 = "sea", word2 = "eat"
+// Output: 2
+// Explanation: You need one step to make "sea" to "ea" and another step to make "eat" to "ea".
+
+class Solution {
+public:
+    int minDistance(string word1, string word2) {
+        int len1 = word1.length();
+        int len2 = word2.length();
+        
+        // dp[i][j]表示word1的前i位和word2的前j位的最长subseqence
+        vector<vector<int>> dp(len1 + 1, vector<int>(len2 + 1, 0));
+        
+        // word1和word2的最长公共子串
+        int maxSubSequence = 0;
+        
+        for (int i = 0; i < len1; i++) {
+            for (int j = 0; j < len2; j++) {
+                // 当前位置字母相同
+                if (word1[i] == word2[j]) {
+                    dp[i+1][j+1] = dp[i][j] + 1;
+                }
+                // 当前位置字母不同
+                else {
+                    dp[i+1][j+1] = max(dp[i+1][j], dp[i][j+1]);
+                }
+                
+                maxSubSequence = max(maxSubSequence, dp[i+1][j+1]);
+            }
+        }
+        
+        // 计算要删除的字符
+        return len1 + len2 - 2*maxSubSequence;
+    }
+};
