@@ -1,0 +1,22 @@
+// Input: m = 3, n = 3, ops = [[2,2],[3,3]]
+// Output: 4
+// Explanation: The maximum integer in M is 2, and there are four of it in M. So return 4.
+
+class Solution {
+public:
+    int maxCount(int m, int n, vector<vector<int>>& ops) {
+        int mini = m;
+        int minj = n;
+        
+        for (auto op : ops) {
+            if (op[0] < mini) {
+                mini = op[0];
+            }
+            if (op[1] < minj) {
+                minj = op[1];
+            }
+        }
+        
+        return mini * minj;
+    }
+};
