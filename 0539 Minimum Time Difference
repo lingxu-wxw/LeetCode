@@ -1,0 +1,29 @@
+// Input: timePoints = ["23:59","00:00"]
+// Output: 1
+
+class Solution {
+public:
+    int findMinDifference(vector<string>& timePoints) {
+        int size = timePoints.size();
+        
+        vector<int> times;
+        
+        for (string time : timePoints) {
+            int hour = (time[0] - '0') * 10 + (time[1] - '0');
+            int minute = (time[3] - '0') * 10 + (time[4] - '0');
+            
+            times.push_back(hour*60 + minute);
+        }
+        
+        sort(times.begin(), times.end());
+        
+        // 先计算头尾差值
+        int res = (1440 - times[size-1]) + times[0];
+        
+        for (int i = 1; i < size; i++) {
+            res = min(res, times[i] - times[i-1]);
+        }
+        
+        return res;
+    }
+};
