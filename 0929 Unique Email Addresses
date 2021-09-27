@@ -1,0 +1,38 @@
+// Input: emails = ["test.email+alex@leetcode.com","test.e.mail+bob.cathy@leetcode.com","testemail+david@lee.tcode.com"]
+// Output: 2
+// Explanation: "testemail@leetcode.com" and "testemail@lee.tcode.com" actually receive mails.
+
+class Solution {
+public:
+    int numUniqueEmails(vector<string>& emails) {
+        unordered_set<string> set;
+        
+        for (auto email : emails) {
+            string addr = "";
+            
+            for (int i = 0; i < email.length(); i++) {
+                if (email[i] == '@') {
+                    addr += email.substr(i);
+                    break;
+                }
+                
+                if (email[i] == '+') {
+                    while (i+1 < email.length() && email[i+1] != '@') {
+                        i++;
+                    }
+                    continue;
+                }
+                
+                if (email[i] == '.') {
+                    continue;
+                }
+                
+                addr += email[i];
+            }
+            
+            set.insert(addr);
+        }
+        
+        return set.size();
+    }
+};
