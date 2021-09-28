@@ -1,0 +1,51 @@
+// Input: nums = [1,1,2,3,3,4,4,8,8]
+// Output: 2
+
+class Solution {
+public:
+    int singleNonDuplicate(vector<int>& nums) {
+        int size = nums.size();
+        if (size == 1) return nums[0];
+        
+        int left = 0, right = size - 1;
+        int mid;
+        
+        while (left < right) {
+            mid = left + (right - left) / 2;
+            
+            
+            if (nums[mid] == nums[mid+1]) {
+                // 右半边剩余的数字个数是奇数，那mid==mid+1，算上mid右半段是偶数个，右半段是正确的
+                // e.g. 相同 右单 1 1 2 3(mid) 3 4 4
+                if ((size - 1 - mid) % 2 == 1) {
+                    right = mid;
+                } 
+                // e.g. 相同 右双 1 1 2 2 3(mid) 3 4 5 5
+                else {
+                    left = mid + 1;
+                }
+            } 
+            else {
+                // 收束情况
+                // 1 2 2, mid=mid+1, 右半段单数，right=mid => 1 2, mid=0 || mid!=mid-1, 返回nums[mid]
+                // 1 1 2, mid!=mid+1, 右半段单数，left=mid+1 => 2
+                if (mid == 0 || nums[mid] != nums[mid-1]) {
+                    return nums[mid];
+                }
+                
+                // 右半边剩余的数字个数是奇数，且mid!=mid+1，算上mid右半段是偶数个，右半段是错误的
+                // e.g. 不同 右单 1 1 2 2(mid) 3 4 4
+                if ((size - 1 - mid) % 2 == 1) {
+                    left = mid + 1;
+                } 
+                // e.g. 不同 右双 1 1 2 3 3(mid) 4 4 5 5
+                else {
+                    right = mid;
+                }
+            }
+            
+        }
+        
+        return nums[left];
+    }
+};
