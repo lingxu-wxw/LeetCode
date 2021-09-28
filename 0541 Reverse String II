@@ -1,0 +1,30 @@
+// Input: s = "abcdefg", k = 2
+// Output: "bacdfeg"
+
+class Solution {
+public:
+    string reverseStr(string s, int k) {
+        int len = s.length();
+        
+        string res = "";
+        int idx = 0;
+        
+        while (idx < len) {
+            int start = min(len, idx + k);
+            int end = min(len, idx + 2 * k);
+            
+            // 反转的部分
+            for (int i = start-1; i >= idx; i--) {
+                res += s[i];
+            }
+            
+            for (int i = start; i < end; i++) {
+                res += s[i];
+            }
+            
+            idx += 2 * k;
+        }
+        
+        return res;
+    }
+};
