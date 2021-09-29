@@ -1,0 +1,49 @@
+// Input: n = 2
+// Output: 8
+// Explanation: There are 8 records with length 2 that are eligible for an award:
+// "PP", "AP", "PA", "LP", "PL", "AL", "LA", "LL"
+// Only "AA" is not eligible because there are 2 absences (there need to be fewer than 2).
+
+class Solution {
+public:
+     
+    int checkRecord(int n) {
+        // 模大数
+        long M = 1e9 + 7;
+        
+        // 遍历到第i位时，最后一位是A L P各自可能的通过个数
+        vector<int> absent(n, 0);
+        vector<int> late(n, 0);
+        vector<int> present(n, 0);
+        
+        // 遍历到第i位时，最后一位是L P，且前面没有A，各自可能的通过个数
+        vector<int> lateWOabsent(n, 0);
+        vector<int> presentWOabsent(n, 0);
+        
+        // 一部分初始值
+        absent[0] = 1; late[0] = 1; present[0] = 1;
+        lateWOabsent[0] = 1; presentWOabsent[0] = 1;
+        
+        if (n > 1) {
+            late[1] = 3; lateWOabsent[1] = 2;
+        }
+        
+        // 递推公式
+        for (int i = 1; i < n; i++) {
+            present[i] = ((absent[i-1] + late[i-1]) % M + present[i-1]) % M;
+            presentWOabsent[i] = (lateWOabsent[i-1] + presentWOabsent[i-1]) % M;
+            
+            absent[i] = (lateWOabsent[i-1] + presentWOabsent[i-1]) % M;
+            
+            if (i > 1) {
+                late[i] = (((absent[i-1] + present[i-1]) % M + absent[i-2]) % M + present[i-2]) % M;
+                lateWOabsent[i] = (presentWOabsent[i-1] + presentWOabsent[i-2]) % M;
+            }
+            
+            // 简化：A[i] = PA[i]
+            // A[i] = LA[i-1] + PA[i-1] = PA[i-2] + PA[i-3] + PA[i-1] = A[i-1] + A[i-2] + A[i-3]
+        }
+        
+        return ((absent[n-1] + late[n-1]) % M + present[n-1]) % M;
+    }
+};
