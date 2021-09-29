@@ -1,0 +1,32 @@
+// Input: s = "PPALLP"
+// Output: true
+// Explanation: The student has fewer than 2 absences and was never late 3 or more consecutive days.
+
+class Solution {
+public:
+    bool checkRecord(string s) {
+        int len = s.length();
+        
+        int absent = 0;
+        int recentlate = 0;
+        
+        for (int i = 0; i < len; i++) {
+            if (s[i] == 'P') {
+                recentlate = 0;
+            }
+            
+            else if (s[i] == 'A') {
+                recentlate = 0;
+                absent++;
+                if (absent >= 2) return false;
+            }
+            
+            else if (s[i] == 'L') {
+                recentlate++;
+                if (recentlate >= 3) return false;
+            }
+        }
+        
+        return true;
+    }
+};
