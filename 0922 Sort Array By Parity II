@@ -1,0 +1,54 @@
+// Input: nums = [4,2,5,7]
+// Output: [4,5,2,7]
+// Explanation: [4,7,2,5], [2,5,4,7], [2,7,4,5] would also have been accepted.
+
+class Solution {
+public:
+    
+    void swap(vector<int>& nums, int i, int j) {
+        int tmp = nums[i];
+        nums[i] = nums[j];
+        nums[j] = tmp;
+    }
+    
+    vector<int> sortArrayByParityII(vector<int>& nums) {
+        int size = nums.size();
+        
+        int nextodd = 1, nexteven = 0;
+        
+        for (int i = 0; i < size; i++) {
+            // i是偶数
+            if (i % 2 == 0) {
+                // nums[i]是奇数
+                if (nums[i] % 2 == 1) {
+                    swap(nums, i, nextodd);
+                    nextodd += 2;
+                    i--;
+                }
+                // nums[i]是偶数
+                else {
+                    if (i >= nexteven) {
+                        nexteven += 2;
+                    }
+                }
+            }
+            // i是奇数
+            else {
+                // nums[i]是偶数
+                if (nums[i] % 2 == 0) {
+                    swap(nums, i, nexteven);
+                    nexteven += 2;
+                    i--;
+                }
+                // nums[i]是奇数
+                else {
+                    if (i >= nextodd) {
+                        nextodd += 2;
+                    }
+                }
+            }
+        }
+        
+        return nums;
+    }
+};
