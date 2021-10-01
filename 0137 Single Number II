@@ -19,6 +19,7 @@ class Solution {
         
         for (int num : nums) {
             // 更新twos, 含部分threes
+            // ones是0的情况下，twos没有修改，ones会经过下面一步变成当前数字
             twos |= ones & num;
             // 更新ones, 含部分threes
             ones ^= num;
