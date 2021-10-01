@@ -1,0 +1,22 @@
+// Input: paths = [["London","New York"],["New York","Lima"],["Lima","Sao Paulo"]]
+// Output: "Sao Paulo" 
+// Explanation: Starting at "London" city you will reach "Sao Paulo" city which is the destination city. Your trip consist of: "London" -> "New York" -> "Lima" -> "Sao Paulo".
+
+class Solution {
+public:
+    string destCity(vector<vector<string>>& paths) {
+        unordered_map<string, string> map;
+        
+        for (auto path : paths) {
+            map[path[0]] = path[1];
+        }
+        
+        string start = paths[0][0];
+        
+        while (map.count(start)) {
+            start = map[start];
+        }
+        
+        return start;
+    }
+};
