@@ -1,0 +1,43 @@
+// Input: nums = [1000,100,10,2]
+// Output: "1000/(100/10/2)"
+// Explanation:
+// 1000/(100/10/2) = 1000/((100/10)/2) = 200
+// However, the bold parenthesis in "1000/((100/10)/2)" are redundant, since they don't influence the operation priority. So you should return "1000/(100/10/2)".
+// Other cases:
+// 1000/(100/10)/2 = 50
+// 1000/(100/(10/2)) = 50
+// 1000/100/10/2 = 0.5
+// 1000/100/(10/2) = 2
+
+class Solution {
+public:
+    string optimalDivision(vector<int>& nums) {
+        // x1 x2 x3 x4 ...
+        // x1只能做被除数，x2只能做除数，而且nums[i] >= 2，把其他数字全都转成乘数
+        
+        int size = nums.size();
+        
+        if (size == 0) {
+            return "";
+        }
+        
+        string res = to_string(nums[0]);
+        
+        if (size == 1) {
+            return res;
+        }
+        if (size == 2) {
+            return res + "/" + to_string(nums[1]);
+        }
+        
+        res = res + "/(" + to_string(nums[1]);
+        
+        for (int i = 2; i < size; i++) {
+            res = res + "/" + to_string(nums[i]);
+        }
+        
+        res = res + ")";
+        
+        return res;
+    }
+};
