@@ -1,0 +1,29 @@
+// Input: nums = [1,1,1], k = 2
+// Output: 2
+
+class Solution {
+public:
+    int subarraySum(vector<int>& nums, int k) {
+        int size = nums.size();
+        
+        // sums[i][j]表示闭区间[i,j]中的和
+        vector<vector<int>> sums(size, vector<int>(size, 0));
+        int res = 0;
+        
+        for (int i = 0; i < size; i++) {
+            sums[i][i] = nums[i];
+            if (nums[i] == k) {
+                res++;
+            }
+            
+            for (int j = i-1; j >= 0; j--) {
+                sums[j][i] = sums[j][i-1] + nums[i];
+                if (sums[j][i] == k) {
+                    res++;
+                }
+            }
+        }
+        
+        return res;
+    }
+};
