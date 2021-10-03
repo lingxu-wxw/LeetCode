@@ -6,19 +6,22 @@ public:
     int subarraySum(vector<int>& nums, int k) {
         int size = nums.size();
         
-        // sums[i][j]表示闭区间[i,j]中的和
-        vector<vector<int>> sums(size, vector<int>(size, 0));
+        // sums[i]表示闭区间[0,i]中的和
+        vector<int> sums(size, 0);
+        sums[0] = nums[0];
+        
         int res = 0;
         
+        for (int i = 1; i < size; i++) {
+            sums[i] = sums[i-1] + nums[i];
+        }
+        
         for (int i = 0; i < size; i++) {
-            sums[i][i] = nums[i];
-            if (nums[i] == k) {
+            if (sums[i] == k) {
                 res++;
             }
-            
             for (int j = i-1; j >= 0; j--) {
-                sums[j][i] = sums[j][i-1] + nums[i];
-                if (sums[j][i] == k) {
+                if (sums[i] - sums[j] == k) {
                     res++;
                 }
             }
