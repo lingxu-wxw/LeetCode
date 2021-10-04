@@ -1,0 +1,43 @@
+// Input: nums = [4,5,0,-2,-3,1], k = 5
+// Output: 7
+// Explanation: There are 7 subarrays with a sum divisible by k = 5:
+// [4, 5, 0, -2, -3, 1], [5], [5, 0], [5, 0, -2, -3], [0], [0, -2, -3], [-2, -3]
+
+class Solution {
+public:
+    
+    // 思路和 0523 Continuous Subarray Sum 比较相似
+    
+    int subarraysDivByK(vector<int>& nums, int k) {
+        int size = nums.size();
+        
+        // 保存已经出现过的 %k 值
+        // 如果 a % k = c, b % k = c, 则 (a-b) % k = 0
+        // mod - cnt
+        unordered_map<int, int> map;
+        map[0] = 1;
+            
+        // [0,i]数字的和
+        int sum = 0;
+        
+        int res = 0;
+        
+        for (int i = 0; i < size; i++) {
+            sum = (sum + nums[i]) % k;
+            
+            // 负数取模还是负数，尽量避免存储这种结果
+            if (sum < 0) {
+                sum += k;
+            }
+            
+            // 查找map中对应的mod结果是否已经存在
+            if (map.count(sum)) {
+                res += map[sum];
+            }
+
+            map[sum]++;
+        }
+        
+        return res;
+    }
+};
