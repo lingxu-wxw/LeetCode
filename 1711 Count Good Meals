@@ -1,0 +1,30 @@
+// Input: deliciousness = [1,3,5,7,9]
+// Output: 4
+// Explanation: The good meals are (1,3), (1,7), (3,5) and, (7,9).
+// Their respective sums are 4, 8, 8, and 16, all of which are powers of 2.
+
+class Solution {
+public:
+    int countPairs(vector<int>& deliciousness) {
+        int M = 1e9 + 7;
+        
+        // num - cnt
+        unordered_map<int, int> map;
+        
+        int res = 0;
+        
+        for (int item : deliciousness) {
+            // 0 <= deliciousness[i] <= 2^20, 所以相加不超过2^21
+            for (int k = 1; k <= (1 << 21); k *= 2) {
+                // 相当于每个元素都在往前计算有没有匹配的，所以不会重复
+                if (map.count(k - item)) {
+                    res = (res + map[k - item]) % M;
+                }
+            }
+            
+            map[item]++;
+        }
+        
+        return res % M;
+    }
+};
