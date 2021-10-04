@@ -1,0 +1,29 @@
+// Input: nums = [1,2,3,4], k = 5
+// Output: 2
+// Explanation: Starting with nums = [1,2,3,4]:
+// - Remove numbers 1 and 4, then nums = [2,3]
+// - Remove numbers 2 and 3, then nums = []
+// There are no more pairs that sum up to 5, hence a total of 2 operations.
+
+class Solution {
+public:
+    int maxOperations(vector<int>& nums, int k) {
+        int size = nums.size();
+        
+        unordered_map<int, vector<int>> map;
+        int res = 0;
+        
+        for (int i = 0; i < size; i++) {
+            if (map.count(k - nums[i]) && map[k - nums[i]].size() > 0) {
+                map[k - nums[i]].pop_back();
+                res++;
+            }
+            
+            else {
+                map[nums[i]].push_back(i);
+            }
+        }
+        
+        return res;
+    }
+};
