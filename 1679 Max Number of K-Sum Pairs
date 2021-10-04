@@ -10,17 +10,18 @@ public:
     int maxOperations(vector<int>& nums, int k) {
         int size = nums.size();
         
-        unordered_map<int, vector<int>> map;
+        // num - cnt
+        unordered_map<int, int> map;
         int res = 0;
         
         for (int i = 0; i < size; i++) {
-            if (map.count(k - nums[i]) && map[k - nums[i]].size() > 0) {
-                map[k - nums[i]].pop_back();
+            if (map.count(k - nums[i]) && map[k - nums[i]] > 0) {
+                map[k - nums[i]]--;
                 res++;
             }
             
             else {
-                map[nums[i]].push_back(i);
+                map[nums[i]]++;
             }
         }
         
