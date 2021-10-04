@@ -1,0 +1,34 @@
+// Input: nums = [2,3,-1,8,4]
+// Output: 3
+// Explanation:
+// The sum of the numbers before index 3 is: 2 + 3 + -1 = 4
+// The sum of the numbers after index 3 is: 4 = 4
+
+class Solution {
+public:
+    
+    // 和 0724 Find Pivot Index 完全相同
+    
+    int findMiddleIndex(vector<int>& nums) {
+        int size = nums.size();
+        
+        // 计算出全部数字的和
+        int totalsum = 0;
+        for (int num : nums) {
+            totalsum += num;
+        }
+        
+        // 判断idx=i能够成为pivot
+        int leftsum = 0;
+        for (int i = 0; i < size; i++) {
+            // 比较此时的leftsum和rightsum
+            if (leftsum == (totalsum - nums[i] - leftsum)) {
+                return i;
+            }
+            
+            leftsum += nums[i];
+        }
+        
+        return -1;
+    }
+};
