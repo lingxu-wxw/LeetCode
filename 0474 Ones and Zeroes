@@ -25,6 +25,7 @@ public:
             }
             
             // 动态规划递推式
+            // 这一轮打算把str加入subset
             for (int i = m; i >= zeros; i--) {
                 for (int j = n; j >= ones; j--) {
                     dp[i][j] = max(dp[i][j], dp[i-zeros][j-ones] + 1);
