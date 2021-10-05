@@ -1,0 +1,43 @@
+// Input: nums = [1,2,1,2,3], k = 2
+// Output: 7
+// Explanation: Subarrays formed with exactly 2 different integers: [1,2], [2,1], [1,2], [2,3], [1,2,1], [2,1,2], [1,2,1,2]
+
+class Solution {
+public:
+    
+    int subarraysWithAtMostKDistinct(vector<int>& nums, int k) {
+        int size = nums.size();
+        
+        // num - cnt
+        unordered_map<int, int> map;
+        // 滑动窗口的左值
+        int left = 0;
+        
+        // res统计方法：以nums[i]为结尾的subarray中，不同元素数量小于等于k的个数
+        int res = 0;
+        
+        for (int i = 0; i < size; i++) {
+            map[nums[i]]++;
+            
+            // 当当前元素个数超过k了
+            while (map.size() > k) {
+                map[nums[left]]--;
+                if (map[nums[left]] == 0) {
+                    map.erase(nums[left]);
+                }
+                
+                left++;
+            }
+            
+            // 统计以nums[i]的符合条件的subarray
+            res += i - left + 1;
+        }
+        
+        return res;
+    }
+    
+    // 求subarray中恰好有k个不同元素 = 求 subarray中至多有k个不同元素 - subarray中至多有k-1个不同元素 
+    int subarraysWithKDistinct(vector<int>& nums, int k) {
+        return subarraysWithAtMostKDistinct(nums, k) - subarraysWithAtMostKDistinct(nums, k-1);
+    }
+};
