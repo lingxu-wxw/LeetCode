@@ -1,0 +1,38 @@
+// Input: nums = [4,2,4,5,6]
+// Output: 17
+// Explanation: The optimal subarray here is [2,4,5,6].
+
+class Solution {
+public:
+    int maximumUniqueSubarray(vector<int>& nums) {
+        int size = nums.size();
+        
+        // 滑动窗口中exactly one的元素
+        unordered_set<int> set;
+        
+        // 滑动窗口的左值，滑动窗口中当前元素的和
+        int left = 0, right = 0;
+        int sum = 0;
+        
+        int score = 0;
+        
+        while (left < size && right < size) {
+            // 新元素
+            if (! set.count(nums[right])) {
+                set.insert(nums[right]);
+                sum += nums[right];
+                right++;
+                
+                score = max(score, sum);
+            }
+            // 旧元素
+            else {
+                set.erase(nums[left]);
+                sum -= nums[left];
+                left++;
+            }
+        }
+        
+        return score;
+    }
+};
