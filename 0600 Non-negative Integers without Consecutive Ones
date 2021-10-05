@@ -1,0 +1,63 @@
+// Input: n = 5
+// Output: 5
+// Explanation:
+// Here are the non-negative integers <= 5 with their corresponding binary representations:
+// 0 : 0
+// 1 : 1
+// 2 : 10
+// 3 : 11
+// 4 : 100
+// 5 : 101
+// Among them, only integer 3 disobeys the rule (two consecutive ones) and the other 5 satisfy the rule.
+
+class Solution {
+public:
+    int findIntegers(int n) {
+        // step 1: 将n转化为二进制数，并计算长度
+        int len = 0;
+        
+        // 存二进制数，倒序输出，binary[0]是最低位
+        string binary = "";
+        
+        while (n > 0) {
+            len++;
+            binary += (n & 1) ? "1" : "0";
+            n = n >> 1;
+        }
+        
+        // step 2: 计算长度为len的二进制数范围内，最多有多少种没有连续1的可能性
+        
+        // ones[i]和zeros[i]分别表示二进制数最大位数为i+1时，以1和0为末位，满足条件的数的个数；添加一位就相当于在末位添加1或者0
+        vector<int> ones(len, 0);
+        vector<int> zeros(len, 0);
+        
+        ones[0] = 1;
+        zeros[0] = 1;
+        
+        // 动态规划，以1为末位新一位只能加0，以0为末位新一位可以加1和0
+        for (int i = 1; i < len; i++) {
+            ones[i] = zeros[i-1];
+            zeros[i] = ones[i-1] + zeros[i-1];
+        }
+        
+        int res = ones[len-1] + zeros[len-1];
+        
+        // step 3: 根据实际情况，去掉一些可能多算的情况
+        
+        // 考虑二进制数100110，binary="011001"
+        
+        for (int i = len-2; i >= 0; i--) {
+            // 到100[11]0时，i=1，符合条件的100[101] 100[010]等，都是比原数字小的，后续不可能有多算的部分
+            if (binary[i] == '1' && binary[i+1] == '1') {
+                break;
+            }
+            // 到1[00]110时，i=3，当前i位置的0存在1的可能，例如101010，也是6位满足条件的，但比原数字大，都不应该算进去
+            // 要去掉的数量就是ones[i]
+            if (binary[i] == '0' && binary[i+1] == '0') {
+                res -= ones[i];
+            }
+        }
+        
+        return res;
+    }
+};
