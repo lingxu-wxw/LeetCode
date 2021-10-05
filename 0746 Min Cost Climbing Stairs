@@ -1,0 +1,25 @@
+// Input: cost = [1,100,1,1,1,100,1,1,100,1]
+// Output: 6
+// Explanation: Cheapest is: start on cost[0], and only step on 1s, skipping cost[3].
+
+class Solution {
+public:
+    int minCostClimbingStairs(vector<int>& cost) {
+        // 给最后一级台阶也算一个cost
+        cost.push_back(0);
+        
+        int size = cost.size();
+        
+        // dp[i]表示走到台阶i时的min cost
+        vector<int> dp(size, 0);
+        
+        dp[0] = cost[0];
+        dp[1] = cost[1];
+        
+        for (int i = 2; i < size; i++) {
+            dp[i] = min(dp[i-1], dp[i-2]) + cost[i];
+        }
+        
+        return dp[size-1];
+    }
+};
