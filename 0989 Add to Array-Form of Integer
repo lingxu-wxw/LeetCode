@@ -1,0 +1,30 @@
+// Input: num = [1,2,0,0], k = 34
+// Output: [1,2,3,4]
+// Explanation: 1200 + 34 = 1234
+
+class Solution {
+public:
+    vector<int> addToArrayForm(vector<int>& nums, int k) {
+        int size = nums.size();
+        
+        // 存储最终的结果，倒序存储，res[0]是个位
+        vector<int> res;
+        
+        for (int i = size-1; i >= 0; i--) {
+            // 计算当前两者的最低位之和
+            res.push_back((nums[i] + k) % 10);
+            
+            // 进位让k来保存
+            k = (nums[i] + k) / 10;
+        }
+        
+        while (k > 0) {
+            res.push_back(k % 10);
+            k = k / 10;
+        }
+        
+        reverse(res.begin(), res.end());
+        
+        return res;
+    }
+};
