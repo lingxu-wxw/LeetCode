@@ -1,0 +1,42 @@
+// Input: nums = ["01","10"]
+// Output: "11"
+// Explanation: "11" does not appear in nums. "00" would also be correct.
+
+class Solution {
+public:
+    string findDifferentBinaryString(vector<string>& nums) {
+        // 记录出现过的字符
+        unordered_set<string> set;
+        
+        for (string num : nums) {
+            set.insert(num);
+        }
+        
+        // 二进制数的位数，二进制数对应的最大十进制数
+        int len = nums[0].length();
+        int cnt = (1 << len);
+        
+        // 暴力搜索
+        for (int i = 0; i < cnt; i++) {
+            int num = i;
+            string binary = "";
+            
+            // 十进制拆解成二进制
+            for (int j = 0; j < len; j++) {
+                if ((num & 1) == 1) {
+                    binary = "1" + binary;
+                } else {
+                    binary = "0" + binary;
+                }
+                
+                num = num >> 1;
+            }
+            
+            if (!set.count(binary)) {
+                return binary;
+            }
+        }
+        
+        return "";
+    }
+};
