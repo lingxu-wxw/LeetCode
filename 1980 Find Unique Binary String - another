@@ -1,0 +1,23 @@
+// Input: nums = ["01","10"]
+// Output: "11"
+// Explanation: "11" does not appear in nums. "00" would also be correct.
+
+class Solution {
+public:
+    string findDifferentBinaryString(vector<string>& nums) {
+        // 构建一个新的二进制串，使其和每个num都至少有一处不同
+        
+        // 题干中的特殊条件，所以 size == len
+        // nums[i].length == n
+        // nums.length == n
+        
+        int size = nums.size();
+        string res = "";
+        
+        for (int i = 0; i < size; i++) {
+            res += (nums[i][i] == '1') ? '0' : '1';
+        }
+        
+        return res;
+    }
+};
