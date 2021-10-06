@@ -4,6 +4,8 @@ public:
     //Output: true
     //Explanation: c can be repeated 0 times, a can be repeated 1 time. Therefore it matches "aab".
     
+    //It is guaranteed for each appearance of the character '*', there will be a previous valid character to match.
+    
     bool isMatch(string s, string p) {
         //s是字符串, p是正则表达式
         
