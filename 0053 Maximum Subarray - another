@@ -1,0 +1,47 @@
+// Input: nums = [-2,1,-3,4,-1,2,1,-5,4]
+// Output: 6
+// Explanation: [4,-1,2,1] has the largest sum = 6.
+
+class Solution {
+public:
+    
+    int maxSubArrayDAC(vector<int>& nums, int left, int right) {
+        // 收束条件
+        if (left >= right) {
+            return nums[left];
+        }
+        
+        int mid = left + (right - left) / 2;
+        
+        // 分别表示只使用mid左边元素的subarray的最大值，只使用mid右边元素的subarray的最大值
+        int leftmax = maxSubArrayDAC(nums, left, mid-1);
+        int rightmax = maxSubArrayDAC(nums, mid+1, right);
+        
+        // 表示横穿mid的subarray的最大值
+        int midmax = nums[mid];
+        
+        // 分别向左右遍历累加
+        int midsum = midmax;
+        for (int i = mid-1; i >= left; i--) {
+            midsum += nums[i];
+            midmax = max(midmax, midsum);
+        }
+        
+        midsum = midmax;
+        for (int i = mid+1; i <= right; i++) {
+            midsum += nums[i];
+            midmax = max(midmax, midsum);
+        }
+        
+        // 左中右比较
+        return max(midmax, max(leftmax, rightmax));
+    }
+    
+    int maxSubArray(vector<int>& nums) {
+        if (nums.empty()) {
+            return 0;
+        }
+        
+        return maxSubArrayDAC(nums, 0, nums.size()-1);
+    }
+};
