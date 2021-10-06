@@ -1,0 +1,39 @@
+// Input: wall = [[1,2,2,1],[3,1,2],[1,3,2],[2,4],[3,1,2],[1,3,1,1]]
+// Output: 2
+
+class Solution {
+public:
+    int leastBricks(vector<vector<int>>& walls) {
+        // 先求出统一的brick宽度
+        int totalWidth = 0;
+        
+        for (int brick : walls[0]) {
+            totalWidth += brick;
+        }
+        
+        // 计算间隙的个数，最后一下到边缘了不能算
+        unordered_map<int, int> map;
+        
+        for (auto wall : walls) {
+            int curWidth = 0;
+            
+            for (int brick : wall) {
+                curWidth += brick;
+                
+                if (curWidth < totalWidth) {
+                    map[curWidth]++;
+                }
+            }
+        }
+        
+        // 比较需要穿过的最少间隙数，最差情况是一个间隙都找不到，只能都穿过去
+        int size = walls.size();
+        int res = size;
+        
+        for (auto iter : map) {
+            res = min(res, size - iter.second);    
+        }
+        
+        return res;
+    }
+};
