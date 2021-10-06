@@ -1,0 +1,23 @@
+// Input: s = "Let's take LeetCode contest"
+// Output: "s'teL ekat edoCteeL tsetnoc"
+
+class Solution {
+public:
+    string reverseWords(string s) {
+        if (s.empty()) {
+            return "";
+        }
+        
+        istringstream in(s);
+        
+        string tmp;
+        string res = "";
+        
+        while (in >> tmp) {
+            reverse(tmp.begin(), tmp.end());
+            res = res + " " + tmp;
+        }
+        
+        return res.substr(1);
+    }
+};
