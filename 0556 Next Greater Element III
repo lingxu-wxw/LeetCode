@@ -1,0 +1,44 @@
+// Input: n = 12
+// Output: 21
+
+class Solution {
+public:
+    int nextGreaterElement(int n) {
+        // 先把数字弄成字符串
+        string num = to_string(n);
+        int len = num.length();
+        
+        // 只有一种情况是无解的，就是从个位到最高位都是 非减 的
+        int i = len - 1;
+        
+        for (; i > 0; i--) {
+            // 找到位数最低的一个递增的位置，e.g 12[4]43322，len=8，最终i=2，num[i-1]是一个交换的位置
+            if (num[i] > num[i-1]) {
+                break;
+            }
+        }
+        
+        // 没有找到递增的位置 e.g 4321
+        if (i == 0) {
+            return -1;
+        }
+        
+        // 寻找另一个交换的位置，是位数比i-1低的，比num[i-1]大的最小的数，因为位数比i-1目前都是有序的，所以可以从个位找上来
+        // e.g 12443[3]22，j=5
+        for (int j = len-1; j >= i; j--) {
+            // 交换，e.g 13[......]
+            if (num[j] > num[i-1]) {
+                swap(num[j], num[i-1]);
+                break;
+            }
+        }
+        
+        // 位数i以及低位按照顺序排列，e.g 13[222344]
+        sort(num.begin() + i, num.end());
+        
+        // 1 <= n <= 2^31 - 1，如果n本身在临界线附近，greater可能越界
+        long long res = stoll(num);
+        
+        return (res > INT_MAX) ? -1 : res;
+    }
+};
