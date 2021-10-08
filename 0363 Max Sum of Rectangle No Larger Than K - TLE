@@ -1,0 +1,62 @@
+// Input: matrix = [[1,0,1],[0,-2,3]], k = 2
+// Output: 2
+// Explanation: Because the sum of the blue rectangle [[0, 1], [-2, 3]] is 2, and 2 is the max number no larger than k (k = 2).
+
+class Solution {
+public:
+    int maxSumSubmatrix(vector<vector<int>>& matrix, int k) {
+        int height = matrix.size();
+        int width = matrix[0].size();
+        
+        // sum[i][j] 表示 {0,0}到{i,j}的矩形数字和
+        vector<vector<int>> sum(height, vector<int>(width, 0));
+        
+        int res = INT_MIN;
+        
+        // 初始化sum数组
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                // 自己的格子
+                sum[i][j] = matrix[i][j];
+                
+                // 修正sum[i][j]
+                if (i > 0) {
+                    sum[i][j] += sum[i-1][j];
+                }
+                if (j > 0) {
+                    sum[i][j] += sum[i][j-1];
+                }
+                if (i > 0 && j > 0) {
+                    sum[i][j] -= sum[i-1][j-1];
+                }
+                
+                // 计算sum[i][j]中的子矩形能够满足要求，但右下角固定在{i,j}不动
+                for (int row = 0; row <= i; row++) {
+                    for (int col = 0; col <= j; col++) {
+                        int tmpsum = sum[i][j];
+                        
+                        // 修正sum
+                        if (row > 0) {
+                            tmpsum -= sum[row-1][j];
+                        }
+                        if (col > 0) {
+                            tmpsum -= sum[i][col-1];
+                        }
+                        if (row > 0 && col > 0) {
+                            tmpsum += sum[row-1][col-1];
+                        }
+                        
+                        // 统计一次结果
+                        if (tmpsum == k) {
+                            return k;
+                        } else if (tmpsum < k) {
+                            res = max(res, tmpsum);
+                        }
+                    }
+                }
+            }
+        }
+        
+        return res;
+    }
+};
