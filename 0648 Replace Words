@@ -1,0 +1,45 @@
+// Input: dictionary = ["ac","ab"], sentence = "it is abnormal that this solution is accepted"
+// Output: "it is ab that this solution is ac"
+
+class Solution {
+public:
+
+    static bool comp(string str1, string str2) {
+        return str1.length() < str2.length();
+    }
+    
+    string replaceWords(vector<string>& dictionary, string sentence) {
+        // 根据字典中单词的长度排序
+        sort(dictionary.begin(), dictionary.end(), comp);
+        
+        // 根据字典中单词的首字母分类
+        vector<vector<string>> vec(26);
+        
+        for (string word : dictionary) {
+            vec[word[0]-'a'].push_back(word);
+        }
+        
+        // 字符串流
+        istringstream in(sentence);
+        string str;
+        
+        string res = "";
+
+        // sentence中的单词逐个处理
+        while (in >> str) {
+            for (string word : vec[str[0]-'a']) {
+                if (str.substr(0, word.length()) == word) {
+                    str = word;
+                    break;
+                }
+            }
+            
+            res = res + str + " ";
+        }
+        
+        // 去掉末位多余的空格
+        res.pop_back();
+        
+        return res;
+    }
+};
