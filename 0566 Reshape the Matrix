@@ -1,0 +1,29 @@
+// Input: mat = [[1,2],[3,4]], r = 1, c = 4
+// Output: [[1,2,3,4]]
+
+class Solution {
+public:
+    vector<vector<int>> matrixReshape(vector<vector<int>>& mat, int r, int c) {
+        int height = mat.size();
+        int width = mat[0].size();
+        
+        if (height * width != r * c) {
+            return mat;
+        }
+        
+        vector<vector<int>> res(r, vector<int>(c, 0));
+        
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                int idx = i * width + j;
+                
+                int newi = idx / c;
+                int newj = idx % c;
+                
+                res[newi][newj] = mat[i][j];
+            }
+        }
+        
+        return res;
+    }
+};
