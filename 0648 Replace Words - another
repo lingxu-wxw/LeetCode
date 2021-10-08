@@ -1,0 +1,87 @@
+// Input: dictionary = ["ac","ab"], sentence = "it is abnormal that this solution is accepted"
+// Output: "it is ab that this solution is ac"
+
+class Solution {
+public:
+
+    // 复用 0208 Implement Trie (Prefix Tree) 的思路
+    
+    class TrieNode {
+    public:
+        // 每个结点都是一个26叉树
+        TrieNode* child[26];
+        bool isWord;
+
+        // new新的结点时将child全都置为NULL
+        TrieNode() : isWord(false) {
+            for (auto &p : child) {
+                p = NULL;
+            }
+        }
+    };
+    
+    void insert(TrieNode* p, string word) {
+        for (auto c : word) {
+            // 获取当前字母序
+            int i = c - 'a';
+            if (!p->child[i]) {
+                // TrieNode和NULL区分是否存在结点
+                p->child[i] = new TrieNode();
+            }
+            
+            p = p->child[i];
+        }
+        
+        p->isWord = true;
+    }
+    
+    string findPrefix(TrieNode* p, string str) {
+        string prefix = "";
+        
+        for (auto c : str) {
+            // 获取当前字母序
+            int i = c - 'a';
+            if (!p->child[i]) {
+                break;
+            }
+
+            prefix.push_back(c);
+            p = p->child[i];
+            
+            if (p->isWord) {
+                return prefix;
+            }
+        }
+        
+        // 如果没找到prefix就返回原值
+        return str;
+    }
+    
+    
+    /* main function */
+    string replaceWords(vector<string>& dictionary, string sentence) {        
+        // 初始化TrieNode
+        TrieNode *root = new TrieNode();
+        
+        for (string word : dictionary) {
+            insert(root, word);
+        }
+        
+        // 字符串流
+        istringstream in(sentence);
+        string str;
+        
+        string res = "";
+
+        // sentence中的单词逐个处理
+        while (in >> str) {
+            if (!res.empty()) {
+                res += " ";
+            }
+            
+            res += findPrefix(root, str);
+        }
+        
+        return res;
+    }
+};
