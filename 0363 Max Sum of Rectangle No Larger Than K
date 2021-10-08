@@ -1,0 +1,53 @@
+// Input: matrix = [[1,0,1],[0,-2,3]], k = 2
+// Output: 2
+// Explanation: Because the sum of the blue rectangle [[0, 1], [-2, 3]] is 2, and 2 is the max number no larger than k (k = 2).
+
+class Solution {
+public:
+    int maxSumSubmatrix(vector<vector<int>>& matrix, int k) {
+        int height = matrix.size();
+        int width = matrix[0].size();
+        
+        int res = INT_MIN;
+        
+        // i是列数，标记本次循环 行和 统计列数的起始位置
+        for (int i = 0; i < width; i++) {
+            // 元素个数=行数，每一次循环中，取到的列数是[i,j]，没有重复计算
+            vector<int> sum(height);
+            
+            // j是列数，标记本次循环 行和 统计列数的结束位置
+            for (int j = i; j < width; j++) {
+                // k是行数，用于更新行和sum，累加形式，没有重复计算
+                for (int k = 0; k < height; k++) {
+                    sum[k] += matrix[k][j];  
+                }
+                
+                // 单次循环，行和 中是该行列数[i,j]的总和
+                int cursum = 0;
+                
+                // set存放0, 0~1, ..., 0~k, ..., 0~height-1 的 行和 的和，和cursum相减可以得到任意的连续行
+                set<int> set{{0}};
+                
+                // cursum依次添加行和
+                for (auto rowsum : sum) {
+                    cursum += rowsum;
+                    
+                    // 如果iter存在，则存在最小的iter使得 cursum - k ≤ iter, 即 cursum - iter ≤ k，且 cursum - iter 最大
+                    auto iter = set.lower_bound(cursum - k);
+                    if (iter != set.end()) {
+                        // 满足条件的矩形是 [*iter+1, i] - [cursum, j]
+                        res = max(res, cursum - *iter);
+                        
+                        if (res == k) {
+                            return k;
+                        }
+                    }
+                    
+                    set.insert(cursum);
+                }
+            }
+        }
+        
+        return res;
+    }
+};
