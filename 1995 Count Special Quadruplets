@@ -1,0 +1,41 @@
+// Input: nums = [1,1,1,3,5]
+// Output: 4
+// Explanation: The 4 quadruplets that satisfy the requirement are:
+// - (0, 1, 2, 3): 1 + 1 + 1 == 3
+// - (0, 1, 3, 4): 1 + 1 + 3 == 5
+// - (0, 2, 3, 4): 1 + 1 + 3 == 5
+// - (1, 2, 3, 4): 1 + 1 + 3 == 5
+
+class Solution {
+public:
+    int countQuadruplets(vector<int>& nums) {
+        int size = nums.size();
+        
+        // 3Sum - biggest idx
+        unordered_map<int, vector<int>> map;
+        
+        int res = 0;
+        
+        // 记录所有三数之和的可能性
+        for (int i = 0; i < size-2; i++) {
+            for (int j = i+1; j < size-1; j++) {
+                for (int k = j+1; k < size; k++) {
+                    int sum = nums[i] + nums[j] + nums[k];
+                    map[sum].push_back(k);
+                }
+            }
+        }
+        
+        for (int i = 0; i < size; i++) {
+            if (map.count(nums[i])) {
+                for (int idx : map[nums[i]]) {
+                    if (i > idx) {
+                        res++;
+                    }
+                }
+            }
+        }
+        
+        return res;
+    }
+};
