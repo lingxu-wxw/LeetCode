@@ -1,0 +1,50 @@
+// Input: head = [1,2,3,4,5], k = 2
+// Output: [1,4,3,2,5]
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* swapNodes(ListNode* head, int k) {
+        // testcase k 一定是 valid
+        if (!head) return NULL;
+        if (!head->next) return head;
+        
+        // 把ListNode转化成数组
+        vector<int> vec;
+        ListNode* cur = head;
+        
+        while (cur) {
+            vec.push_back(cur->val);
+            cur = cur->next;
+        }
+        
+        // 在数组中交换元素
+        int size = vec.size();
+        
+        int tmp = vec[k-1];
+        vec[k-1] = vec[size-k];
+        vec[size-k] = tmp;
+        
+        // 重新构建ListNode
+        ListNode* dummy = new ListNode(-1);
+        cur = dummy;
+        
+        for (int i = 0; i < size; i++) {
+            ListNode* node = new ListNode(vec[i]);
+            cur->next = node;
+            cur = cur->next;
+        }
+        cur->next = NULL;
+        
+        return dummy->next;
+    }
+};
