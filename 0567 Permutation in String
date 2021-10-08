@@ -1,0 +1,41 @@
+// Input: s1 = "ab", s2 = "eidbaooo"
+// Output: true
+// Explanation: s2 contains one permutation of s1 ("ba").
+
+class Solution {
+public:
+    bool checkInclusion(string s1, string s2) {
+        int len1 = s1.length();
+        int len2 = s2.length();
+        
+        if (len1 > len2) {
+            return false;
+        }
+        
+        // 如果s2包含一个s1的全排列，那么长度一定为len1
+        vector<int> vec1(26, 0);
+        vector<int> vec2(26, 0);
+        
+        // 初始化s1, s2中字母出现的次数，都取前len1位
+        for (int i = 0; i < len1; i++) {
+            vec1[s1[i]-'a']++;
+            vec2[s2[i]-'a']++; 
+        }
+        
+        if (vec1 == vec2) {
+            return true;
+        }
+        
+        // slide window，s2中长度为len1的框持续滑动，加上右值去掉左值
+        for (int i = len1; i < len2; i++) {
+            vec2[s2[i]-'a']++;
+            vec2[s2[i-len1]-'a']--;
+            
+            if (vec1 == vec2) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+};
