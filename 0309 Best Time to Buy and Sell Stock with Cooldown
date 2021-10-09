@@ -4,9 +4,9 @@
 
 class Solution {
 public:
-    // buy[i]表示在第i天之前最后一个操作是买，此时的最大收益
-    // sell[i]表示在第i天之前最后一个操作是卖，此时的最大收益
-    // cooldown[i]表示在第i天之前最后一个操作是冷冻期，此时的最大收益
+    // buy[i]表示在第i天及之前最后一个操作是买，此时的最大收益
+    // sell[i]表示在第i天及之前最后一个操作是卖，此时的最大收益
+    // cooldown[i]表示在第i天及之前最后一个操作是冷冻期，此时的最大收益
     
     // buy[i] = max(cooldown[i-1]-price, buy[i-1])  
     // sell[i] = max(buy[i-1]+price, sell[i-1])
@@ -21,11 +21,15 @@ public:
         buy[0] = -prices[0];
         
         for (int i = 1; i <= size; i++) {
+            // 第i天买了，第i天没买（之前买的）
             buy[i] = max(cooldown[i-1]-prices[i-1], buy[i-1]);
+            // 第i天卖了，第i天没卖（之前卖的）
             sell[i] = max(buy[i-1]+prices[i-1], sell[i-1]);
+            
+            // 当天无操作，之前是什么操作都可能
             cooldown[i] = max(buy[i-1], max(sell[i-1], cooldown[i-1]));
         }
-        
+
         return sell[size];
     }
 };
