@@ -1,0 +1,31 @@
+// Input: m = 2, n = 2, maxMove = 2, startRow = 0, startColumn = 0
+// Output: 6
+
+class Solution {
+public:
+    int findPaths(int m, int n, int maxMove, int startRow, int startColumn) {
+        if (maxMove == 0) return 0;
+        
+        int M = 1e9 + 7;
+            
+        // paths[i][j][moves]
+        vector<vector<vector<int>>> dp(maxMove+1, vector<vector<int>>(m, vector<int>(n, 0)));
+        
+        // 动态规划 遍历
+        for (int path = 1; path <= maxMove; path++) {
+            for (int i = 0; i < m; i++) {
+                for (int j = 0; j < n; j++) {
+                    // 因为maxMove是at most，不是exactly，所以在边界时任何时候都可以踢出去
+                    long long top = (i == 0) ? 1 : dp[path-1][i-1][j];
+                    long long bottom = (i == m-1) ? 1 : dp[path-1][i+1][j];
+                    long long left = (j == 0) ? 1 : dp[path-1][i][j-1];
+                    long long right = (j == n-1) ? 1 : dp[path-1][i][j+1];
+                    
+                    dp[path][i][j] = (top + bottom + left + right) % M;
+                }
+            }
+        }
+        
+        return dp[maxMove][startRow][startColumn];
+    }
+};
