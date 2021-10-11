@@ -1,0 +1,69 @@
+// Input: nums = [2,6,4,8,10,9,15]
+// Output: 5
+// Explanation: You need to sort [6, 4, 8, 10, 9] in ascending order to make the whole array sorted in ascending order.
+
+class Solution {
+public:
+    int findUnsortedSubarray(vector<int>& nums) {
+        int size = nums.size();
+        if (size == 1) return 0;
+        
+        // 找到左边已经sort的部分
+        int leftidx = 0;
+        int rightmin = INT_MAX;
+        
+        for (int i = 1; i < size; i++) {
+            if (nums[i] >= nums[i-1]) {
+                leftidx = i;
+            } else {
+                break;
+            }
+        }
+        
+        if (leftidx == size-1) {
+            return 0;
+        }
+        
+        for (int i = leftidx+1; i < size; i++) {
+            rightmin = min(rightmin, nums[i]);
+        }
+        
+        for (int i = leftidx; i >= 0; i--) {
+            if (nums[i] > rightmin) {
+                leftidx--;
+            } else {
+                break;
+            }
+        }
+        
+        // 找到右边已经sort的部分
+        int rightidx = size-1;
+        int leftmax = INT_MIN;
+        
+        for (int i = size-2; i >= 0; i--) {
+            if (nums[i] <= nums[i+1]) {
+                rightidx = i;
+            } else {
+                break;
+            }
+        }
+        
+        if (rightidx == 0) {
+            return 0;
+        }
+        
+        for (int i = rightidx-1; i >= 0; i--) {
+            leftmax = max(leftmax, nums[i]);
+        }
+        
+        for (int i = rightidx; i < size; i++) {
+            if (nums[i] < leftmax) {
+                rightidx++;
+            } else {
+                break;
+            }
+        }
+        
+        return rightidx - leftidx - 1;
+    }
+};
