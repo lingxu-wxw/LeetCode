@@ -1,0 +1,48 @@
+// Input: root = [1,null,3,2,4,null,5,6]
+// Output: [1,3,5,6,2,4]
+
+/*
+// Definition for a Node.
+class Node {
+public:
+    int val;
+    vector<Node*> children;
+
+    Node() {}
+
+    Node(int _val) {
+        val = _val;
+    }
+
+    Node(int _val, vector<Node*> _children) {
+        val = _val;
+        children = _children;
+    }
+};
+*/
+
+class Solution {
+public:
+    vector<int> preorder(Node* root) {
+        if (!root) return {};
+        
+        // 后进先出
+        stack<Node*> stack;
+        stack.push(root);
+        
+        vector<int> res;
+        
+        while (!stack.empty()) {
+            Node* node = stack.top(); stack.pop();
+            res.push_back(node->val);
+            
+            vector<Node*> children = node->children;
+            
+            for (int i = children.size()-1; i >= 0; i--) {
+                stack.push(children[i]);
+            }
+        }
+        
+        return res;
+    }
+};
