@@ -1,0 +1,70 @@
+// Input: "()())()"
+// Output: ["()()()", "(())()"]
+// Example 2:
+
+// Input: ")("
+// Output: [""]
+
+class Solution {
+public:
+    
+    // 判断字符串中的括号是否是合法的
+    bool isValidParentheses(string s) {
+        // 左括号右括号数量
+        int reml = 0;
+        
+        for (char c : s) {
+            if (c == '(') {
+                reml++;
+            }
+            if (c == ')') {
+                if (reml <= 0) return false;
+                reml--;
+            }
+        }
+        
+        return reml == 0;
+    }
+    
+    // 主函数
+    vector<string> removeInvalidParentheses(string s) {    
+        unordered_set<string> visited;
+        queue<string> queue;
+        
+        visited.insert(s);
+        queue.push(s);
+        
+        vector<string> res;
+        
+        // BFS 暴力遍历
+        bool found = false;
+        
+        while (!queue.empty()) {
+            string str = queue.front(); queue.pop();
+            
+            // 判断当前字符串是否合法
+            if (isValidParentheses(str)) {
+                res.push_back(str);
+                found = true;
+            }
+            if (found) {
+                continue;
+            }
+            
+            // 当前字符串不合法，每个位置都删一下试试
+            for (int i = 0; i < str.size(); i++) {
+                if (str[i] != '(' && str[i] != ')') continue;
+                
+                string newstr = str.substr(0, i) + str.substr(i + 1);
+                
+                if (!visited.count(newstr)) {
+                    queue.push(newstr);
+                    visited.insert(newstr);
+                }
+            }
+        }
+        
+        return res;
+    }
+
+};
