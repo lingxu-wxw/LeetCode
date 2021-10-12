@@ -1,0 +1,32 @@
+// Input: s = "abcabcababcc"
+// Output: true
+// Explanation:
+// "" -> "abc" -> "abcabc" -> "abcabcabc" -> "abcabcababcc"
+// Thus, "abcabcababcc" is valid.
+
+class Solution {
+public:
+    bool isValid(string s) {
+        stack<char> st;
+        
+        for (char c : s) {
+            // 栈中只有0/1个元素，没有消的可能
+            if (st.size() < 2 || c != 'c') {
+                st.push(c);
+                continue;
+            }
+            
+            // 弹出top和次top比较是否是abc
+            char top = st.top(); st.pop();
+            char sndtop = st.top(); st.pop();
+
+            if (sndtop != 'a' || top != 'b') {
+                st.push(sndtop);
+                st.push(top);
+                st.push(c);
+            }
+        }
+        
+        return st.empty();
+    }
+};
