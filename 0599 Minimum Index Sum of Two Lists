@@ -1,0 +1,41 @@
+// Input: list1 = ["Shogun","Tapioca Express","Burger King","KFC"], list2 = ["KFC","Shogun","Burger King"]
+// Output: ["Shogun"]
+// Explanation: The restaurant they both like and have the least index sum is "Shogun" with index sum 1 (0+1).
+
+class Solution {
+public:
+    vector<string> findRestaurant(vector<string>& list1, vector<string>& list2) {
+        int size1 = list1.size();
+        int size2 = list2.size();
+        
+        // restaurant - point
+        unordered_map<string, int> map;
+        vector<string> res;
+        int minpoint = INT_MAX;
+        
+        // 初始化map
+        for (int i = 0; i < size1; i++) {
+            map[list1[i]] += i;
+        }
+        
+        for (int i = 0; i < size2; i++) {
+            string restaurant = list2[i];
+            
+            // 能够入围决赛圈的只有两个人都喜欢的
+            if (!map.count(restaurant)) continue;
+            
+            // 比较喜爱值积分，积分值越小越容易被选中
+            int point = map[restaurant] + i;
+            
+            if (point < minpoint) {
+                minpoint = point;
+                res.clear();
+            }
+            if (point == minpoint) {
+                res.push_back(restaurant);
+            }
+        }
+        
+        return res;
+    }
+};
