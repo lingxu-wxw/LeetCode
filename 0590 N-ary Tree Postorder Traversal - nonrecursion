@@ -1,0 +1,67 @@
+// Input: root = [1,null,3,2,4,null,5,6]
+// Output: [5,6,3,2,4,1]
+
+/*
+// Definition for a Node.
+class Node {
+public:
+    int val;
+    vector<Node*> children;
+
+    Node() {}
+
+    Node(int _val) {
+        val = _val;
+    }
+
+    Node(int _val, vector<Node*> _children) {
+        val = _val;
+        children = _children;
+    }
+};
+*/
+
+class Solution {
+public:
+    vector<int> postorder(Node* root) {
+        if (!root) return {};
+        
+        vector<int> res;
+        
+        // state放还没访问的子孩子个数
+        stack<Node*> st;
+        stack<int> state;
+        
+        while (!st.empty() || root != NULL) {
+            // 访问最左结点
+            while (root != NULL) {
+                st.push(root);
+                state.push(root->children.size());
+                root = (root->children.size() == 0) ? NULL : root->children[0];
+            }
+            
+            // 当前结点是叶子结点，直接可以遍历根结点
+            Node* node = st.top(); st.pop();
+            state.pop();
+            res.push_back(node->val);
+            
+            // 往上倒退到一个有其他孩子的结点
+            while (!st.empty() && state.top() == 1) {
+                node = st.top(); st.pop();
+                state.pop();
+                res.push_back(node->val);
+            }
+            
+            // 找到了有其他孩子的结点，而不是栈空了，将root移到其他孩子
+            if (!st.empty()) {
+                int remain = state.top();
+                state.pop(); state.push(remain-1);
+                
+                int idx = st.top()->children.size() - state.top();
+                root = st.top()->children[idx];
+            }
+        }
+        
+        return res;
+    }
+};
