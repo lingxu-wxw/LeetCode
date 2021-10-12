@@ -1,0 +1,38 @@
+// Input: p1 = [1,0], p2 = [-1,0], p3 = [0,1], p4 = [0,-1]
+// Output: true
+
+class Solution {
+public:
+    
+    int distance(vector<int>& p1, vector<int>& p2) {
+        return (p1[0] - p2[0]) * (p1[0] - p2[0]) + (p1[1] - p2[1]) * (p1[1] - p2[1]);
+    }
+    
+    bool validSquare(vector<int>& p1, vector<int>& p2, vector<int>& p3, vector<int>& p4) {
+        // 正方形四条边长度相等，对角线长度相等
+        // dist - cnt
+        unordered_map<int, int> map;
+        
+        vector<vector<int>> points;
+        points.push_back(p1);
+        points.push_back(p2);
+        points.push_back(p3);
+        points.push_back(p4);
+        
+        for (int i = 0; i < 3; i++) {
+            for (int j = i+1; j < 4; j++) {
+                int dist = distance(points[i], points[j]);
+                
+                // 两点重合直接false
+                if (dist == 0) {
+                    return false;
+                }
+                
+                map[dist]++;
+            }
+        }
+        
+        // 四个点互不重合，相互距离只有两种，只可能是正方形
+        return map.size() == 2;
+    }
+};
