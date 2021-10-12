@@ -1,0 +1,35 @@
+// Input: expression = "-1/2+1/2+1/3"
+// Output: "1/3"
+
+class Solution {
+public:
+    
+    // 求最大公约数，用于约分
+    int gcd (int a, int b) {
+        return (b == 0) ? a : gcd(b, a % b);
+    }
+    
+    string fractionAddition(string expression) {
+        istringstream is(expression);
+        
+        // 单个数字的分子分母，分数线
+        int num, dem;
+        char line;
+        
+        // 最终结果的分子分母
+        int a = 0, b = 1;
+        
+        while (is >> num >> line >> dem) {
+            // 计算新的分子分母
+            a = a*dem + num*b;
+            b = b*dem;
+            
+            // 约分
+            int common = gcd(abs(a), b);
+            a = a / common;
+            b = b / common;
+        }
+        
+        return to_string(a) + "/" + to_string(b);
+    }
+};
