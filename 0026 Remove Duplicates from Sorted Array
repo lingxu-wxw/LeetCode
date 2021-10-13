@@ -16,8 +16,13 @@ public:
         int pre = 0, cur = 0;
         
         while (cur < size) {
-            if (nums[pre] == nums[cur]) ++cur;
-            else nums[++pre] = nums[cur++];
+            if (nums[pre] == nums[cur]) {
+                cur++;
+            } else {
+                pre++;
+                nums[pre] = nums[cur];
+                cur++;
+            }
         }
         
         //返回数组的前pre+1个
