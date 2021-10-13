@@ -1,0 +1,54 @@
+// Input: preorder = [1,2,4,5,3,6,7]
+// postorder = [4,5,2,6,7,3,1]
+// Output: [1,2,3,4,5,6,7]
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    TreeNode* constructFromPrePostDFS(vector<int>& preorder, vector<int>& postorder, int prestart, int preend, int poststart, int postend) {
+        // 终止检测
+        if ((prestart > preend) || (poststart > postend)) {
+            return NULL;
+        }
+        
+        // 找到root结点
+        TreeNode* root = new TreeNode(preorder[prestart]);
+        
+        // 只剩一个结点需要遍历
+        if (prestart == preend) {
+            return root;
+        }
+        
+        // 找到左孩子的位置，如果左孩子不存在，idx会维持-1
+        int idx = -1;
+        for (idx = poststart; idx <= postend; idx++) {
+            if (preorder[prestart+1] == postorder[idx]) {
+                break;
+            }
+        }
+        
+        root->left = constructFromPrePostDFS(preorder, postorder, prestart+1, prestart+1 + (idx-poststart), poststart, idx);
+        root->right = constructFromPrePostDFS(preorder, postorder, prestart+1 + (idx-poststart) + 1, preend, idx+1, preend-1);
+        
+        return root;
+    }
+    
+    TreeNode* constructFromPrePost(vector<int>& preorder, vector<int>& postorder) {
+        // preorder: root - left - right
+        // postorder: left - right - root
+        // 先用preorder找到root和左孩子, 在用postorder找到右孩子
+        int size = preorder.size();
+        
+        return constructFromPrePostDFS(preorder, postorder, 0, size-1, 0, size-1);
+    }
+};
