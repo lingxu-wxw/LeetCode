@@ -1,0 +1,52 @@
+// Input: preorder = [1,2,4,5,3,6,7]
+// postorder = [4,5,2,6,7,3,1]
+// Output: [1,2,3,4,5,6,7]
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    TreeNode* constructFromPrePost(vector<int>& preorder, vector<int>& postorder) {
+        // preorder: root - left - right
+        // postorder: left - right - root
+        
+        // 用数组来模拟栈先进后出的功能
+        // 栈中存着还没有添加完孩子的结点，当st.top()==postorder[j]，表示这个结点的遍历完成了，可以pop出来，因为后序遍历根节点在最后面
+        vector<TreeNode*> st;
+        int size = preorder.size();
+        
+        st.push_back(new TreeNode(preorder[0]));
+        
+        // i和j分别表示在preorder和postorder中的索引位置
+        for (int i = 1, j = 0; i < size; i++) {
+            TreeNode* node = new TreeNode(preorder[i]);
+            
+            // 检查栈顶结点的孩子是否添加完毕
+            while (st.back()->val == postorder[j]) {
+                st.pop_back();
+                j++;
+            }
+            
+            // 将新创建的node添加为栈顶结点的孩子
+            if (!st.back()->left) {
+                st.back()->left = node;
+            } else {
+                st.back()->right = node;
+            }
+            
+            // 将node加入栈中，模拟递归
+            st.push_back(node);
+        }
+        
+        return st[0];
+    }
+};
