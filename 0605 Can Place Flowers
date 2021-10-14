@@ -1,0 +1,30 @@
+// Input: flowerbed = [1,0,0,0,1], n = 1
+// Output: true
+
+class Solution {
+public:
+    bool canPlaceFlowers(vector<int>& flowerbed, int n) {
+        // 头尾添加，避免特殊处理
+        flowerbed.insert(flowerbed.begin(), 0);
+        flowerbed.insert(flowerbed.begin(), 1);
+        flowerbed.push_back(0);
+        flowerbed.push_back(1);
+        
+        // 前一朵花的index
+        int size = flowerbed.size();
+        int preflower = 0;
+        
+        for (int i = 1; i < size; i++) {
+            // 计算当前花和之前花的距离，不可能有相邻花，所以i - preflower - 2 ≥ 0
+            if (flowerbed[i] == 1) {
+                n -= (i - preflower - 2) / 2;
+                
+                if (n <= 0) return true;
+                
+                preflower = i;
+            }
+        }
+        
+        return false;
+    }
+};
