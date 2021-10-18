@@ -1,0 +1,43 @@
+// Input: paths = ["root/a 1.txt(abcd) 2.txt(efgh)","root/c 3.txt(abcd)","root/c/d 4.txt(efgh)"]
+// Output: [["root/a/2.txt","root/c/d/4.txt"],["root/a/1.txt","root/c/3.txt"]
+
+class Solution {
+public:
+    vector<vector<string>> findDuplicate(vector<string>& paths) {
+        unordered_map<string, vector<string>> map;
+        vector<vector<string>> res = {};
+        
+        for (auto path : paths) {
+            istringstream is(path);
+            string str;
+            
+            string directory, filename, pathname, content;
+            
+            while (is >> str) {
+                int position = str.find('(');
+                
+                // 目录
+                if (position == str.npos) {
+                    directory = str;
+                }
+                // 文件
+                else {
+                    filename = str.substr(0, position);
+                    pathname = directory + "/" + filename;
+                    content = str.substr(position + 1, str.length() - 1);
+                    
+                    map[content].push_back(pathname);
+                }
+            }
+        }
+        
+        for (auto iter : map) {
+            // 存在重复文件
+            if (iter.second.size() > 1) {
+                res.push_back(iter.second);
+            }
+        }
+    
+        return res;
+    }
+};
