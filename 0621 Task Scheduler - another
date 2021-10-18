@@ -1,0 +1,39 @@
+// Input: tasks = ["A","A","A","A","A","A","B","C","D","E","F","G"], n = 2
+// Output: 16
+// Explanation: 
+// One possible solution is
+// A -> B -> C -> A -> D -> E -> A -> F -> G -> A -> idle -> idle -> A -> idle -> idle -> A
+
+class Solution {
+public:
+    int leastInterval(vector<char>& tasks, int n) {
+        int maxNum = 0, maxCnt = 0;
+        vector<int> vec(26, 0);
+        
+        for (char task : tasks) {
+            vec[task - 'A']++;
+            
+            // 比较最大值
+            if (vec[task - 'A'] > maxNum) {
+                maxNum = vec[task - 'A'];
+                maxCnt = 0;
+            }
+            if (vec[task - 'A'] == maxNum) {
+                maxCnt++;
+            }
+        }
+        
+        // Input: tasks = ["A","A","A","A","A","A","B","C","D","E","F","G"], n = 2
+        // A -> B -> C -> A -> D -> E -> A -> F -> G -> A -> idle -> idle -> A -> idle -> idle -> A
+        // max = 6, maxCnt = 1, 至少要有六个section, 每个section固定一个A, 剩余的称为part，可以计算part的数量和单个part的长度
+        // 计算empty slot，把剩下的task往里面填，如果task不够就要填idle，如果task多了就放在后面就可以了
+        // 极端情况，partLen < 0时，说明每个section固定的task就足够填满了，idles一定为0
+        
+        int partCnt = maxNum - 1;
+        int partLen = (n+1) - maxCnt;
+        int emptySlots = partCnt * partLen;
+        int taskLeft = tasks.size() - maxNum * maxCnt;
+        int idles = max(0, emptySlots - taskLeft);
+        return tasks.size() + idles;
+    }
+};
