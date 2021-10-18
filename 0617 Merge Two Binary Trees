@@ -1,0 +1,52 @@
+// Input: root1 = [1,3,2,5], root2 = [2,1,3,null,4,null,7]
+// Output: [3,4,5,5,4,null,7]
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    
+    // res表示即将填充的new tree的位置
+    void mergeTreesDFS(TreeNode* t1, TreeNode* t2, TreeNode*& res) {
+        // 终止条件，t1和t2都遍历结束
+        if (!t1 && !t2) {
+            res = NULL;
+            return;
+        }
+        
+        // t1和t2有一个还没遍历结束
+        if (t1 && !t2) {
+            res = new TreeNode(t1->val);
+            mergeTreesDFS(t1->left, NULL, res->left);
+            mergeTreesDFS(t1->right, NULL, res->right);
+        }
+        else if (!t1 && t2) {
+            res = new TreeNode(t2->val);
+            mergeTreesDFS(NULL, t2->left, res->left);
+            mergeTreesDFS(NULL, t2->right, res->right);
+        }
+        
+        // t1和t2都还没有遍历结束
+        else {
+            int val = t1->val + t2->val;
+            res = new TreeNode(val);
+            mergeTreesDFS(t1->left, t2->left, res->left);
+            mergeTreesDFS(t1->right, t2->right, res->right);
+        }
+    }
+    
+    TreeNode* mergeTrees(TreeNode* root1, TreeNode* root2) {
+        TreeNode* res;
+        mergeTreesDFS(root1, root2, res);
+        return res;
+    }
+};
