@@ -22,7 +22,9 @@ public:
         for (int i = 1; i < m; i++) {
             int diff = prices[i] - prices[i-1];
             for (int j = 1; j <= 2; j++) {
-                local[i][j] = max(global[i-1][j-1]+max(diff,0), local[i-1][j]+diff);
+                // 第i天卖：第i-1天刚买的，第i-1天之前买的/第i-1天拖一天别卖了
+                local[i][j] = max(global[i-1][j-1] + diff, local[i-1][j] + diff);
+                // 第i天全局：第i天卖，第i天不卖（可以买）
                 global[i][j] = max(local[i][j], global[i-1][j]);
             }
         }
