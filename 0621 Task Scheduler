@@ -1,0 +1,52 @@
+// Input: tasks = ["A","A","A","A","A","A","B","C","D","E","F","G"], n = 2
+// Output: 16
+// Explanation: 
+// One possible solution is
+// A -> B -> C -> A -> D -> E -> A -> F -> G -> A -> idle -> idle -> A -> idle -> idle -> A
+
+class Solution {
+public:
+    int leastInterval(vector<char>& tasks, int n) {
+        unordered_map<char, int> map;
+        // 默认是大顶堆，pq.top()是最大值
+        priority_queue<pair<int, char>> pq;
+        
+        for (char task : tasks) {
+            map[task]++;
+        }
+        
+        for (auto iter : map) {
+            pq.push({iter.second, iter.first});
+        }
+        
+        // 开始schedule task
+        int res = 0;
+        int lastidle = 0;
+        
+        while (!pq.empty()) {
+            // 挑选n+1个task  
+            vector<pair<int, char>> vec;
+            int i;
+            
+            for (i = 0; i <= n; i++) {            
+                auto pair = pq.top(); pq.pop();
+                if (pair.first > 1) {
+                    vec.push_back({pair.first-1, pair.second});
+                }
+                
+                if (pq.empty()) break;
+            }
+            
+            // 更新res和lastidle
+            res += (n+1);
+            lastidle = (n-i);
+            
+            // 把还没做完的task放回去
+            for (auto pair : vec) {
+                pq.push(pair);
+            }
+        }
+        
+        return res - lastidle;
+    }
+};
