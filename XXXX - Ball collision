@@ -1,0 +1,95 @@
+#include <iostream>
+using namespace std;
+
+int main()
+{
+	int N, L;
+	cin >> N >> L;
+
+	int position[N];
+	int direction[N];
+	int dir = 1;       // 负数表示向左，正数表示向右
+
+	for (int i = 0; i < N; i++) {
+		cin >> position[i];
+		direction[i] = dir;
+		dir = -dir;
+	}
+
+	// 按照初始position排序
+	for (int i = 0; i < N; i++) {
+		int minpos = position[i];
+		int minidx = i;
+
+		for (int j = i; j < N; j++) {
+			if (position[j] < minpos) {
+				minpos = position[j];
+				minidx = j;
+			}
+		}
+
+		int tmp = position[i];
+		position[i] = position[minidx];
+		position[minidx] = tmp;
+
+		tmp = direction[i];
+		direction[i] = direction[minidx];
+		direction[minidx] = tmp;
+	}
+
+	// 开始碰撞
+	int time = 0;
+	int firstball, lastball;
+
+	bool firstfound = false;
+	bool finished = false;
+
+	while (!finished) {
+		time++;
+
+		// 每个球都动一下
+		for (int i = 0; i < N; i++) {
+			if (position[i] == 0 || position[i] == L) continue;
+
+			if (i + 1 < N && position[i] == position[i + 1]) {
+				direction[i] = -direction[i];
+				direction[i + 1] = -direction[i + 1];
+
+				position[i] += direction[i];
+			}
+			else if (i + 1 < N && position[i] + 1 == position[i + 1] && direction[i] == 1 && direction[i + 1] == -1) {
+				direction[i] = -direction[i];
+				direction[i + 1] = -direction[i + 1];
+
+				i++;
+			}
+			else {
+				position[i] += direction[i];
+			}
+
+			// 判断第一个球
+			if (position[i] == 0 || position[i] == L) {
+				if (!firstfound) {
+					firstball = time;
+					firstfound = true;
+				}
+			}
+		}
+
+		// 判断最后一个球
+		int i;
+		for (i = 0; i < N; i++) {
+			if (position[i] != 0 && position[i] != L) {
+				break;
+			}
+		}
+		if (i == N) {
+			lastball = time;
+			finished = true;
+		}
+	}
+
+	cout << firstball << " " << lastball;
+
+	return 0;
+}
