@@ -1,0 +1,80 @@
+#include <iostream>
+#include <queue>
+using namespace std;
+
+int n = 5;
+int light[5][5];
+int direction[4][2] = { {-1,0}, {1,0}, {0,-1}, {0,1} };
+const int maxcnt = (1 << 25);
+bool visited[maxcnt];
+int steps[maxcnt];
+
+bool allLightOn(int state) {
+	return (state + 1) == maxcnt;
+}
+
+int bfs(int state) {
+	if (allLightOn(state)) {
+		return 0;
+	}
+
+	queue<int> queue;
+	queue.push(state);
+
+	visited[state] = true;
+	steps[state] = 0;
+
+	while (!queue.empty()) {
+		int curstate = queue.front(); queue.pop();
+
+		for (int idx = 0; idx < n*n; idx++) {
+			int i = idx / n;
+			int j = idx % n;
+
+			int nextstate = curstate;
+
+			// 点亮idx
+			nextstate = nextstate ^ (1 << idx);
+			for (int dir = 0; dir < 4; dir++) {
+				int newi = i + direction[dir][0];
+				int newj = j + direction[dir][1];
+
+				if (newi < 0 || newi >= n || newj < 0 || newj >= n) continue;
+
+				nextstate = nextstate ^ (1 << (newi*n+newj));
+			}
+
+			if (allLightOn(nextstate)) {
+				steps[nextstate] = steps[curstate] + 1;
+				return steps[nextstate];
+			}
+
+			if (!visited[nextstate]) {
+				queue.push(nextstate);
+				visited[nextstate] = true;
+				steps[nextstate] = steps[curstate] + 1;
+			}
+		}
+	}
+
+	return -1;
+}
+
+int main()
+{
+	int state = 0;
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) {
+			cin >> light[i][j];
+
+			if (light[i][j] == 1) {
+				state = state | (1 << (i * n + j));
+			}
+		}
+	}
+
+	int step = bfs(state);
+	cout << step;
+
+	return 0;
+}
