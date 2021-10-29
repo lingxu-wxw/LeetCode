@@ -1,0 +1,60 @@
+// Input: grid = [[2,1,1],[1,1,0],[0,1,1]]
+// Output: 4
+
+// Input: grid = [[2,1,1],[0,1,1],[1,0,1]]
+// Output: -1
+// Explanation: The orange in the bottom left corner (row 2, column 0) is never rotten, because rotting only happens 4-directionally.
+
+class Solution {
+public:
+    int orangesRotting(vector<vector<int>>& grid) {
+        int height = grid.size();
+        int width = grid[0].size();
+        
+        int fresh = 0;
+        queue<int> rotten;
+        
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                if (grid[i][j] == 2) {
+                    rotten.push(i*width+j);
+                } else if (grid[i][j] == 1) {
+                    fresh++;
+                }
+            }
+        }
+        
+        if (fresh == 0) return 0;
+        
+        // BFS遍历
+        vector<vector<int>> direction = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+        int mintue = 0;
+        
+        while (!rotten.empty()) {
+            mintue++;
+            
+            int size = rotten.size();
+            
+            for (int cnt = 0; cnt < size; cnt++) {
+                int idx = rotten.front(); rotten.pop();
+                int i = idx / width;
+                int j = idx % width;
+                
+                for (auto dir : direction) {
+                    int newi = i + dir[0];
+                    int newj = j + dir[1];
+                    if (newi < 0 || newi >= height || newj < 0 || newj >= width || grid[newi][newj] != 1) continue;
+                    
+                    grid[newi][newj] = 2;
+                    fresh--;
+                    
+                    if (fresh == 0) return mintue;
+                    
+                    rotten.push(newi*width + newj);
+                }
+            }
+        }
+        
+        return -1;
+    }
+};
