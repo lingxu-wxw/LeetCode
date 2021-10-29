@@ -1,0 +1,88 @@
+#include <iostream>
+#include <vector>
+#include <unordered_map>
+#include <queue>
+#include <algorithm>
+using namespace std;
+
+int main()
+{
+	// 输入：顶点数，弧数
+	int nodecnt, arccnt;
+	cin >> nodecnt >> arccnt;
+
+	// 输入：拓扑关系
+	vector<int> in(nodecnt+1, 0); // 入度
+	unordered_map<int, vector<int>> map; // 邻接表
+
+	int node1, node2;
+	for (int i = 0; i < arccnt; i++) {
+		cin >> node1 >> node2;
+		if (node1 > nodecnt || node2 > nodecnt) return -1;
+
+		in[node2]++;
+		map[node1].push_back(node2);
+	}
+
+	int root = -1; // 根节点
+	for (int i = 1; i <= nodecnt; i++) {
+		if (in[i] == 0 && root == -1) {
+			root = i;
+		}
+		else if (in[i] == 0) {
+			return -1; // 非连通图先不考虑
+		}
+	}
+	if (root == -1) return -1; // 有环图先不考虑
+
+
+	// BFS遍历求到root的最大距离
+	vector<pair<int, int>> dist; // {dist, idx}
+	for (int i = 0; i <= nodecnt; i++) {
+		int initdist = (i == 0) ? -1 : 0; // idx=0输出的时候要去掉
+		dist.push_back({ initdist, i });
+	}
+
+	queue<int> queue;
+	queue.push(root);
+
+	while (!queue.empty()) {
+		int size = queue.size();
+		
+		for (int i = 0; i < size; i++) {
+			int node = queue.front(); queue.pop();
+
+			for (int postnode : map[node]) {
+				dist[postnode].first = max(dist[postnode].first, dist[node].first + 1);
+				in[postnode]--;
+
+				if (in[postnode] == 0) {
+					queue.push(postnode); // 无环图应该没问题
+				}
+			}
+		}
+	}
+
+	// 排序输出
+	sort(dist.begin(), dist.end()); // pair默认先排dist，再排idx，符合要求
+
+	for (int i = 1; i <= nodecnt; i++) {
+		if (i > 1) cout << " ";
+		cout << "v" << dist[i].second;
+	}
+
+	return 0;
+}
+
+/*
+testcase:
+6 8
+1 3
+1 4
+1 6
+3 2
+3 5
+4 5
+6 4
+6 5
+*/
