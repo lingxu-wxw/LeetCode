@@ -1,0 +1,59 @@
+// Input: nums = [7,2,5,10,8], m = 2
+// Output: 18
+// Explanation:
+// There are four ways to split nums into two subarrays.
+// The best way is to split it into [7,2,5] and [10,8],
+// where the largest sum among the two subarrays is only 18.
+
+class Solution {
+public:
+    
+    bool canSplitMoreThanMSubarray(vector<int>& nums, int m, int sum) {
+        int size = nums.size();
+        long cursum = 0, cnt = 1;
+        
+        for (int i = 0; i < size; i++) {
+            cursum += nums[i];
+            
+            if (cursum > sum) {
+                cnt++;
+                cursum = nums[i];
+            }
+            
+            if (cnt > m) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+    
+    int splitArray(vector<int>& nums, int m) {
+        int size = nums.size();
+        
+        // 二分搜索法，初始的时候
+        // left表示每一个元素作为一个切分，即m=nums.size()，return maxnum
+        // right表示所有元素作为一个切分，即m=1，return sum
+        
+        long left = 0, right = 0;
+        for (int i = 0; i < size; i++) {
+            left = max(left, (long)nums[i]);
+            right += nums[i];
+        }
+        
+        while (left < right) {
+            long mid = left + (right - left) / 2;
+            
+            // 在当前设定下，每个subarray的sum要小于等于mid且元素尽可能多，判断此时能否切出超过m个subarray
+            // 如果可以，表示mid偏小，left调整；如果不可以，表示mid偏大，right调整
+            // 最终的切分应当使至少有一组subarray的sum=mid
+            if (canSplitMoreThanMSubarray(nums, m, mid)) {
+                left = mid + 1;
+            } else {
+                right = mid;
+            }
+        }
+        
+        return right;
+    }
+}; 
