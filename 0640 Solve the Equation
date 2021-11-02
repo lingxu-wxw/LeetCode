@@ -1,0 +1,76 @@
+// Input: equation = "x+5-3+x=6+x-2"
+// Output: "x=2"
+
+// Input: equation = "x=x"
+// Output: "Infinite solutions"
+
+// Input: equation = "2x=x"
+// Output: "x=0"
+
+// Input: equation = "2x+3x-6x=x+2"
+// Output: "x=-1"
+
+// Input: equation = "x=x+2"
+// Output: "No solution"
+
+class Solution {
+public:
+    
+    // ax = b
+    void parseEquation(string expression, bool isLeft, int& a, int& b) {
+        expression = expression + "+";
+        int len = expression.length();
+        
+        int sign = 1;
+        int num = -1; // 表示此时没有值
+        
+        for (int i = 0; i < len; i++) {
+            char c = expression[i];
+            
+            // 常数在遇符号的时候处理
+            if (c == '+' || c == '-') {
+                num = (num == -1) ? 0 : (num * sign); // num = -1表示前面是系数，处理过了
+                b += (isLeft) ? -num : num;
+                sign = (c == '+') ? 1 : -1;
+                num = -1;
+            }
+            // 系数在遇到x的时候处理
+            else if (c == 'x') {
+                num = (num == -1) ? sign : (num * sign); // num = -1表示x没有系数，正负1
+                a += (isLeft) ? num : -num;
+                num = -1;
+            }
+            // 其他情况处理数字
+            else if (c >= '0' && c <= '9') {
+                if (num == -1) {
+                    num = 0;
+                }
+                num = (num * 10) + (c - '0');
+            }
+        }
+    }
+    
+    string solveEquation(string equation) {
+        int len = equation.length();
+        int a = 0, b = 0;
+        
+        // 处理左右表达式
+        auto idx = equation.find("=");
+        parseEquation(equation.substr(0, idx), true, a, b);
+        parseEquation(equation.substr(idx+1), false, a, b);
+        
+        // 解方程 ax = b
+        // 无穷多解
+        if (a == 0 && b == 0) {
+            return "Infinite solutions";
+        }
+        // 无解
+        else if (a == 0 && b != 0) {
+            return "No solution";
+        }
+        
+        return "x=" + to_string(b/a);
+    }
+};
+
+
