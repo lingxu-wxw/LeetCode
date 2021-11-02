@@ -1,0 +1,31 @@
+// Input: nums = [1,2,2,4]
+// Output: [2,3]
+
+// Input: nums = [1,1]
+// Output: [1,2]
+
+class Solution {
+public:
+    vector<int> findErrorNums(vector<int>& nums) {
+        int size = nums.size();
+        
+        for (int i = 0; i < size; i++) {
+            // 把所有数字都交换到位
+            while (nums[i] != nums[nums[i]-1]) {
+                int idx = nums[i]-1;
+                
+                int tmp = nums[i];
+                nums[i] = nums[idx];
+                nums[idx] = tmp;
+            }
+        }
+        
+        for (int i = 0; i < size; i++) {
+            if (nums[i] != i+1) {
+                return {nums[i], i+1};
+            }
+        }
+
+        return {};
+    }
+};
