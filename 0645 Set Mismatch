@@ -1,0 +1,34 @@
+// Input: nums = [1,2,2,4]
+// Output: [2,3]
+
+// Input: nums = [1,1]
+// Output: [1,2]
+
+class Solution {
+public:
+    vector<int> findErrorNums(vector<int>& nums) {
+        int size = nums.size();
+        
+        vector<int> res(2, -1);
+        
+        for (int num : nums) {
+            // 找到了重复的数字
+            if (nums[abs(num) - 1] < 0) {
+                res[0] = abs(num);
+            }
+            // 如果不是重复数字，就把对应的idx置为负数
+            else {
+                nums[abs(num) - 1] *= -1;
+            }
+        }
+        
+        for (int i = 0; i < size; i++) {
+            // 缺失的数字现在应该是正的
+            if (nums[i] > 0) {
+                res[1] = i + 1;
+            }
+        }
+        
+        return res;
+    }
+};
