@@ -1,0 +1,60 @@
+// 本关任务：某单位在某个湖里举行潜水比赛，这是一个团体项目，每一支队伍由n人组成，要求所有队员从A岸潜水到B岸。
+// 在潜水过程中必须用氧气瓶，但每支队伍只有一个氧气瓶。
+// 最多两个人同时使用一个氧气瓶，但此时两人必须同步前进，因此到达终点的时间等于较慢的一人单独从A到B的时间。
+// 大家都很Nice，随便两个人都愿意共用一个氧气瓶一起游泳。请安排一种策略，让最后一名队员尽早到达终点。
+
+// 提示：
+// 首先将n个队员游到终点耗时长短按递增排序，得到P(1)P(2)…P(n)
+// 我们把A岸耗时最长的两个人P(n)，P(n−1)游到B岸看成一个步骤。为了达到耗时最短，需要在如下两种方案中选择。
+// 方案1：安排耗时最短的两个人P(1)，P(2)先游到B岸，然后P(1)游回A岸，
+//       接着安排耗时最长的两个人P(n)，P(n-1)游到B岸，再安排P(2)游回A岸，总耗时t1=2∗P(2)+P(1)+P(n)
+// 方案2：安排耗时最短和最长的P(1)，P(n)先游到B岸，P(n)留在B岸，P(1)回A岸。
+//       然后P(1)，P(n-1)游到B岸，再安排P(1)游回A岸。总时间为t2=2∗P(1)+P(n)+P(n-1)
+// 如果t1<t2，就选择方案1，否则选择方案2。重复上述策略，直到所有人到达B。
+// 算法实现时还需要考虑人数奇偶。
+// 如果是奇数，最后在A岸剩下人为P(1)，P(2)，P(3)，3人到达B岸耗时P(1)+P(2)+P(3)，
+// 如果是偶数，最后剩下两人为P(1)，P(2),耗时P(2).
+
+#include <iostream>
+#include <algorithm>
+using namespace std;
+
+int min(int num1, int num2) {
+    return (num1 < num2) ? num1 : num2;
+}
+
+int swim(int timecost[], int n) {
+    // 递归终止条件
+    if (n == 1) {
+        return timecost[0];
+    }
+    else if (n == 2) {
+        return timecost[1];
+    }
+    else if (n == 3) {
+        return timecost[0] + timecost[1] + timecost[2];
+    }
+    // 递归遍历
+    else {
+        int method1 = 2 * timecost[1] + timecost[0] + timecost[n-1];
+        int method2 = 2 * timecost[0] + timecost[n-1] + timecost[n-2];
+
+        return min(method1, method2) + swim(timecost, n-2);
+    }
+}
+
+int main()
+{
+    int n;
+    cin >> n;
+
+    int timecost[n];
+    for (int i = 0; i < n; i++) {
+        cin >> timecost[i];
+    }
+    sort(timecost, timecost + n);
+
+    cout << swim(timecost, n);
+
+    return 0;
+}
