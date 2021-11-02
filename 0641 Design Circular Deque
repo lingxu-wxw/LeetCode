@@ -1,0 +1,99 @@
+// Input
+// ["MyCircularDeque", "insertLast", "insertLast", "insertFront", "insertFront", "getRear", "isFull", "deleteLast", "insertFront", "getFront"]
+// [[3], [1], [2], [3], [4], [], [], [], [4], []]
+// Output
+// [null, true, true, true, false, 2, true, true, true, 4]
+
+// Explanation
+// MyCircularDeque myCircularDeque = new MyCircularDeque(3);
+// myCircularDeque.insertLast(1);  // return True
+// myCircularDeque.insertLast(2);  // return True
+// myCircularDeque.insertFront(3); // return True
+// myCircularDeque.insertFront(4); // return False, the queue is full.
+// myCircularDeque.getRear();      // return 2
+// myCircularDeque.isFull();       // return True
+// myCircularDeque.deleteLast();   // return True
+// myCircularDeque.insertFront(4); // return True
+// myCircularDeque.getFront();     // return 4
+
+// 参考 0622 Design Circular Queue
+
+class MyCircularDeque {
+public:
+    MyCircularDeque(int k) {
+        data.resize(k);
+        head = 0;
+        tail = 0;
+        size = k;
+        cursize = 0;
+    }
+    
+    bool insertFront(int value) {
+        if (isFull()) return false;
+        
+        head = (head - 1 + size) % size;
+        data[head] = value;
+        cursize++;
+        return true;
+    }
+    
+    bool insertLast(int value) {
+        if (isFull()) return false;
+        
+        data[tail] = value;
+        tail = (tail + 1) % size;
+        cursize++;
+        return true;
+    }
+    
+    bool deleteFront() {
+        if (isEmpty()) return false;
+        
+        head = (head + 1) % size;
+        cursize--;
+        return true;
+    }
+    
+    bool deleteLast() {
+        if (isEmpty()) return false;
+        
+        tail = (tail - 1 + size) % size;
+        cursize--;
+        return true;
+    }
+    
+    int getFront() {
+        return (isEmpty()) ? -1 : data[head];
+    }
+    
+    int getRear() {
+        return (isEmpty()) ? -1 : data[(tail - 1 + size) % size];
+    }
+    
+    bool isEmpty() {
+        return (cursize == 0);
+    }
+    
+    bool isFull() {
+        return (cursize == size);
+    }
+
+private:
+    vector<int> data;
+    // head表示下一个要deletefront的位置，tail表示下一个要insertlast的位置
+    int head, tail;
+    int size, cursize;
+};
+
+/**
+ * Your MyCircularDeque object will be instantiated and called as such:
+ * MyCircularDeque* obj = new MyCircularDeque(k);
+ * bool param_1 = obj->insertFront(value);
+ * bool param_2 = obj->insertLast(value);
+ * bool param_3 = obj->deleteFront();
+ * bool param_4 = obj->deleteLast();
+ * int param_5 = obj->getFront();
+ * int param_6 = obj->getRear();
+ * bool param_7 = obj->isEmpty();
+ * bool param_8 = obj->isFull();
+ */
