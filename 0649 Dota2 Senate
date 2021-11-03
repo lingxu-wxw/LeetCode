@@ -1,0 +1,39 @@
+// Input: senate = "RDD"
+// Output: "Dire"
+// Explanation: 
+// The first senator comes from Radiant and he can just ban the next senator's right in round 1. 
+// And the second senator can't exercise any rights anymore since his right has been banned. 
+// And the third senator comes from Dire and he can ban the first senator's right in round 1. 
+// And in round 2, the third senator can just announce the victory since he is the only guy in the senate who can vote.
+
+class Solution {
+public:
+    string predictPartyVictory(string senate) {
+        int size = senate.size();
+        
+        // 双方都会ban掉对方idx最前面的，这样胜算更大
+        queue<int> radiants;
+        queue<int> dires;
+        
+        for (int i = 0; i < size; i++) {
+            if (senate[i] == 'R') {
+                radiants.push(i);
+            } else {
+                dires.push(i);
+            }
+        }
+        
+        while (!radiants.empty() && !dires.empty()) {
+            int radiant = radiants.front(); radiants.pop();
+            int dire = dires.front(); dires.pop();
+            
+            if (radiant < dire) {
+                radiants.push(radiant + size);
+            } else {
+                dires.push(dire + size);
+            }
+        }
+        
+        return (radiants.empty()) ? "Dire" : "Radiant";
+    }
+};
