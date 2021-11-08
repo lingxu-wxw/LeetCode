@@ -1,0 +1,77 @@
+// Input: root = [1,2,3,null,4]
+// Output: 
+// [["","","","1","","",""],
+//  ["","2","","","","3",""],
+//  ["","","4","","","",""]]
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    
+    // 递归获取树的高度
+    int getDepth(TreeNode* root) {
+        if (!root) return 0;
+        return 1 + max(getDepth(root->left), getDepth(root->right));
+    }
+    
+    vector<vector<string>> printTree(TreeNode* root) {
+        int depth = getDepth(root);
+        int n = pow(2, depth) - 1;
+        
+        if (depth == 0) return {};
+        
+        // 初始化默认为""
+        vector<vector<string>> res(depth, vector<string>(n, ""));
+        
+        // 一个队列存树结点，一个队列存数组idx
+        queue<TreeNode*> nodes;
+        nodes.push(root);
+        
+        queue<pair<int, int>> idxs;
+        idxs.push({0, (n-1)/2});
+        res[0][(n-1)/2] = to_string(root->val);
+        
+        int height = depth - 1;
+        int col;
+        
+        // BFS遍历
+        while (!nodes.empty()) {
+            int size = nodes.size();
+            
+            for (int i = 0; i < size; i++) {
+                TreeNode* node = nodes.front();
+                nodes.pop();
+                
+                int r = idxs.front().first;
+                int c = idxs.front().second;
+                idxs.pop();
+                
+                if (node->left) {
+                    nodes.push(node->left);
+                    col = c - pow(2, height-r-1);
+                    idxs.push({r+1, col});
+                    res[r+1][col] = to_string(node->left->val);
+                }
+                
+                if (node->right) {
+                    nodes.push(node->right);
+                    col = c + pow(2, height-r-1);
+                    idxs.push({r+1, col});
+                    res[r+1][col] = to_string(node->right->val);
+                }
+            }
+        }
+        
+        return res;
+    }
+};
