@@ -1,0 +1,149 @@
+// Input
+// ["AllOne", "inc", "inc", "getMaxKey", "getMinKey", "inc", "getMaxKey", "getMinKey"]
+// [[], ["hello"], ["hello"], [], [], ["leet"], [], []]
+// Output
+// [null, null, null, "hello", "hello", null, "hello", "leet"]
+
+// Explanation
+// AllOne allOne = new AllOne();
+// allOne.inc("hello");
+// allOne.inc("hello");
+// allOne.getMaxKey(); // return "hello"
+// allOne.getMinKey(); // return "hello"
+// allOne.inc("leet");
+// allOne.getMaxKey(); // return "hello"
+// allOne.getMinKey(); // return "leet"
+
+class AllOne {
+public:
+    
+    // C++ list API
+    // iterator insert(iterator, elem)	在迭代器 pos 指定的位置之前插入一个新元素 elem，并返回表示新插入元素位置的迭代器
+    // iterator erase (iterator)
+    // iterator begin()	    返回指向容器中第一个元素的双向迭代器
+    // iterator end()	    返回指向容器中最后一个元素所在位置的下一个位置的双向迭代器
+    // elem front()	    返回第一个元素的引用
+    // elem back()	    返回最后一个元素的引用
+    
+    AllOne() {
+        // begin, {cnt:4, keys:{}}, {cnt:2, keys:{}}, {cnt:1, keys:{}}, end
+    }
+    
+    // inc(String key) Increments the count of the string key by 1. 
+    // If key does not exist in the data structure, insert it with count 1.
+    void inc(string key) {
+        // 向buckets中插入新key，cnt为1
+        if (!map.count(key)) {
+            
+            // buckets为空 或 不存在cnt为1的Bucket：新创建cnt为1的Bucket
+            if (buckets.empty() || buckets.back().cnt != 1) {
+                auto newbucket = buckets.insert(buckets.end(), {1, {key}});
+                map[key] = newbucket;
+            }
+            
+            // 存在cnt为1的Bucket
+            else {
+                auto bucket = --(buckets.end());
+                bucket->keys.insert(key);
+                map[key] = bucket;
+            }
+        }
+        
+        // 向buckets中插入旧key，cnt++
+        else {
+            auto curbucket = map[key];
+            auto prebucket = --(map[key]);
+            
+            // 不存在cnt+1的Bucket：新创建cnt+1的Bucket
+            if (prebucket == buckets.end() || (*prebucket).cnt != (*curbucket).cnt + 1) {
+                auto newbucket = buckets.insert(curbucket, {(*curbucket).cnt + 1, {key}});
+                map[key] = newbucket;
+            }
+            
+            // 存在cnt+1的Bucket
+            else {
+                prebucket->keys.insert(key);
+                map[key] = prebucket;
+            }
+            
+            // 从当前Bucket中删除key
+            (*curbucket).keys.erase(key);
+            if ((*curbucket).keys.empty()) {
+                buckets.erase(curbucket);
+            }
+        }
+    }
+    
+    // dec(String key) Decrements the count of the string key by 1. 
+    // If the count of key is 0 after the decrement, remove it from the data structure. 
+    // It is guaranteed that key exists in the data structure before the decrement.
+    void dec(string key) {
+        // 删除不存在key，返回
+        if (!map.count(key)) {
+            return;
+        }
+        
+        auto curbucket = map[key];
+        auto postbucket = ++(map[key]);
+        
+        // 当前Bucket的cnt为1，删除后Bucket不需要转移，map中需要删除
+        if ((*curbucket).cnt == 1) {
+            (*curbucket).keys.erase(key);
+            if ((*curbucket).keys.empty()) {
+                buckets.erase(curbucket);
+            }
+            map.erase(key);
+            return;
+        }
+        
+        // 当前Bucket的cnt不为1，删除后Bucket需要转移
+        
+        // 不存在cnt-1的Bucket：新创建cnt-1的Bucket
+        if (postbucket == buckets.end() || (*postbucket).cnt != (*curbucket).cnt - 1) {
+            auto newbucket = buckets.insert(postbucket, {(*curbucket).cnt - 1, {key}});
+            map[key] = newbucket;
+        }
+        
+        // 存在cnt-1的Bucket
+        else {
+            (*postbucket).keys.insert(key);
+            map[key] = postbucket;
+        }
+        
+        // 从当前Bucket中删除key
+        (*curbucket).keys.erase(key);
+        if ((*curbucket).keys.empty()) {
+            buckets.erase(curbucket);
+        }
+    }
+    
+    // getMaxKey() Returns one of the keys with the maximal count. 
+    // If no element exists, return an empty string "".
+    string getMaxKey() {
+        return buckets.empty() ? "" : *(buckets.front().keys.begin());
+    }
+    
+    // getMinKey() Returns one of the keys with the minimum count. 
+    // If no element exists, return an empty string "".
+    string getMinKey() {
+        return buckets.empty() ? "" : *(buckets.back().keys.begin());
+    }
+
+private:
+    struct Bucket {
+        int cnt;
+        unordered_set<string> keys;
+    };
+    
+    list<Bucket> buckets;   // 双向链表容器
+    unordered_map<string, list<Bucket>::iterator> map;
+};
+
+/**
+ * Your AllOne object will be instantiated and called as such:
+ * AllOne* obj = new AllOne();
+ * obj->inc(key);
+ * obj->dec(key);
+ * string param_3 = obj->getMaxKey();
+ * string param_4 = obj->getMinKey();
+ */
