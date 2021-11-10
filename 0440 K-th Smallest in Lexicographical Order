@@ -1,0 +1,44 @@
+// Input: n = 13, k = 2
+// Output: 10
+// Explanation: The lexicographical order is [1, 10, 11, 12, 13, 2, 3, 4, 5, 6, 7, 8, 9], so the second smallest number is 10.
+
+// 参考 0386 Lexicographical Numbers 有TLE风险
+
+class Solution {
+public:
+    int findKthNumber(int n, int k) {
+        if (n < k) return -1;
+        
+        long long curnum = 1;
+        k--;
+        
+        while (k > 0) {
+            long long left = curnum;
+            long long right = curnum + 1;
+            long long cnt = 0;
+            
+            // 假设每个数字都是一棵十叉树，计算当前cursum下的数字个数
+            while (left <= n) {
+                // e.g. curnum=1, n=101, cnt=(2-1)+(20-10)+(102-100)=13
+                cnt += min((long long)n + 1, right) - left;
+                left = left * 10;
+                right = right * 10;
+            }
+            
+            // 当前cursum下的数字小于等于k，结果不在当前root下，直接移动root
+            // e.g. curnum=1, n=101, k=14（此时13）, cnt=13: 1, 10, 100, 101, 11, 12, ..., 19, 2(第14)
+            if (cnt <= k) {
+                curnum++;
+                k -= cnt;
+            }
+            // 当前cursum下的数字大于k，结果在当前root下，逐渐缩小范围
+            // e.g. curnum=1, n=101, k=10（此时9）, cnt=13: 1, 10, 100, 101, 11, 12, 13, 4, 15, 16(第10)
+            else {
+                curnum = curnum * 10;
+                k--;
+            }
+        }
+        
+        return curnum;
+    }
+};
