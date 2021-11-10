@@ -1,0 +1,21 @@
+// Input: arr = [1,2,3,4,5], k = 4, x = 3
+// Output: [1,2,3,4]
+
+class Solution {
+public:
+    vector<int> findClosestElements(vector<int>& arr, int k, int x) {
+        vector<int> res = arr;
+        
+        while (res.size() > k) {
+            // arr数组是有序的，所以数组头和数组尾一定有一个是当前离x最远的
+            if (x - res.front() <= res.back() - x) {
+                res.pop_back();
+            }
+            else {
+                res.erase(res.begin());
+            }
+        }
+        
+        return res;
+    }
+};
