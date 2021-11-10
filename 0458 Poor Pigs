@@ -1,0 +1,27 @@
+// Input: buckets = 1000, minutesToDie = 15, minutesToTest = 60
+// Output: 5
+
+class Solution {
+public:
+    int poorPigs(int buckets, int minutesToDie, int minutesToTest) {
+        //      tests
+        // pigs 1   2   3
+        //  1   2   3   4
+        //  2   4   9   16
+        //  3   8   27  64
+        
+        // dp[0][i] = 1, 其实抽象意思是之前有只猪喝过了判断了，只有1桶，要么死要么活，能够直接判断出结果
+        // dp[1][1] = 2
+        // dp[2][1] = 4, pig1 - bucket1/2, pig2 - bucket1/3
+        // dp[3][1] = 8
+        // dp[1][2] = 3, 这道题是求最少需要用到的猪的数量，即考虑运气最好的情况，1只猪测两次是可以分辨3桶的
+        // dp[2][2] = dp[2][1] + 2*dp[1][1] + dp[0][1] = 4 + 2*2 + 1 = 9
+        // dp[3][2] = dp[3][1] + 3*dp[2][1] + 3*dp[1][1] + dp[0][1] = 8 + 4*3 + 2*3 + 1 = 27
+        
+        // (tests+1)^pigs >= buckets
+        // log(tests+1) * pigs >= log(buckets)
+        // pigs >= log(buckets) / log(tests+1)，ceil函数取最小整数值
+        
+        return ceil(log(buckets) / log((minutesToTest/minutesToDie) + 1));
+    }
+};
