@@ -1,0 +1,49 @@
+#include "class.h"
+#include <iostream>
+
+using namespace std;
+
+Joseph::Joseph() {
+    n = 0;
+}
+
+Joseph::Joseph(int num) {
+    n = num;
+    peoples = new int[num];
+    neighbors = new int[num];
+
+    for (int i = 0; i < num; i++) {
+        peoples[i] = i;
+        neighbors[i] = (i == num-1) ? 0 : i+1;
+    }
+}
+
+Joseph::~Joseph() {
+    delete[] peoples;
+    delete[] neighbors;
+}
+
+void Joseph::solve(int m) {
+    int rest = n;   // 剩下的人
+    int cur = 0;    // 当前位置
+
+    while (rest > 1) {
+        for (int i = 1; i < m-1; i++) {
+            cur = neighbors[cur];
+        }
+
+        int out = neighbors[cur];
+        int next = neighbors[neighbors[cur]];
+
+        cout << out+1;
+        if (rest == 2) cout << endl;
+        else cout << " ";
+
+        neighbors[cur] = next;
+        cur = next;
+
+        rest--;
+    }
+
+    cout << cur+1 << endl;
+}
