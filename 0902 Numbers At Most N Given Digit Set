@@ -1,0 +1,60 @@
+// Input: digits = ["1","3","5","7"], n = 100
+// Output: 20
+// Explanation: 
+// The 20 numbers that can be written are:
+// 1, 3, 5, 7, 11, 13, 15, 17, 31, 33, 35, 37, 51, 53, 55, 57, 71, 73, 75, 77.
+
+class Solution {
+public:
+    int atMostNGivenDigitSet(vector<string>& digits, int n) {       
+        int size = digits.size();
+        
+        // 获取n的位数
+        long level = 1;
+        int levelcnt = 1;
+        while (level * 10 <= n) {
+            level *= 10;
+            levelcnt++;
+        }
+        
+        // 先加上位数 < levelcnt的全排列
+        int res = 0;
+        int pownum = 1;
+        int curlevelcnt = 1;
+        while (curlevelcnt < levelcnt) {
+            pownum *= size;
+            res += pownum;
+            curlevelcnt++;
+        }
+        
+        // 考虑位数相同的情况
+        bool isfinished = false;
+        while (!isfinished) {
+            int num = n / level;
+            isfinished = true;
+            
+            for (string digit : digits) {
+                int d = stoi(digit);
+                if (d < num) {
+                    res += pownum;
+                } else if (d == num) {
+                    isfinished = false;
+                    break;
+                } else {
+                    break;
+                }
+            }
+            
+            n = n % level;
+            level /= 10;
+            pownum /= size;
+            
+            if (level == 0 && !isfinished) {
+                res++;
+                break;
+            }
+        }
+        
+        return res;      
+    }
+};
