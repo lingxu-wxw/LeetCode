@@ -16,7 +16,7 @@ class Solution {
         ListNode dummy = new ListNode(Integer.MAX_VALUE);
         ListNode tmp = dummy;
         
-        // cur是当前正在插入的结点，precur是下一个要被移动的结点
+        // cur是当前正在插入的结点，nextcur是下一个要被移动的结点
         ListNode cur = head;
         ListNode nextcur;
         
