@@ -1,0 +1,54 @@
+// Input: n = 4, a = 2, b = 3
+// Output: 6
+
+class Solution {
+public:
+    
+    // 最大公约数
+    int gcd(int a, int b) {
+        if (b == 0) return a;
+        return gcd(b, a % b);
+    }
+    
+    // 最小公倍数 (not used)
+    long lcm(int a, int b) {
+        return a * b / gcd(a, b);
+    }
+    
+    // 返回<=num的数字中，divisible by either a or b 的数字的个数 (not used)
+    // 2 3 4 6 8 9 10 12 14 15 16 18 20
+    // helper(20) = 20/2 + 20/3 - 20/6 = 10+6-3 = 13
+    int helper(long num, int a, int b) {
+        return num / a + num / b - num / lcm(a,b);
+    }
+    
+    int nthMagicalNumber(int n, int a, int b) {
+        // 1 <= n <= 10^9
+        // 2 <= a, b <= 4 * 10^4
+        
+        // 第n个magical number最小最大能可能取到的范围
+        // left = min(a,b) 此时 n=1, right = N * min(a,b) 此时 n=10^9
+        // 适当放缩的话，可以left = 2, right = 1e14
+        
+        long M = 1e9 + 7;
+        long left = min(a, b);
+        long right = 1e9 * min(a, b);
+        long lcm = a * b / gcd(a, b);
+        
+        while (left < right) {
+            long mid = left + (right - left) / 2;
+            
+            int nth = mid / a + mid / b - mid / lcm;
+            // 二分查找，当前mid的magical number编号太小
+            if (nth < n) {
+                left = mid + 1;
+            } else {
+                right = mid;
+            }
+        }
+        
+        return right % M;
+    }
+};
+
+
