@@ -1,0 +1,27 @@
+// Input: n = 3
+// Output: 5
+// Explanation: The five different ways are show above.
+
+class Solution {
+public:
+    int numTilings(int n) {
+        // dp[n] = dp[n-1] + dp[n-2] + 2 * (dp[n-3] + ... + dp[0])
+        //       = dp[n-1] + dp[n-2] + dp[n-3] + dp[n-3] + 2 * (dp[n-4] + ... + dp[0])
+        //       = 2 * dp[n-1] + dp[n-3]
+        
+        // 图解：https://assets.leetcode.com/uploads/2021/07/15/lc-domino1.jpg
+        // 图解：https://images2018.cnblogs.com/blog/391947/201806/391947-20180618065539694-679656041.png
+        
+        // 1 <= n <= 1000
+        vector<int> dp(n+1, 0);
+        dp[0] = 1;
+        dp[1] = 1;
+        dp[2] = 2;
+        
+        for (int i = 3; i <= n; i++) {
+            dp[i] = 2 * dp[i-1] + dp[i-3];
+        }
+        
+        return dp[n];
+    }
+};
