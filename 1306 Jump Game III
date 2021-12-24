@@ -1,0 +1,44 @@
+// Input: arr = [4,2,3,0,3,1,2], start = 5
+// Output: true
+// Explanation: 
+// All possible ways to reach at index 3 with value 0 are: 
+// index 5 -> index 4 -> index 1 -> index 3 
+// index 5 -> index 6 -> index 4 -> index 1 -> index 3 
+
+class Solution {
+public:
+    bool canReach(vector<int>& arr, int start) {
+        int size = arr.size();
+        
+        // 可能走到的index
+        queue<int> queue;
+        queue.push(start);
+        
+        // 已经走到过的index
+        vector<bool> visited(size, false);
+        
+        while (!queue.empty()) {
+            int cnt = queue.size();
+            
+            for (int i = 0; i < cnt; i++) {
+                int idx = queue.front();
+                queue.pop();
+                visited[idx] = true;
+                
+                if (arr[idx] == 0) return true;
+                
+                int leftidx = idx + arr[idx];
+                int rightidx = idx - arr[idx];
+                    
+                if (leftidx >= 0 && leftidx < size && !visited[leftidx]) {
+                    queue.push(leftidx);
+                }
+                if (rightidx >= 0 && rightidx < size && !visited[rightidx]) {
+                    queue.push(rightidx);
+                }
+            }
+        }
+        
+        return false;
+    }
+};
