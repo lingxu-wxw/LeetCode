@@ -1,0 +1,44 @@
+// Input: nums = [1,-2,3,-2] 
+// Output: 3
+// Explanation: Subarray [3] has maximum sum 3.
+
+// Input: nums = [5,-3,5]
+// Output: 10
+// Explanation: Subarray [5,5] has maximum sum 5 + 5 = 10.
+
+class Solution {
+public:
+    int maxSubarraySumCircular(vector<int>& nums) {
+        // Kadana's algorithm
+        // 参考 0053 Maximum Subarray
+        
+        // 一维数组扁平化，localmax[i]表示如果以nums[i]为subarray的结尾，此时的subarray最大值
+        int localmax = 0;
+        int globalmax = nums[0];
+        
+        // 和max定义方法相同
+        int localmin = 0;
+        int globalmin = nums[0];
+        
+        // 数组总和
+        int totalsum = 0;
+        
+        for (int num : nums) {
+            // 以nums[i]为subarray的结尾时 subarray最大值：第一类是算上i-1之前的部分，第二类是重新开始
+            localmax = max(localmax + num, num);
+            globalmax = max(globalmax, localmax);
+            
+            // 和max计算方法相同
+            localmin = min(localmin + num, num);
+            globalmin = min(globalmin, localmin);
+            
+            totalsum += num;
+        }
+        
+        
+        // globalmax 表示不取跨边界的，totalsum - globalmin 表示取跨边界的 
+        // globalmax < 0 代表所有数字都是负数，此时的globalmax肯定只有一个<0的数，
+        // 而globalmin=totalsum, 导致totalsum-globalmin = 0, 这是需要特殊处理的
+        return (globalmax > 0) ? max(totalsum - globalmin, globalmax) : globalmax;
+    }
+};
