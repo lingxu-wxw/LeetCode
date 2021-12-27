@@ -1,0 +1,29 @@
+// Input: graph = [[1,2],[3],[3],[]]
+// Output: [[0,1,3],[0,2,3]]
+// Explanation: There are two paths: 0 -> 1 -> 3 and 0 -> 2 -> 3.
+
+class Solution {
+public:
+    
+    void allPathsSourceTargetDFS(vector<vector<int>>& graph, int curnode, int target, vector<int> out, vector<vector<int>>& res) {
+        out.push_back(curnode);
+        
+        if (curnode == target) {
+            res.push_back(out);
+            return;
+        }
+        
+        for (auto neighbor : graph[curnode]) {
+            allPathsSourceTargetDFS(graph, neighbor, target, out, res);
+        }
+    }
+    
+    vector<vector<int>> allPathsSourceTarget(vector<vector<int>>& graph) {
+        vector<int> out = {};
+        vector<vector<int>> res;
+        
+        allPathsSourceTargetDFS(graph, 0, graph.size()-1, out, res);
+        
+        return res;
+    }
+};
