@@ -1,0 +1,77 @@
+// Input: accounts = [["John","johnsmith@mail.com","john_newyork@mail.com"],["John","johnsmith@mail.com","john00@mail.com"],["Mary","mary@mail.com"],["John","johnnybravo@mail.com"]]
+// Output: [["John","john00@mail.com","john_newyork@mail.com","johnsmith@mail.com"],["Mary","mary@mail.com"],["John","johnnybravo@mail.com"]]
+
+// Explanation:
+// The first and second John's are the same person as they have the common email "johnsmith@mail.com".
+// The third John and Mary are different people as none of their email addresses are used by other accounts.
+// We could return these lists in any order, for example the answer [['Mary', 'mary@mail.com'], ['John', 'johnnybravo@mail.com'], 
+// ['John', 'john00@mail.com', 'john_newyork@mail.com', 'johnsmith@mail.com']] would still be accepted.
+
+class Solution {
+public:
+    
+    vector<vector<string>> accountsMerge(vector<vector<string>>& accounts) {    
+        int size = accounts.size();
+        
+        // 关联表，email在accounts[i]中出现过
+        unordered_map<string, vector<int>> map;
+        
+        // visited表，标记accounts[i]是否被访问过
+        vector<bool> visited(size, false);
+        
+        vector<vector<string>> res;
+        
+        // 初始化关联表
+        for (int i = 0; i < size; i++) {
+            for (int j = 1; j < accounts[i].size(); j++) {
+                map[accounts[i][j]].push_back(i);
+            }
+        }
+        
+        // BFS遍历
+        for (int i = 0; i < size; i++) {
+            // 确保accounts[i]还未被访问过
+            if (visited[i]) continue;
+            
+            // 遍历当前accounts[i]
+            queue<int> queue;
+            
+            // 记录当前用户的所有email账号，set自带排序
+            set<string> emails;
+            
+            queue.push(i);
+            
+            while (!queue.empty()) {
+                // 当前正在遍历的account
+                int idx = queue.front();
+                queue.pop();
+                
+                visited[idx] = true;
+                
+                for (int i = 1; i < accounts[idx].size(); i++) {
+                    // 将email添加进set
+                    emails.insert(accounts[idx][i]);
+                    
+                    for (auto accountidx : map[accounts[idx][i]]) {
+                        if (visited[accountidx]) continue;
+                        
+                        // 将具有相同email的其他account加入队列，这实际上是同一个user的账号
+                        queue.push(accountidx);                   
+                        visited[accountidx] = true;
+                    }
+                }
+            }
+            
+            // queue遍历完成，表明当前user的所有email都遍历到了
+            // set强转vector，自带排序
+            vector<string> vec(emails.begin(), emails.end());
+            
+            // 添加用户名，加入res
+            vec.insert(vec.begin(), accounts[i][0]);
+            
+            res.push_back(vec);
+        }
+        
+        return res;
+    }
+};
