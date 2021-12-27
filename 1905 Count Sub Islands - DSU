@@ -1,0 +1,107 @@
+// Input: grid1 = [[1,1,1,0,0],[0,1,1,1,1],[0,0,0,0,0],[1,0,0,0,0],[1,1,0,1,1]], grid2 = [[1,1,1,0,0],[0,0,1,1,1],[0,1,0,0,0],[1,0,1,1,0],[0,1,0,1,0]]
+// Output: 3
+// Explanation: In the picture above, the grid on the left is grid1 and the grid on the right is grid2.
+// The 1s colored red in grid2 are those considered to be part of a sub-island. There are three sub-islands.
+
+
+class DSU {
+public:
+    vector<int> groups;
+    int componentCnt;
+
+    // 初始化，每个元素(i*width+j)各自为组
+    DSU(int size) {
+        groups.resize(size);
+        for (int i = 0; i < size; i++) {
+            groups[i] = i;
+        }
+        componentCnt = size;
+    }
+
+    // 找到n所在的组，并将涉及到的元素都标记为同组
+    int Find(int n) {
+        if (groups[n] == n) {
+            return n;
+        }
+        groups[n] = Find(groups[n]);
+        return groups[n];
+    }
+    
+    // 将u和v划归为同一个组
+    void Union(int u, int v) {
+        int groupu = Find(u);
+        int groupv = Find(v);
+        
+        if (groupu == groupv) return;
+        
+        groups[groupu] = groupv;
+        componentCnt--;
+    }
+};
+
+
+class Solution {
+public:
+    int countSubIslands(vector<vector<int>>& grid1, vector<vector<int>>& grid2) {
+        int height = grid1.size();
+        int width = grid1[0].size();
+        
+        // 将grid1中为0 grid2中为1的点置为0，体现sub island
+        vector<vector<int>> directions = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+        
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                if (grid1[i][j] == 0 && grid2[i][j] == 1) {
+                    grid2[i][j] = 0;
+                    
+                    // BFS遍历同属的整个岛屿，全部置为0
+                    queue<int> queue;
+                    queue.push(i*width + j);
+                    
+                    while (!queue.empty()) {
+                        int nodeidx = queue.front();
+                        queue.pop();
+                        
+                        for (auto dir : directions) {
+                            int newi = (nodeidx / width) + dir[0];
+                            int newj = (nodeidx % width) + dir[1];
+
+                            if (newi < 0 || newi >= height || newj < 0 || newj >= width) continue;
+                            if (grid2[newi][newj] == 0) continue;
+
+                            grid2[newi][newj] = 0;
+                            queue.push(newi*width + newj);
+                        }
+                    }
+                }
+            }
+        }
+        
+        // 通过DSU计算grid2中的连通分量，每个海洋格子0算一个连通分量，最后岛屿数为 componentCnt - cnt0
+        DSU* dsu = new DSU(height*width);
+        int cnt0 = 0;
+        
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                if (grid2[i][j] == 1) {
+                    
+                    int idx = i*width + j;
+                    
+                    // 向右合并岛屿格子
+                    if (j+1 < width && grid2[i][j+1] == 1) {
+                        dsu->Union(idx, idx+1);
+                    }
+                    // 向下合并岛屿格子
+                    if (i+1 < height && grid2[i+1][j] == 1) {
+                        dsu->Union(idx, idx+width);
+                    }
+                } 
+                else {
+                    cnt0++;
+                }
+            }
+        }
+        
+        return dsu->componentCnt - cnt0;
+    }
+};
