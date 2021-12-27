@@ -14,7 +14,7 @@ public:
         }
     }
     
-    // 找到n所在的组
+    // 找到n所在的组，并将涉及到的元素都标记为同组
     int Find(int n) {
         if (groups[n] == n) {
             return n;
