@@ -1,0 +1,73 @@
+// Input: nums = [2,3,6,7,4,12,21,39]
+// Output: 8
+
+// 并查集
+class DSU {
+private:
+    vector<int> groups;
+public:
+    // 初始化，每个元素各自为组
+    DSU(int size) {
+        groups.resize(size);
+        for (int i = 0; i < size; i++) {
+            groups[i] = i;
+        }
+    }
+    
+    // 找到n所在的组
+    int Find(int n) {
+        if (groups[n] == n) {
+            return n;
+        }
+        groups[n] = Find(groups[n]);
+        return groups[n];
+    }
+    
+    // 将u和v划归为同一个组
+    void Union(int u, int v) {
+        int groupu = Find(u);
+        int groupv = Find(v);
+        
+        if (groupu == groupv) return;
+        
+        groups[groupu] = groupv;
+    }
+};
+
+class Solution {
+public:
+    int largestComponentSize(vector<int>& nums) {
+        int size = nums.size();
+        
+        // 构建并查集结构
+        int maxnum = nums[0];
+        for (int num : nums) {
+            maxnum = max(maxnum, num);
+        }
+        
+        DSU* dsu = new DSU(maxnum + 1);
+        
+        // 通过并查集将具有相同factor的数都划归为一组
+        for (int num : nums) {
+            for (int i = 2; i * i <= num; i++) {
+                if (num % i == 0) {
+                    dsu->Union(num, i);
+                    dsu->Union(num, num/i);
+                }
+            }
+        }
+        
+        // 通过group组号来寻找最大连通结构
+        unordered_map<int, int> map;
+        int largestComponentSize = 0;
+        
+        for (int num : nums) {
+            int groupid = dsu->Find(num);
+            map[groupid]++;
+            largestComponentSize = max(largestComponentSize, map[groupid]);
+        }
+        
+        return largestComponentSize;
+    }
+};
+
