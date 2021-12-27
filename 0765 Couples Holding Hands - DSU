@@ -1,0 +1,63 @@
+// Input: row = [0,2,1,3]
+// Output: 1
+// Explanation: We only need to swap the second (row[1]) and third (row[2]) person.
+
+class DSU {
+public:
+    vector<int> groups;
+    int componentCnt;
+    
+    // 情侣的对数，编号i表示一对座位
+    DSU(int size) {
+        groups.resize(size);
+        for (int i = 0; i < size; i++) {
+            groups[i] = i;
+        }
+        
+        componentCnt = size;
+    }
+    
+    // 找到n所在的组，并将涉及到的元素都标记为同组
+    int Find(int n) {
+        if (groups[n] == n) {
+            return n;
+        }
+        groups[n] = Find(groups[n]);
+        return groups[n];
+    }
+    
+    // 将u和v划归为同一个组
+    // u和v本身同组表明座位坐对，不同组则将group置为相同，表示需要换一次座位
+    void Union(int u, int v) {
+        int groupu = Find(u);
+        int groupv = Find(v);
+        
+        if (groupu == groupv) return;
+        
+        groups[groupu] = groupv;
+        componentCnt--;
+    }
+};
+
+// 启发式
+// 01 12 24 43 30, 如果5对组成一个component, 则需要交换4次（couples - components）
+
+class Solution {
+public:
+    int minSwapsCouples(vector<int>& row) {
+        int peoples = row.size();
+        int couples = peoples / 2;
+        if (couples == 1) return 0;
+        
+        DSU* dsu = new DSU(couples);
+        
+        // row[i]/2, row[i+1]/2 是实际上目前相邻的人
+        // 将需要换位置的union起来，更新componentCnt
+        for (int i = 0; i < peoples; i += 2) {
+            dsu->Union(row[i]/2, row[i+1]/2);
+        }
+        
+        return couples - dsu->componentCnt;
+    }
+};
+
