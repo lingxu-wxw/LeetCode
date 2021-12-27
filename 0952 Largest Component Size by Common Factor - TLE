@@ -1,0 +1,64 @@
+// Input: nums = [2,3,6,7,4,12,21,39]
+// Output: 8
+
+class Solution {
+public:
+    
+    int gcd(int a, int b) {
+        if (b == 0) return a;
+        return gcd(b, a % b);
+    }
+    
+    int largestComponentSize(vector<int>& nums) {
+        int size = nums.size();
+        
+        // 邻接表
+        unordered_map<int, vector<int>> map;
+        
+        queue<int> queue;
+        vector<bool> visited(size, false);
+        int largestComponentSize = 0;
+        int cursize = 0;
+        
+        // 初始化邻接表
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                if (i == j) continue;
+                
+                int factor = gcd(nums[i], nums[j]);
+                if (factor > 1) {
+                    map[i].push_back(j);
+                    map[j].push_back(i);
+                }
+            }
+        }
+        
+        // 寻找最大连通图
+        for (int i = 0; i < size; i++) {
+            if (visited[i]) continue;
+            
+            queue.push(i);
+            visited[i] = true;
+            cursize = 0;
+            
+            while (!queue.empty()) {
+                int nodeidx = queue.front();
+                queue.pop();
+                
+                visited[nodeidx] = true;
+                cursize++;
+                
+                for (auto neighidx : map[nodeidx]) {
+                    if (visited[neighidx]) continue;
+                    
+                    queue.push(neighidx);
+                    visited[neighidx] = true;
+                }
+            }
+            
+            largestComponentSize = max(largestComponentSize, cursize);
+        }
+        
+        return largestComponentSize;
+    }
+};
