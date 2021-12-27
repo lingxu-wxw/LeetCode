@@ -1,0 +1,77 @@
+// ["StreamChecker","query","query","query","query","query","query","query","query","query","query","query","query","query","query","query","query","query","query","query","query","query","query","query","query","query","query","query","query","query","query"]
+// [[["ab","ba","aaab","abab","baa"]],["a"],["a"],["a"],["a"],["a"],["b"],["a"],["b"],["a"],["b"],["b"],["b"],["a"],["b"],["a"],["b"],["b"],["b"],["b"],["a"],["b"],["a"],["b"],["a"],["a"],["a"],["b"],["a"],["a"],["a"]]
+
+// [null,false,false,false,false,false,true,true,true,true,true,false,false,true,true,true,true,false,false,false,true,true,true,true,true,true,false,true,true,true,false]
+
+
+class TrieNode {
+public:
+    // 每个结点都是一个26叉树
+    TrieNode* child[26];
+    bool isWord;
+    
+    // new新的结点时将child全都置为NULL
+    TrieNode() : isWord(false) {
+        for (auto &p : child) {
+            p = NULL;
+        }
+    }
+};
+
+class StreamChecker {
+private:
+    TrieNode* root;
+    string str;
+    
+public:
+    StreamChecker(vector<string>& words) {
+        root = new TrieNode();
+        str = "";
+        
+        for (string word : words) {
+            insert(word);
+        }    
+    }
+    
+    bool query(char letter) {
+        TrieNode* p = root;
+        str += letter;
+        
+        for (int i = str.length()-1; i >= 0; i--) {
+            // 获取当前字母序
+            int idx = str[i] - 'a';
+            if (!p->child[idx]) {
+                return false;
+            }
+            
+            p = p->child[idx];
+            if (p->isWord) {
+                return true;    
+            }
+        }
+        
+        return p->isWord;
+    }
+    
+    void insert(string word) {
+        TrieNode* p = root;
+        
+        for (int i = word.length()-1; i >= 0; i--) {
+            // 获取当前字母序
+            int idx = word[i] - 'a';
+            if (!p->child[idx]) {
+                // TrieNode和NULL区分是否存在结点
+                p->child[idx] = new TrieNode();
+            }
+            p = p->child[idx];
+        }
+        
+        p->isWord = true;
+    }
+};
+
+/**
+ * Your StreamChecker object will be instantiated and called as such:
+ * StreamChecker* obj = new StreamChecker(words);
+ * bool param_1 = obj->query(letter);
+ */
