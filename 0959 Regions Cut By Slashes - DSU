@@ -1,0 +1,83 @@
+// Input: grid = ["/\\","\\/"]
+// Output: 5
+// Explanation: Recall that because \ characters are escaped, "\\/" refers to \/, and "/\\" refers to /\.
+
+class DSU {
+public:
+    vector<int> groups;
+    int componentCnt;
+    
+    // 小三角形的个数
+    DSU(int size) {
+        groups.resize(size);
+        for (int i = 0; i < size; i++) {
+            groups[i] = i;
+        }
+        
+        componentCnt = size;
+    }
+    
+    // 找到n所在的组，并将涉及到的元素都标记为同组
+    int Find(int n) {
+        if (groups[n] == n) {
+            return n;
+        }
+        groups[n] = Find(groups[n]);
+        return groups[n];
+    }
+    
+    // 将u和v划归为同一个组，u和v同组表明小三角形相连通
+    void Union(int u, int v) {
+        int groupu = Find(u);
+        int groupv = Find(v);
+        
+        if (groupu == groupv) return;
+        
+        groups[groupu] = groupv;
+        componentCnt--;
+    }
+};
+
+// 每一个正方形分为四个部分的小三角形，左-0 上-1 右-2 下-3
+// 正方形内部的小三角形union，'/' union 0-1 union 2-3, '\\' union 1-2 0-3, ' ' union 0-1 1-2 2-3
+// 正方形之间的小三角形union，无论何时都可以，左边格子的2 和 右边格子的0，上边格子的3 和 下边格子的1
+
+class Solution {
+public:
+    int regionsBySlashes(vector<string>& grid) {
+        int size = grid.size();
+        
+        DSU* dsu = new DSU(4*size*size);
+        
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                int baseidx = 4 * (i*size + j);
+                
+                // 正方形内部的小三角形union
+                if (grid[i][j] == '/') {
+                    dsu->Union(baseidx, baseidx + 1);
+                    dsu->Union(baseidx + 2, baseidx + 3);
+                }
+                else if (grid[i][j] == '\\') {
+                    dsu->Union(baseidx + 1, baseidx + 2);
+                    dsu->Union(baseidx, baseidx + 3);
+                }
+                else if (grid[i][j] == ' ') {
+                    dsu->Union(baseidx, baseidx + 1);
+                    dsu->Union(baseidx + 1, baseidx + 2);
+                    dsu->Union(baseidx + 2, baseidx + 3);
+                }
+                
+                // 正方形之间的小三角形union
+                if (j + 1 < size) {
+                    dsu->Union(baseidx + 2, baseidx + 4);
+                }
+                if (i + 1 < size) {
+                    dsu->Union(baseidx + 3, baseidx + 4*size + 1);
+                }
+            }
+        }
+        
+        return dsu->componentCnt;
+    }
+};
