@@ -1,0 +1,30 @@
+// Input: k = 3
+// Output: 3
+// Explanation: The smallest answer is n = 111, which has length 3.
+
+class Solution {
+public:
+    int smallestRepunitDivByK(int k) {
+        // 所有可能取到的n都是111...1，不可能整除2和5的
+        if (k % 2 == 0 || k % 5 == 0) {
+            return -1;
+        }
+        
+        // 余数递推式, 如果常规算n的话很快就越界了
+        // n1 % k = rem1
+        // n2 % k = (n1*10+1) % k = (rem1*10+1) % k = rem2
+        // ...
+        
+        // 停止条件，k位数的1
+        
+        int rem = 0;
+        for (int i = 1; i <= k; i++) {
+            rem = (rem*10 + 1) % k; 
+            if (rem == 0) {
+                return i;
+            }
+        }
+        
+        return -1;
+    }
+};
