@@ -1,0 +1,38 @@
+// Input: m = 3, n = 3, k = 5
+// Output: 3
+// Explanation: The 5th smallest number is 3.
+
+class Solution {
+public:
+    
+    // 找到num矩阵中排名第几小
+    int count(int num, int row, int col) {
+        int cnt = 0;
+        
+        for (int i = 1; i <= row; i++) {
+            cnt += min(col, num / i);
+        }
+        
+        return cnt;
+    }
+    
+    int findKthNumber(int m, int n, int k) {
+        // 取值范围
+        int left = 1, right = m*n;
+        
+        while (left < right) {
+            int mid = (left + right) / 2;
+            int cnt = count(mid, m, n);
+            
+            if (cnt < k) {
+                left = mid + 1;
+            } else {
+                right = mid;
+            }
+        }
+        
+        return right;
+    }
+};
+
+    
