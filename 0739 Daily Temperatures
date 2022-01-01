@@ -1,0 +1,25 @@
+// Input: temperatures = [73,74,75,71,69,72,76,73]
+// Output: [1,1,4,2,1,1,0,0]
+
+class Solution {
+public:
+    vector<int> dailyTemperatures(vector<int>& temperatures) {
+        int days = temperatures.size();
+        
+        stack<int> st;
+        vector<int> res(days, 0);
+        
+        for (int i = 0; i < days; i++) {
+            // 当出现第一个比temperatures[top()]高的温度就退栈
+            while (!st.empty() && temperatures[st.top()] < temperatures[i]) {
+                res[st.top()] = i - st.top();
+                st.pop();
+            }
+            
+            // 空栈，或者当前温度比较低，不能充当其他日子的res
+            st.push(i);
+        }
+        
+        return res;
+    }
+};
