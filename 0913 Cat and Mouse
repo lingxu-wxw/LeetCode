@@ -1,0 +1,106 @@
+// Input: graph = [[2,5],[3],[0,4,5],[1,4,5],[2,3],[0,2,3]]
+// Output: 0
+
+class Solution {
+public:
+    
+    int MOUSEWIN = 1, CATWIN = 2, DRAW = 0;
+    
+    int catMouseGameDFS(vector<vector<int>>& graph, int curmouse, int curcat, int totalmoves, 
+                        unordered_map<string, int>& map) {
+        // 洞口的个数
+        int holes = graph.size();
+        
+        // 当移动次数超过洞口个数的两倍，那一定出现过重复状态，确认为平局
+        // 老鼠最差情况是把所有node都走一遍才能到hole，乘以2是老鼠和猫的回合总数
+        if (totalmoves > 2 * holes) {
+            return DRAW;
+        }
+        // 老鼠抵达洞口，老鼠胜利
+        if (curmouse == 0) {
+            return MOUSEWIN;
+        }
+        // 猫和老鼠相遇，猫胜利
+        if (curmouse == curcat) {
+            return CATWIN;
+        }
+        
+        // 记录当前状态：老鼠位置 猫的位置 下一步谁走
+        string curstate = to_string(curmouse) + "_" + to_string(curcat) + "_" + to_string(totalmoves % 2);
+        if (map.count(curstate)) {
+            return map[curstate];
+        }
+        
+        // 老鼠的移动回合
+        if (totalmoves % 2 == 0) {
+            bool candraw = false;
+            
+            for (int adjnode : graph[curmouse]) {
+                int res = catMouseGameDFS(graph, adjnode, curcat, totalmoves+1, map);
+                
+                // 如果能赢最好
+                if (res == MOUSEWIN) {
+                    map[curstate] = MOUSEWIN;
+                    return MOUSEWIN;
+                }
+                
+                // 再次努力顶和，但并非有出现和局情况就要和，有胜取胜，无胜取和
+                if (res == DRAW) {
+                    candraw = true;
+                }
+            }
+            
+            // 无法获胜，选择顶和
+            if (candraw) {
+                map[curstate] = DRAW;
+                return DRAW;
+            }
+            
+            // 无法获胜也无法顶和
+            map[curstate] = CATWIN;
+            return CATWIN;
+        }
+        
+        // 猫的移动回合
+        else {
+            bool candraw = false;
+            
+            for (int adjnode : graph[curcat]) {
+                // 猫不能进洞
+                if (adjnode == 0) continue;
+                    
+                int res = catMouseGameDFS(graph, curmouse, adjnode, totalmoves+1, map);
+                
+                // 如果能赢最好
+                if (res == CATWIN) {
+                    map[curstate] = CATWIN;
+                    return CATWIN;
+                }
+                
+                // 再次努力顶和，但并非有出现和局情况就要和，有胜取胜，无胜取和
+                if (res == DRAW) {
+                    candraw = true;
+                }
+            }
+            
+            // 无法获胜，选择顶和
+            if (candraw) {
+                map[curstate] = DRAW;
+                return DRAW;
+            }
+            
+            // 无法获胜也无法顶和
+            map[curstate] = MOUSEWIN;
+            return MOUSEWIN;
+        }
+        
+        // return DRAW;
+    }
+    
+    int catMouseGame(vector<vector<int>>& graph) {
+        unordered_map<string, int> map;
+        return catMouseGameDFS(graph, 1, 2, 0, map);
+    }
+};
+
+
