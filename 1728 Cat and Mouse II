@@ -1,0 +1,133 @@
+// Input: grid = ["####F","#C...","M...."], catJump = 1, mouseJump = 2
+// Output: true
+// Explanation: Cat cannot catch Mouse on its turn nor can it get the food before Mouse.
+
+class Solution {
+public:
+    
+    vector<int> directions = {-1, 0, 1, 0, -1}; // 左上右下
+    int dp[9][9][9][9][2][100];
+    
+    // true - mouse win, false - cat win
+    bool canMouseWinDFS(vector<string>& grid, int catJump, int mouseJump, 
+                        int catX, int catY, int mouseX, int mouseY, bool turn, int totalMoves) {
+        int height = grid.size();
+        int width = grid[0].size();
+        
+        // 猫和老鼠在同一个格 / 猫先吃到食物 / 回合数超过1000 -> 猫胜利 (但真的写1000会TLE，应该是根据最大8*8的地图判断出来的)
+        if ((catX == mouseX && catY == mouseY) || grid[catX][catY] == 'F' || totalMoves >= 100) {
+            return false;
+        }
+        // 老鼠先吃到食物 -> 老鼠胜利
+        if (grid[mouseX][mouseY] == 'F') {
+            return true;
+        }
+        
+        // 记录当前状态：老鼠位置 猫的位置 下一步谁走
+        if (dp[catX][catY][mouseX][mouseY][turn][totalMoves] != -1) {
+            return dp[catX][catY][mouseX][mouseY][turn][totalMoves];
+        }
+     
+        // 老鼠的移动回合
+        if (turn) {
+            // 往四个方向跳跃
+            for (int i = 0; i < 4; i++) {
+                int dx = directions[i];
+                int dy = directions[i+1];
+                int newX = mouseX;
+                int newY = mouseY;
+                
+                for (int j = 0; j < mouseJump; j++) {
+                    newX += dx;
+                    newY += dy;
+                    
+                    if (newX >= 0 && newX < height && newY >= 0 && newY < width && grid[newX][newY] != '#') {
+                        // 老鼠如果能赢就直接赢
+                        if (canMouseWinDFS(grid, catJump, mouseJump, catX, catY, newX, newY, false, totalMoves + 1)) {
+                            dp[catX][catY][mouseX][mouseY][turn][totalMoves] = true;
+                            return true;
+                        }
+                    }
+                    // 越界或者碰墙后直接换一个方向
+                    else {
+                        break;
+                    }
+                }
+            }
+            
+            // 呆在原地不动
+            if (canMouseWinDFS(grid, catJump, mouseJump, catX, catY, mouseX, mouseY, false, totalMoves + 1)) {
+                dp[catX][catY][mouseX][mouseY][turn][totalMoves] = true;
+                return true;
+            }
+            
+            // 当前情况下老鼠赢不了
+            dp[catX][catY][mouseX][mouseY][turn][totalMoves] = false;
+            return false;
+        }
+        
+        // 猫的移动回合
+        else {
+            // 往四个方向跳跃
+            for (int i = 0; i < 4; i++) {
+                int dx = directions[i];
+                int dy = directions[i+1];
+                int newX = catX;
+                int newY = catY;
+                
+                for (int j = 0; j < catJump; j++) {
+                    newX += dx;
+                    newY += dy;
+                    
+                    if (newX >= 0 && newX < height && newY >= 0 && newY < width && grid[newX][newY] != '#') {
+                        // 猫如果能赢就直接赢
+                        if (!canMouseWinDFS(grid, catJump, mouseJump, newX, newY, mouseX, mouseY, true, totalMoves + 1)) {
+                            dp[catX][catY][mouseX][mouseY][turn][totalMoves] = false;
+                            return false;
+                        }
+                    }
+                    // 越界或者碰墙后直接换一个方向
+                    else {
+                        break;
+                    }
+                }
+            }
+            
+            // 呆在原地不动
+            if (!canMouseWinDFS(grid, catJump, mouseJump, catX, catY, mouseX, mouseY, true, totalMoves + 1)) {
+                dp[catX][catY][mouseX][mouseY][turn][totalMoves] = false;
+                return false;
+            }
+            
+            // 当前情况下猫赢不了
+            dp[catX][catY][mouseX][mouseY][turn][totalMoves] = true;
+            return true;
+        }
+    }
+    
+    bool canMouseWin(vector<string>& grid, int catJump, int mouseJump) {
+        int height = grid.size();
+        int width = grid[0].size();
+        
+        int catX, catY, mouseX, mouseY;
+
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                if (grid[i][j] == 'C') {
+                    catX = i;
+                    catY = j;
+                    grid[i][j] = '.';
+                }
+                else if (grid[i][j] == 'M') {
+                    mouseX = i;
+                    mouseY = j;
+                    grid[i][j] = '.';
+                }
+            }
+        }
+        
+        memset(dp, -1, sizeof(dp));
+        
+        return canMouseWinDFS(grid, catJump, mouseJump, catX, catY, mouseX, mouseY, true, 0);
+    }
+};
