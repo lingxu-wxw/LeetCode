@@ -1,0 +1,52 @@
+// Input: grid = [[3,1,1],[2,5,1],[1,5,5],[2,1,1]]
+// Output: 24
+// Explanation: Path of robot #1 and #2 are described in color green and blue respectively.
+// Cherries taken by Robot #1, (3 + 2 + 5 + 2) = 12.
+// Cherries taken by Robot #2, (1 + 5 + 5 + 1) = 12.
+// Total of cherries: 12 + 12 = 24.
+
+class Solution {
+public:
+    int cherryPickup(vector<vector<int>>& grid) {
+        // 2 <= rows, cols <= 70
+        int height = grid.size();
+        int width = grid[0].size();
+        
+        // dp[i][j][k] 表示遍历到第i行，robot1在j，robot2在k，此时的最大收益
+        vector<vector<vector<int>>> dp(height, vector<vector<int>>(width, vector<int>(width, 0)));
+        
+        dp[0][0][width-1] = (width - 1 == 0) ? grid[0][0] : grid[0][0] + grid[0][width - 1];
+        
+        for (int i = 1; i < height; i++) {
+            // 剪枝，机器人能活动的最大角度是斜对角内的区域
+            for (int cur1 = 0; cur1 <= min(width - 1, i); cur1++) {
+                for (int cur2 = max(0, width - i - 1); cur2 < width; cur2++) {                
+                    // 从可以到达(i, cur1), (i, cur2)的9种情况中找出先前的最大值
+                    int premax = 0;
+                    for (int pre1 = max(0, cur1 - 1); pre1 <= min(width - 1, cur1 + 1); pre1++) {
+                        for (int pre2 = max(0, cur2 - 1); pre2 <= min(width - 1, cur2 + 1); pre2++) {
+                            premax = max(premax, dp[i-1][pre1][pre2]);
+                        }
+                    }
+                    
+                    // 开始分情况计算到达(i, cur1), (i, cur2)后的最大值，点位重合则只能算一个
+                    if (cur1 == cur2) {
+                        dp[i][cur1][cur2] = premax + grid[i][cur1];
+                    } else {
+                        dp[i][cur1][cur2] = premax + grid[i][cur1] + grid[i][cur2];
+                    }
+                }
+            }
+        }
+        
+        // 遍历最后一层动态数组找出最大值
+        int totalmax = 0;
+        for (int cur1 = 0; cur1 <= min(width - 1, height - 1); cur1++) {
+            for (int cur2 = max(0, width - height); cur2 < width; cur2++) {  
+                totalmax = max(totalmax, dp[height - 1][cur1][cur2]);
+            }
+        }
+        
+        return totalmax;
+    }
+};
