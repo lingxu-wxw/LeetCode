@@ -1,0 +1,59 @@
+// Input: arr = [100,-23,-23,404,100,23,23,23,3,404]
+// Output: 3
+// Explanation: You need three jumps from index 0 --> 4 --> 3 --> 9. Note that index 9 is the last index of the array.
+
+class Solution {
+public:
+    int minJumps(vector<int>& arr) {
+        int size = arr.size();
+        if (size == 1) return 0;
+        
+        // value - idxs
+        unordered_map<int, vector<int>> valuemap;
+        
+        for (int i = 0; i < size; i++) {
+            valuemap[arr[i]].push_back(i);
+        }
+        
+        // BFS 广度优先搜索
+        queue<int> queue;
+        queue.push(0);
+        
+        int steps = 0;
+        
+        while (!queue.empty()) {
+            int cnt = queue.size();
+            steps++;
+            
+            for (int i = 0; i < cnt; i++) {
+                int idx = queue.front();
+                queue.pop();
+                
+                // 跳往i-1
+                if (idx - 1 >= 0 && valuemap.find(arr[idx-1]) != valuemap.end()) {
+                    queue.push(idx - 1);
+                }
+                
+                // 跳往i+1
+                if (idx + 1 < size && valuemap.find(arr[idx+1]) != valuemap.end()) {
+                    if (idx + 1 == size - 1) return steps;
+                    queue.push(idx + 1);
+                }
+                
+                // 跳往相同数值的j
+                if (valuemap.find(arr[idx]) != valuemap.end()) {
+                    for (int nextidx : valuemap[arr[idx]]) {
+                        if (nextidx == idx) continue;
+                        if (nextidx == size - 1) return steps;
+                        queue.push(nextidx);
+                    }
+                }
+                
+                // 一次性把某个值的idx全都处理完，之后就不再访问了，充当visited的作用
+                valuemap.erase(arr[idx]);
+            }
+        }
+        
+        return steps;
+    }
+};
