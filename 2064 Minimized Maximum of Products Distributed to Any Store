@@ -1,0 +1,44 @@
+// Input: n = 6, quantities = [11,6]
+// Output: 3
+// Explanation: One optimal way is:
+// - The 11 products of type 0 are distributed to the first four stores in these amounts: 2, 3, 3, 3
+// - The 6 products of type 1 are distributed to the other two stores in these amounts: 3, 3
+// The maximum number of products given to any store is max(2, 3, 3, 3, 3, 3) = 3.
+
+class Solution {
+public:
+    
+    // 如果每个仓库装k件商品，看看仓库数量够不够
+    bool canDistribute(int n, vector<int>& quantities, int k) {
+        int stores = 0;
+        
+        for (int quantity : quantities) {
+            stores += ceil(quantity * 1.0 / k);
+        }
+        
+        return (stores <= n);
+    }
+    
+    int minimizedMaximum(int n, vector<int>& quantities) {
+        // 1 <= m <= n <= 10^5, 仓库比商品多
+        
+        int low = 1, high;
+        
+        for (int quantity : quantities) {
+            high = max(quantity, high);
+        }
+        
+        while (low < high) {
+            // 二分搜索每个仓库装多少件商品
+            int k = (low + high) / 2;
+            
+            if (canDistribute(n, quantities, k)) {
+                high = k;
+            } else {
+                low = k + 1;
+            }
+        }
+        
+        return low;
+    }
+};
