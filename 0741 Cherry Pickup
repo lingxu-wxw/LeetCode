@@ -1,0 +1,70 @@
+// Input: grid = [[0,1,-1],[1,0,-1],[1,1,1]]
+// Output: 5
+// Explanation: The player started at (0, 0) and went down, down, right right to reach (2, 2).
+// 4 cherries were picked up during this single trip, and the matrix becomes [[0,1,-1],[0,0,-1],[0,0,0]].
+// Then, the player went left, up, up, left to return home, picking up one more cherry.
+// The total number of cherries picked up is 5, and this is the maximum possible.
+
+// Input: grid = [[1,1,-1],[1,-1,1],[-1,1,1]]
+// Output: 0
+
+class Solution {
+public:
+    
+    int dp[50][50][50];
+    
+    // 判断robot1在(x1, y1)，robot2在(x2, y2)，这种情况下的最大收益
+    int cherryPickupDFS(vector<vector<int>>& grid, int x1, int y1, int x2, int y2) {
+        int size = grid.size();
+        
+        // 越界或撞墙，需要返回INT_MIN，因为四条路不通应该是不允许走，而不是返回0
+        if (x1 >= size || y1 >= size || x2 >= size || y2 >= size) return INT_MIN;
+        if (grid[x1][y1] == -1 || grid[x2][y2] == -1) return INT_MIN;
+        
+        // 两个robot都到达终点
+        if (x1 == size - 1 && y1 == size - 1) {
+            dp[size - 1][size - 1][size - 1] = grid[x1][y1];
+            return grid[x1][y1];
+        }
+        
+        // 先查表看看有没有存过，用三个量就可以标记，x1 + y1 = x2 + y2
+        if (dp[x1][y1][x2] != -1) {
+            return dp[x1][y1][x2];
+        }
+        
+        // 计算当前格子的收益
+        int cherrys = 0;
+        
+        if (grid[x1][y1] == 1) {
+            cherrys++;
+        }
+        if (grid[x2][y2] == 1 && !(x1 == x2 && y1 == y2)) {
+            cherrys++;
+        }
+        
+        // 递归计算接下来的收益
+        cherrys += max(cherryPickupDFS(grid, x1 + 1, y1, x2 + 1, y2),
+                   max(cherryPickupDFS(grid, x1 + 1, y1, x2, y2 + 1),
+                   max(cherryPickupDFS(grid, x1, y1 + 1, x2 + 1, y2),
+                       cherryPickupDFS(grid, x1, y1 + 1, x2, y2 + 1))));
+        
+        dp[x1][y1][x2] = cherrys;
+         
+        return cherrys;
+    }
+    
+    int cherryPickup(vector<vector<int>>& grid) {
+        int size = grid.size();
+        
+        // 独立的考虑走两次可能会导出错误的结果，需要考虑联动，参考 1728 Cat and Mouse II
+        memset(dp, -1, sizeof(dp));
+        
+        int res = cherryPickupDFS(grid, 0, 0, 0, 0);
+        
+        // 终点不可达的情况需要考虑
+        return (dp[size-1][size-1][size-1] == -1) ? 0 : res;
+    }
+};
+
+
+
