@@ -1,0 +1,46 @@
+// Input: seats = [1,0,0,0,1,0,1]
+// Output: 2
+// Explanation: 
+// If Alex sits in the second open seat (i.e. seats[2]), then the closest person has distance 2.
+// If Alex sits in any other open seat, the closest person has distance 1.
+// Thus, the maximum distance to the closest person is 2.
+
+class Solution {
+public:
+    int maxDistToClosest(vector<int>& seats) {
+        int size = seats.size();
+        
+        int startzeros = 0;
+        int startidx = 0;
+        for (; startidx < size; startidx++) {
+            if (seats[startidx] == 0) {
+                startzeros++;
+            } else {
+                break;
+            }
+        }
+        
+        int endzeros = 0;
+        int endidx = size - 1;
+        for (; endidx >= 0; endidx--) {
+            if (seats[endidx] == 0) {
+                endzeros++;
+            } else {
+                break;
+            }
+        }
+        
+        int midzeros = 0;
+        int maxmidzeros = 0;
+        for (int i = startidx; i <= endidx; i++) {
+            if (seats[i] == 0) {
+                midzeros++;
+            } else {
+                maxmidzeros = max(midzeros, maxmidzeros);
+                midzeros = 0;
+            }
+        }
+        
+        return max((maxmidzeros + 1) / 2, max(startzeros, endzeros));
+    }
+};
