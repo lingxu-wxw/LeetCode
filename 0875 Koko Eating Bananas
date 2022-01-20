@@ -1,0 +1,40 @@
+// Input: piles = [3,6,7,11], h = 8
+// Output: 4
+
+class Solution {
+public:
+    int minEatingSpeed(vector<int>& piles, int h) {
+        int size = piles.size();
+        
+        // Σ ceil(piles[i] / k) ≤ h
+        
+        // piles.length <= h <= 10^9
+        // k <= max(piles[i]), k >= 1
+        
+        int low = 1, high;
+        
+        for (int pile : piles) {
+            high = max(pile, high);
+        }
+        
+        // 二分搜索
+        while (low < high) {
+            // k是每一次吃的量
+            int k = (low + high) / 2;
+            
+            int hours = 0;
+            for (int pile : piles) {
+                hours += ceil(pile * 1.0 / k);
+            }
+            
+            // 说明吃的太快了
+            if (hours <= h) {
+                high = k;
+            } else {
+                low = k + 1;
+            }
+        }
+        
+        return low;
+    }
+};
