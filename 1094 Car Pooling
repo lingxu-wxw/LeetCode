@@ -1,0 +1,46 @@
+// Input: trips = [[2,1,5],[3,3,7]], capacity = 4
+// Output: false
+
+// Input: trips = [[2,1,5],[3,3,7]], capacity = 5
+// Output: true
+
+class Solution {
+public:
+    
+    static bool cmp(vector<int>& t1, vector<int>& t2) {
+        // 如果这里写 t1[2] < t2[2] 会 runtime error
+        return ((t1[1] < t2[1]) || ((t1[1] == t2[1]) && (t1[2] < t2[2])));
+    }
+    
+    
+    bool carPooling(vector<vector<int>>& trips, int capacity) {
+        // 按照 src dst 排序
+        sort(trips.begin(), trips.end(), cmp);
+        
+        // 优先队列 小顶堆
+        // < dst, numpassengers >
+        priority_queue<pair<int,int>, vector<pair<int,int>>, greater<pair<int,int>>> pq;     
+        
+        // 当前车上的乘客数量
+        int curPassengers = 0;
+        
+        for (auto trip : trips) {
+            // 当前trip开始之前，能下车的都忽略
+            while ((!pq.empty()) && (pq.top().first <= trip[1])) {
+                curPassengers -= pq.top().second;
+                pq.pop();
+            }
+            
+            // 当前trip上客
+            curPassengers += trip[0];
+            pq.push({trip[2], trip[0]});
+            
+            // 有任何一刻超载
+            if (curPassengers > capacity) {
+                return false;
+            }
+        }
+        
+        return true;
+    }
+};
