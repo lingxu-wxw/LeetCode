@@ -1,0 +1,33 @@
+// Input: low = 1000, high = 13000
+// Output: [1234,2345,3456,4567,5678,6789,12345]
+
+class Solution {
+public:
+    
+    void helper(int num, int i, int low, int high, vector<int>& res) {
+        if (num >= low && num <= high) {
+            res.push_back(num);
+        }
+        
+        // 超过界线
+        if (num > high || i > 9) {
+            return;
+        }
+        
+        // i是下一个要放的数字
+        helper(num*10+i, i+1, low, high, res);
+    }
+    
+    vector<int> sequentialDigits(int low, int high) {
+        vector<int> res;
+        
+        // 每一个迭代都是从i开始的连续数 1 12 123
+        for (int i = 1; i <= 9; i++) {        
+            helper(i, i+1, low, high, res);
+        }
+        
+        sort(res.begin(), res.end());
+        
+        return res;
+    }
+};
