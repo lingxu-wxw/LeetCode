@@ -1,0 +1,23 @@
+// Input: nums = [1,2,3]
+// Output: [[],[1],[2],[1,2],[3],[1,3],[2,3],[1,2,3]]
+
+class Solution {
+public:
+    vector<vector<int>> subsets(vector<int>& nums) {
+        int size = nums.size();
+        
+        vector<vector<int>> res;
+        res.push_back({});
+        
+        for (int i = 0; i < size; i++) {
+            int cursize = res.size();
+            for (int j = 0; j < cursize; j++) {
+                vector<int> tmp = res[j];
+                tmp.push_back(nums[i]);
+                res.push_back(tmp);
+            }
+        }
+        
+        return res;
+    }
+};
