@@ -1,0 +1,69 @@
+// Input: root1 = [2,1,4], root2 = [1,0,3]
+// Output: [0,1,1,2,3,4]
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    
+    vector<int> traverseBST(TreeNode* node) {
+        if (!node) return {};
+        if (!node->left && !node->right) return {node->val};
+        
+        vector<int> leftList = {}, rightList = {};
+        vector<int> list;
+        
+        if (node->left) leftList = traverseBST(node->left);
+        if (node->right) rightList = traverseBST(node->right);
+        
+        for (int i = 0; i < leftList.size(); i++) {
+            list.push_back(leftList[i]);
+        }
+        list.push_back(node->val);
+        for (int i = 0; i < rightList.size(); i++) {
+            list.push_back(rightList[i]);
+        }
+        
+        return list;
+    }
+    
+    vector<int> getAllElements(TreeNode* root1, TreeNode* root2) {
+        vector<int> list1 = traverseBST(root1);
+        vector<int> list2 = traverseBST(root2);
+        vector<int> res;
+        
+        int len1 = list1.size();
+        int len2 = list2.size();
+        int i = 0, j = 0;
+        
+        while (i < len1 && j < len2) {
+            if (list1[i] <= list2[j]) {
+                res.push_back(list1[i]);
+                i++;
+            } else {
+                res.push_back(list2[j]);
+                j++;
+            }
+        }
+        
+        while (i < len1) {
+            res.push_back(list1[i]);
+            i++;
+        }
+        while (j < len2) {
+            res.push_back(list2[j]);
+            j++;
+        }
+        
+        return res;
+    }
+};
