@@ -1,0 +1,41 @@
+// Input: nums = [4,2,3]
+// Output: true
+// Explanation: You could modify the first 4 to 1 to get a non-decreasing array.
+
+class Solution {
+public:
+    bool checkPossibility(vector<int>& nums) {
+        if (nums.size() == 1) return true;
+        
+        // -10^5 <= nums[i] <= 10^5
+        nums.insert(nums.begin(), INT_MIN);
+        nums.push_back(INT_MAX);
+        
+        int size = nums.size();
+        bool haschance = true;
+        
+        for (int i = 1; i < size-1; i++) {
+            if (nums[i+1] >= nums[i]) continue;
+            
+            // 机会已经用过了
+            if (!haschance) return false;
+            
+            // 第一种方案 把nums[i]改小: 0 3 1 2 
+            if (nums[i+1] >= nums[i-1]) {
+                nums[i] = nums[i-1];
+                haschance = false;
+            } 
+            // 第二种方案 把nums[i+1]改大: 0 1 -1 2, 0 1 -1
+            else if (i == size-3 || nums[i+2] >= nums[i]) {
+                nums[i+1] = nums[i];
+                haschance = false;
+            }
+            // 救不回来
+            else {
+                return false;
+            }
+        }
+        
+        return true;
+    }
+};
