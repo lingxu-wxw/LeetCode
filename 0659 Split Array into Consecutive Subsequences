@@ -1,0 +1,44 @@
+// Input: nums = [1,2,3,3,4,4,5,5]
+// Output: true
+// Explanation: nums can be split into the following subsequences:
+// [1,2,3,3,4,4,5,5] --> 1, 2, 3, 4, 5
+// [1,2,3,3,4,4,5,5] --> 3, 4, 5
+
+class Solution {
+public:
+    bool isPossible(vector<int>& nums) {
+        if (nums.size() < 3) return false;
+        
+        unordered_map<int, int> freq;       // num - rest cnt
+        unordered_map<int, int> subseq;     // subseq end with num - cnt
+        
+        for (int num : nums) {
+            freq[num]++;
+        }
+        
+        for (int num : nums) {
+            // 当前数字已经用完
+            if (freq[num] == 0) {
+                continue;
+            }
+            // 延长之前的subseq，这是优先级更高的选择
+            else if (subseq[num-1] > 0) {
+                freq[num]--;
+                subseq[num-1]--;
+                subseq[num]++;
+            }
+            // 开始一个新的subseq
+            else if (freq[num+1] > 0 && freq[num+2] > 0) {
+                freq[num]--;
+                freq[num+1]--;
+                freq[num+2]--;
+                subseq[num+2]++;
+            }
+            else {
+                return false;
+            }
+        }
+        
+        return true;
+    }
+};
