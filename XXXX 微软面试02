@@ -1,0 +1,42 @@
+// you can use includes, for example:
+// #include <algorithm>
+
+// you can write to stdout for debugging purposes, e.g.
+// cout << "this is a debug message" << endl;
+
+#include <sstream>
+
+int solution(string &A, string &B) {
+	// write your code in C++14 (g++ 6.2.0)
+	int starthour, startminute;
+	int endhour, endminute;
+	char c;
+
+	istringstream isA(A), isB(B);
+	isA >> starthour >> c >> startminute;
+	isB >> endhour >> c >> endminute;
+
+	int starttime = starthour * 60 + startminute;
+	int endtime = endhour * 60 + endminute;
+
+	int startidx, endidx;
+
+	if (starttime == 0) startidx = 0;
+	else startidx = (int)((starttime - 1) / 15) + 1;
+	endidx = (int)(endtime / 15);
+
+	// overnight
+	if (endtime < starttime) {
+		return (96 - startidx) + (endidx);
+	}
+	// same time
+	else if (endtime == starttime) {
+		return 0;
+	}
+	// not overnight
+	else {
+		return (endidx - startidx);
+	}
+
+	return 0;
+}
