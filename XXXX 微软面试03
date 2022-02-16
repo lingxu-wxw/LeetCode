@@ -1,0 +1,68 @@
+// you can use includes, for example:
+// #include <algorithm>
+
+// you can write to stdout for debugging purposes, e.g.
+// cout << "this is a debug message" << endl;
+
+#include <unordered_map>
+#include <vector>
+
+int dfs(string &S, vector<int> &A, unordered_map<int, vector<int>> &children,
+	int node, unordered_map<int, int> &map, int &res) {
+	// leaf node
+	if (!children.count(node)) return 1;
+
+	if (map.count(node)) return map[node];
+
+	vector<int> vec = children[node];
+	int size = vec.size();
+	int maxchildpath = 0, sndmaxchildpath = 0;
+	int path;
+	for (int i = 0; i < size; i++) {
+		if (S[node] != S[vec[i]]) {
+			path = dfs(S, A, children, vec[i], map, res);
+
+			if (path > maxchildpath) {
+				sndmaxchildpath = maxchildpath;
+				maxchildpath = path;
+			}
+			else if (path > sndmaxchildpath) {
+				sndmaxchildpath = path;
+			}
+		}
+		else {
+			dfs(S, A, children, vec[i], map, res);
+		}
+	}
+
+	if (maxchildpath + sndmaxchildpath + 1 > res) {
+		res = maxchildpath + sndmaxchildpath + 1;
+	}
+
+	// cout << node << " " << S[node] << " " << maxchildpath << " " << sndmaxchildpath << endl;
+
+	map[node] = maxchildpath + 1;
+	return maxchildpath + 1;
+}
+
+int solution(string &S, vector<int> &A) {
+	// write your code in C++14 (g++ 6.2.0)
+	int size = A.size();
+
+	// node - children
+	unordered_map<int, vector<int>> children;
+
+	for (int i = 0; i < size; i++) {
+		if (A[i] == -1) continue;
+		else {
+			children[A[i]].push_back(i);
+		}
+	}
+
+	// node - maxpath
+	unordered_map<int, int> map;
+	int res = 0;
+	dfs(S, A, children, 0, map, res);
+
+	return res;
+}
