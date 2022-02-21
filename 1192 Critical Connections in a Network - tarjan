@@ -1,0 +1,82 @@
+// Input: n = 4, connections = [[0,1],[1,2],[2,0],[1,3]]
+// Output: [[1,3]]
+// Explanation: [[3,1]] is also accepted.
+
+class Solution {
+public:
+    
+    stack<int> st;
+    vector<int> status; // 0表示未入栈，1表示已入栈，2表示已出栈
+    
+    vector<int> dfn;    // 节点被遍历到的时间戳
+    vector<int> low;    // 节点除了父亲之外，能够连通的最小时间戳（寻找父亲之外的祖先，即回边）
+    
+    int timestamp;      // 时间戳
+    unordered_map<int, vector<int>> neighbors;  // 邻接表
+    
+    
+    void tarjan(int root, int parent) {
+        if (dfn[root] <= timestamp) return;
+        
+        st.push(root);
+        status[root] = 1;
+        
+        dfn[root] = timestamp;
+        low[root] = timestamp;
+        timestamp++;
+        
+        for (int child : neighbors[root]) {
+            if (status[child] == 0) {
+                tarjan(child, root);
+                low[root] = min(low[root], low[child]);
+            }
+            // 孩子在栈中表示有回边，此时会修改low[root]
+            else if (child != parent && status[child] == 1) {
+                low[root] = min(low[root], dfn[child]);
+            }
+        }
+        
+        // 节点自己就是孩子能看到的除父亲外的最近的祖先，没有回边
+        // 即 节点是强连通分量的root（割点），后面都遍历完了，全部出栈
+        if (dfn[root] == low[root]) {
+            int node = st.top();
+            while (root != node) {
+                st.pop();
+                status[node] = 2;
+                node = st.top();
+            }
+        }
+    }
+    
+    vector<vector<int>> criticalConnections(int n, vector<vector<int>>& connections) {
+        if (n <= 2) return connections;
+        
+        status.resize(n, 0);
+        dfn.resize(n, INT_MAX);
+        low.resize(n, INT_MAX);
+        timestamp = 0;
+        
+        for (auto connection : connections) {
+            neighbors[connection[0]].push_back(connection[1]);
+            neighbors[connection[1]].push_back(connection[0]);
+        }
+        
+        // n servers numbered from 0 to n - 1
+        tarjan(0, -1);
+        
+        vector<vector<int>> res;
+        
+        // 对于root-child，如果low[child] > dfn[root]，说明root-child是一条割边，即没有孩子能绕过root
+        for (int i = 0; i < n; i++) {
+            for (int child : neighbors[i]) {
+                if (child <= i) continue;
+                
+                if (low[child] > dfn[i]) {
+                    res.push_back({i, child});
+                }
+            }
+        }
+        
+        return res;
+    }
+};
