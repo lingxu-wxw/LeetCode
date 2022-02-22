@@ -1,0 +1,42 @@
+// Input: num = 2736
+// Output: 7236
+// Explanation: Swap the number 2 and the number 7.
+
+class Solution {
+public:
+    int maximumSwap(int num) {
+        if (num <= 11) return num;
+        
+        string numstr = to_string(num);
+        int len = numstr.length();
+        
+        int i, maxidx, maxnum;
+        
+        for (i = 0; i < len - 1; i++) {
+            int digiti = (numstr[i] - '0');
+            maxidx = i;
+            maxnum = digiti;
+            
+            for (int j = i+1; j < len; j++) {
+                int digitj = (numstr[j] - '0');
+                // 有多个满足条件的要选更靠后的
+                if (digitj >= maxnum) {
+                    maxidx = j;
+                    maxnum = digitj;
+                }
+            }
+            
+            if (maxnum > digiti) {
+                break;
+            }
+        }
+        
+        if (i == len - 1) return num;
+        
+        char c = numstr[i];
+        numstr[i] = numstr[maxidx];
+        numstr[maxidx] = c;
+        
+        return stoi(numstr);
+    }
+};
