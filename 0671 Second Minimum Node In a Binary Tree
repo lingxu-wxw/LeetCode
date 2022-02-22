@@ -1,0 +1,43 @@
+// Input: root = [2,2,5,null,null,5,7]
+// Output: 5
+// Explanation: The smallest value is 2, the second smallest value is 5.
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    
+    void helper(TreeNode* node, int minval, int& sndminval) {
+        if (!node) return;
+        
+        if (node->val != minval) {
+            // 1 <= Node.val <= 231 - 1
+            if (sndminval == -1) {
+                sndminval = node->val;
+            } else {
+                sndminval = min(sndminval, node->val);
+            }
+        }
+        
+        helper(node->left, minval, sndminval);
+        helper(node->right, minval, sndminval);
+    }
+    
+    int findSecondMinimumValue(TreeNode* root) {
+        // each node in this tree has exactly two or zero sub-node.
+        // root.val = min(root.left.val, root.right.val)
+        // root一定是整棵树里最小的元素
+        int sndminval = -1;
+        helper(root, root->val, sndminval);
+        return sndminval;
+    }
+};
