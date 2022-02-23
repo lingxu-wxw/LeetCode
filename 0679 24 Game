@@ -1,0 +1,57 @@
+// Input: cards = [4,1,8,7]
+// Output: true
+// Explanation: (8-4) * (7-1) = 24
+
+class Solution {
+public:
+    
+    vector<char> ops = {'+', '-', '*', '/'};
+    double epoch = 0.0001;
+    
+    bool helper(vector<double>& nums) {
+        if (nums.size() == 1) {
+            return (abs(nums[0] - 24) < epoch);
+        }
+        
+        int size = nums.size();
+        
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                if (i == j) continue;
+                
+                double p = nums[i];
+                double q = nums[j];
+                vector<double> vec;
+                
+                for (int k = 0; k < size; k++) {
+                    if (k != i && k != j) {
+                        vec.push_back(nums[k]);
+                    }
+                }
+                
+                for (char op : ops) {
+                    if ((op == '+' || op == '*') && (i > j)) continue;
+                    if ((op == '/') && (abs(q) < epoch)) continue;
+                    
+                    switch (op) {
+                        case '+': vec.push_back(p + q); break;
+                        case '-': vec.push_back(p - q); break;
+                        case '*': vec.push_back(p * q); break;
+                        case '/': vec.push_back(p / q); break;
+                    }
+                    
+                    if (helper(vec)) return true;
+                    
+                    vec.pop_back();
+                }
+            }
+        }
+        
+        return false;
+    }
+    
+    bool judgePoint24(vector<int>& cards) {
+        vector<double> nums(cards.begin(), cards.end());
+        return helper(nums);
+    }
+}; 
