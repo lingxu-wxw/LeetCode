@@ -1,0 +1,27 @@
+// Input: s = "abca"
+// Output: true
+// Explanation: You could delete the character 'c'.
+
+class Solution {
+public:
+    
+    bool helper(string s, int left, int right, bool candelete) {
+        if (left >= right) return true;
+        
+        while (left < right) {
+            if (s[left] != s[right]) {
+                if (!candelete) return false;
+                return (helper(s, left, right - 1, false) 
+                        || helper(s, left + 1, right, false));
+            }
+            left++; 
+            right--;
+        }
+        
+        return true;
+    }
+    
+    bool validPalindrome(string s) {
+        return helper(s, 0, s.length()-1, true);
+    }
+};
