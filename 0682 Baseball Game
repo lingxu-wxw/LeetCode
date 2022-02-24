@@ -1,0 +1,38 @@
+// Input: ops = ["5","2","C","D","+"]
+// Output: 30
+// Explanation:
+// "5" - Add 5 to the record, record is now [5].
+// "2" - Add 2 to the record, record is now [5, 2].
+// "C" - Invalidate and remove the previous score, record is now [5].
+// "D" - Add 2 * 5 = 10 to the record, record is now [5, 10].
+// "+" - Add 5 + 10 = 15 to the record, record is now [5, 10, 15].
+// The total sum is 5 + 10 + 15 = 30.
+
+class Solution {
+public:
+    int calPoints(vector<string>& ops) {
+        int size = ops.size();
+        
+        vector<int> scores;
+        int res = 0;
+        
+        for (int i = 0; i < size; i++) {
+            if ((ops[i][0] >= '0' && ops[i][0] <= '9') || ops[i][0] == '-') {
+                scores.push_back(stoi(ops[i]));
+            } else if (ops[i] == "C") {
+                scores.pop_back();
+            } else if (ops[i] == "D") {
+                scores.push_back(scores.back() * 2);
+            } else if (ops[i] == "+") {
+                int cnt = scores.size();
+                scores.push_back(scores[cnt-1] + scores[cnt-2]);
+            }
+        }
+        
+        for (int score : scores) {
+            res += score;
+        }
+        
+        return res;
+    }
+};
