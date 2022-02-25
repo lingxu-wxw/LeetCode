@@ -1,0 +1,33 @@
+// Input: a = "abcd", b = "cdabcdab"
+// Output: 3
+// Explanation: We return 3 because by repeating a three times "abcdabcdabcd", b is a substring of it.
+
+class Solution {
+public:
+    int repeatedStringMatch(string a, string b) {
+        int lena = a.length();
+        int lenb = b.length();
+        
+        string str = a;
+        int len = lena;
+        int count = 1;
+        
+        while (len < lenb) {
+            str += a;
+            len += lena;
+            count++;
+        }
+        
+        // 此时str >= b
+        
+        if (str.find(b) != string::npos) {
+            return count;
+        }
+        
+        if ((str+a).find(b) != string::npos) {
+            return count + 1;
+        }
+        
+        return -1;
+    }
+}; 
