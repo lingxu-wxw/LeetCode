@@ -1,0 +1,42 @@
+// Input: root = [1,4,5,4,4,5]
+// Output: 2
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    
+    int helper(TreeNode* root, int& maxlen) {
+        if (!root) return 0;
+        
+        // 初始化孩子长度
+        int leftlen = helper(root->left, maxlen);
+        int rightlen = helper(root->right, maxlen);
+        
+        // 根据val是否相同判断能否连接
+        // 此时leftlen已经更新为，如果root和left连起来时的长度
+        leftlen = (root->left && root->val == root->left->val) ? leftlen + 1 : 0;
+        rightlen = (root->right && root->val == root->right->val) ? rightlen + 1 : 0;
+        
+        // 更新最大长度
+        maxlen = max(maxlen, leftlen + rightlen);
+        
+        // 返回使用root且单边的最大长度
+        return max(leftlen, rightlen);
+    }
+    
+    int longestUnivaluePath(TreeNode* root) {
+        int maxlen = 0;
+        helper(root, maxlen);
+        return maxlen;
+    }
+};
