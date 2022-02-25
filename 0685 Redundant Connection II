@@ -1,0 +1,67 @@
+// Input: edges = [[1,2],[1,3],[2,3]]
+// Output: [2,3]
+
+// Input: edges = [[1,2],[2,3],[3,4],[4,1],[1,5]]
+// Output: [4,1]
+
+class Solution {
+public:
+    
+    // 题目要求directed graph，只有一个根节点，不能有节点入度>=2，不能有环
+    // 情况一：无环，有入度为2的节点
+    // 情况二：有环，无入度为2的节点
+    // 情况三：有环，有入度为2的节点
+    
+    vector<int> findRedundantDirectedConnection(vector<vector<int>>& edges) {
+        int size = edges.size();
+        
+        // 记录节点能看到的最远的祖先
+        vector<int> root(size + 1, 0);
+        // 记录最后一个入度为2的节点相关的两条边
+        vector<int> first;
+        vector<int> second;
+        vector<int> loop;
+        
+        // 寻找入度为2的节点
+        for (auto &edge : edges) {
+            if (root[edge[1]] == 0) {
+                root[edge[1]] = edge[0];
+            } else {
+                first = {root[edge[1]], edge[1]};
+                second = edge;
+                // 造成入度为2的边相当于直接删掉了
+                edge[1] = 0;
+            }
+        }
+       
+        for (int i = 0; i <= size; i++) {
+            root[i] = i;
+        }
+        
+        // 寻找形成环的节点
+        for (auto &edge : edges) {
+            // 此条边已被删除
+            if (edge[1] == 0) continue;
+            
+            int root0 = getRoot(root, edge[0]);
+            int root1 = getRoot(root, edge[1]);
+            
+            // 当前边导致成环
+            if (root0 == root1) {
+                // 情况二：有环，无入度为2的节点
+                // 情况三：有环，有入度为2的节点（second实际已经删掉了）
+                return first.empty() ? edge : first;
+            } 
+            
+            // 修改入节点的祖先
+            root[root0] = root1;  
+        }
+        
+        // 情况一：无环，有入度为2的节点
+        return second;
+    }
+    
+    int getRoot(vector<int>& root, int i) {
+        return (i == root[i]) ? i : getRoot(root, root[i]);
+    }
+};
