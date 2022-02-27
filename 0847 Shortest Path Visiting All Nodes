@@ -1,0 +1,62 @@
+// Input: graph = [[1,2,3],[0],[0],[0]]
+// Output: 4
+// Explanation: One possible path is [1,0,2,0,3]
+
+class Node {
+public:
+    int state;
+    int position;
+    int cost;
+    
+    Node(int s, int p, int c): state(s), position(p), cost(c) {}
+};
+
+class Solution {
+public:
+    
+    int shortestPathLength(vector<vector<int>>& graph) {
+        int size = graph.size();
+        
+        queue<Node> queue;
+        set<pair<int, int>> states;  // {state, position}
+        
+        int allvisited = (1 << size) - 1;
+        int minpath = INT_MAX;
+        
+        // init queue
+        for (int i = 0; i < size; i++) {
+            int initstate = (1 << i);
+            Node node(initstate, i, 0);
+            queue.push(node);
+            states.insert({initstate, i});
+        }
+        
+        while (!queue.empty()) {
+            int cnt = queue.size();
+            
+            for (int i = 0; i < cnt; i++) {
+                Node curnode = queue.front();
+                queue.pop();
+                
+                // have visited all nodes, must be shortest
+                if (curnode.state == allvisited) {
+                    return curnode.cost;
+                }
+                
+                // add nextstate to queue
+                for (int nextidx : graph[curnode.position]) {
+                    int nextstate = curnode.state | (1 << nextidx);
+                    
+                    if (!states.count({nextstate, nextidx})) {
+                        Node nextnode(nextstate, nextidx, curnode.cost + 1);
+                        queue.push(nextnode);
+                        states.insert({nextstate, nextidx});
+                    }
+                }
+            }
+        }
+        
+        // no available path
+        return -1;
+    }
+};
