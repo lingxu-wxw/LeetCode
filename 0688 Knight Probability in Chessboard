@@ -1,0 +1,39 @@
+// Input: n = 3, k = 2, row = 0, column = 0
+// Output: 0.06250
+// Explanation: There are two moves (to (1,2), (2,1)) that will keep the knight on the board.
+// From each of those positions, there are also two moves that will keep the knight on the board.
+// The total probability the knight stays on the board is 0.0625.
+
+class Solution {
+public:
+    
+    vector<vector<int>> directions = {{-2, 1}, {-1, 2}, {1, 2}, {2, 1}, {2, -1}, {1, -2}, {-1, -2}, {-2, -1}};
+    
+    double helper(int n, int k, int i, int j, vector<vector<vector<double>>>& dp) {
+        // 越界
+        if (i < 0 || i >= n || j < 0 || j >= n) return 0.0;
+        // 步数走完
+        if (k == 0) return 1.0;
+        // 剪枝
+        if (dp[i][j][k] != -1.0) return dp[i][j][k];
+        
+        double probability = 0.0;
+        for (auto dir : directions) {
+            probability += helper(n, k - 1, i + dir[0], j + dir[1], dp) * 0.125;
+        }
+        
+        dp[i][j][k] = probability;
+        return probability;
+    }
+    
+    double knightProbability(int n, int k, int row, int column) {
+        if (k == 0) return 1.0;
+        
+        // dp[row][col][k], k是已经移动的步数, 值是留在棋盘内的概率
+        vector<vector<vector<double>>> dp(n, vector<vector<double>>(n, vector<double>(k + 1, -1.0)));
+        
+        helper(n, k, row, column, dp);
+        
+        return dp[row][column][k];
+    }
+};
