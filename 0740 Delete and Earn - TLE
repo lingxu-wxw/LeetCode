@@ -1,0 +1,37 @@
+// Input: nums = [2,2,3,3,3,4]
+// Output: 9
+// Explanation: You can perform the following operations:
+// - Delete a 3 to earn 3 points. All 2's and 4's are also deleted. nums = [3,3].
+// - Delete a 3 again to earn 3 points. nums = [3].
+// - Delete a 3 once more to earn 3 points. nums = [].
+// You earn a total of 9 points.
+
+class Solution {
+public:
+    
+    int helper(vector<int>& nums, int lastidx) {
+        if (lastidx < 0) return 0;
+        
+        int maxnum = nums[lastidx];
+        int maxcnt = 0;
+        int i = lastidx, j = lastidx;
+        
+        while (i >= 0 && nums[i] == maxnum) {
+            maxcnt++;
+            i--; j--;
+        }
+        
+        while (i >= 0 && nums[i] == maxnum - 1) {
+            i--;
+        }
+        
+        // 取当前最大的值，或不取当前最大的值
+        return max(maxnum*maxcnt + helper(nums, i), helper(nums, j));
+    }
+    
+    int deleteAndEarn(vector<int>& nums) {
+        int size = nums.size();
+        sort(nums.begin(), nums.end());
+        return helper(nums, size - 1);
+    }
+};
