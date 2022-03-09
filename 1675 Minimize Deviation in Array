@@ -1,0 +1,45 @@
+// Input: nums = [4,1,5,20,3]
+// Output: 3
+// Explanation: You can transform the array after two operations to [4,2,5,5,3], then the deviation will be 5 - 2 = 3.
+
+class Solution {
+public:
+    int minimumDeviation(vector<int>& nums) {
+        // 最后一个偶数除2 或 第一个奇数乘2
+        
+        int size = nums.size();
+        int minnum = INT_MAX, maxnum = INT_MIN;
+        int mindeviation = INT_MAX;
+        
+        // 优先队列大顶堆
+        priority_queue<int> pq;
+        
+        // odd->even总是可以转换（次数不限可以反悔），even->odd不一定总能转换
+        for (int i = 0; i < size; i++) {
+            if (nums[i] % 2 == 1) {
+                nums[i] *= 2;
+            }
+            
+            minnum = min(minnum, nums[i]);
+            maxnum = max(maxnum, nums[i]);
+            
+            pq.push(nums[i]);
+        }
+        
+        // 优先队列从最大的开始pop折半，当最大是奇数时就停止操作
+        while (pq.top() % 2 == 0) {
+            int topnum = pq.top();
+            pq.pop();
+            
+            mindeviation = min(mindeviation, topnum - minnum);
+            
+            topnum /= 2;
+            minnum = min(minnum, topnum);
+            pq.push(topnum);
+        }
+        
+        mindeviation = min(mindeviation, pq.top() - minnum);
+        
+        return mindeviation;
+    }
+};
