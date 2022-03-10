@@ -1,0 +1,56 @@
+// Input: nums = [3,2,3,1,2,4,5,5,6], k = 4
+// Output: 4
+
+class Solution {
+public:
+    
+    // 以nums[right]为base，将大于base的移到左半边，将小于base的移到右半边
+    // e.g. 6 1 3 5 7 2 4 9 11 8, output. 9 11 8 5 7 2 4 6 1 3
+    int partition(vector<int>& nums, int left, int right) {
+        int base = nums[right];
+        int tmp;
+        
+        // i最终的值表示比base大的数的个数
+        int i = left;
+        for (int j = left; j < right; j++) {
+            if (nums[j] > base) {
+                if (i != j) {
+                    tmp = nums[i];
+                    nums[i] = nums[j];
+                    nums[j] = tmp;
+                }
+                i++;
+            }
+        }
+        
+        // 将base值归位
+        nums[right] = nums[i];
+        nums[i] = base;
+        
+        return i;
+    }
+    
+    int findKthLargest(vector<int>& nums, int k) {
+        if (nums.empty() || nums.size() < k) {
+            return -1;
+        }
+        
+        int size = nums.size();
+        int cnt = partition(nums, 0, size - 1);
+        int lastcnt = -1;
+        
+        while (cnt + 1 != k) {
+            // 现在只能确定nums[cnt]左边的都比nums[cnt]大，数字少了，不够kth
+            if (cnt + 1 < k) {
+                lastcnt = cnt;
+                cnt = partition(nums, cnt + 1, size - 1);
+            }
+            // 当某一次数字多了，就从上一次lastcnt的位置重新找，不从0重新找
+            else {
+                cnt = partition(nums, lastcnt + 1, cnt - 1);
+            }
+        }
+        
+        return nums[cnt];
+    }
+};
