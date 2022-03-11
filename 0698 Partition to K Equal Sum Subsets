@@ -1,0 +1,43 @@
+// Input: nums = [4,3,2,3,5,2,1], k = 4
+// Output: true
+// Explanation: It is possible to divide it into 4 subsets (5), (1, 4), (2,3), (2,3) with equal sums.
+
+class Solution {
+public:
+    
+    bool helper(vector<int>& nums, vector<bool>& visited, int k, int target, int cursum, int start) {
+        if (k == 0) return true;
+        if (cursum > target) return false;
+        if (cursum == target) {
+            return helper(nums, visited, k-1, target, 0, 0);
+        }
+        
+        for (int i = start; i < nums.size(); i++) {
+            if (visited[i]) continue;
+            
+            visited[i] = true;
+            if (helper(nums, visited, k, target, cursum + nums[i], i + 1)) {
+                return true;
+            }
+            visited[i] = false;
+        }
+        
+        return false;
+    }
+    
+    bool canPartitionKSubsets(vector<int>& nums, int k) {
+        int size = nums.size();
+        
+        int sum = 0;
+        for (int num : nums) {
+            sum += num;
+        }
+        if (sum % k != 0) {
+            return false;
+        }
+        
+        sort(nums.begin(), nums.end());
+        vector<bool> visited(size, false);
+        return helper(nums, visited, k, sum / k, 0, 0);
+    }
+};
