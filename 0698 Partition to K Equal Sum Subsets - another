@@ -13,7 +13,7 @@ public:
         }
         
         for (int i = start; i < nums.size(); i++) {
-            if (visited[i]) continue;
+            if (visited[i] || (i > start && nums[i-1] == nums[i] && !visited[i-1])) continue;
             
             visited[i] = true;
             if (helper(nums, visited, k, target, cursum + nums[i], i + 1)) {
