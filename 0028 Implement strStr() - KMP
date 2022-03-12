@@ -1,0 +1,63 @@
+// Input: haystack = "hello", needle = "ll"
+// Output: 2
+
+class Solution {
+public:
+    
+    // KMP算法：https://zhuanlan.zhihu.com/p/83334559
+    
+    // KMP(pat)
+    void KMP(string needle, vector<vector<int>>& dp) {
+        int sizepat = needle.length();
+        
+        // base case
+        dp[0][needle[0]] = 1;
+        
+        // shadow state
+        int X = 0;
+        
+        // 状态转移图
+        for (int j = 1; j < sizepat; j++) {
+            for (int c = 0; c < 256; c++) {
+                // 状态回退
+                dp[j][c] = dp[X][c];
+            }
+            // 状态前进
+            dp[j][needle[j]] = j + 1;
+            
+            // 影子状态更新
+            X = dp[X][needle[j]];
+        }
+    }
+    
+    // strStr(txt, pat)
+    int strStr(string haystack, string needle) {
+        int sizetxt = haystack.length();
+        int sizepat = needle.length();
+        
+        if (sizepat == 0) return 0;
+        if (sizetxt == 0) return -1;
+        
+        // dp[curstate][nextchar] = nextstate
+        vector<vector<int>> dp(sizepat, vector<int>(256, 0));
+        
+        KMP(needle, dp);
+        
+        // pat的初始状态为0
+        int j = 0;
+        
+        // 进入状态转移图
+        for (int i = 0; i < sizetxt; i++) {
+            // 计算pat的下一个状态
+            j = dp[j][haystack[i]];
+            
+            // 达到终止状态 返回结果
+            if (j == sizepat) {
+                return i - sizepat + 1;
+            }
+        }
+        
+        // 无法到达终止状态
+        return -1;
+    }
+};
