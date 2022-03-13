@@ -1,0 +1,71 @@
+// Input: s = "bccb"
+// Output: 6
+// Explanation: The 6 different non-empty palindromic subsequences are 'b', 'c', 'bb', 'cc', 'bcb', 'bccb'.
+// Note that 'bcb' is counted only once, even though it occurs twice.
+
+class Solution {
+public:
+    
+    int dp(int i, int j, vector<vector<int>>& prev, vector<vector<int>>& next, vector<vector<int>>& memory) {
+        int M = 1e9 + 7;
+        
+        // 递归剪枝
+        if (memory[i][j] > 0) {
+            return memory[i][j];
+        }
+        
+        int res = 1;    // 空串
+        
+        if (i <= j) {
+            for (int k = 0; k < 4; k++) {
+                int low = next[i][k];
+                int high = prev[j][k];
+                
+                // s[i:j]中有字母'a', 计算单个字母
+                if (low >= i && low <= j) {
+                    res = (res + 1) % M;
+                }
+                // s[i:j]中有不止一个字母'a', 考虑 a_a 的形式继续递归
+                if (low >= i && low < high) {
+                    res = (res + dp(low+1, high-1, prev, next, memory)) % M;
+                }
+            }
+        }
+        
+        memory[i][j] = res;
+        return res;
+    }
+    
+    int countPalindromicSubsequences(string s) {
+        int size = s.length();
+        
+        // prev[i][0] 表示idx i及之前第一次出现'a'的位置, next[i][0]是之后
+        vector<vector<int>> prev(size, vector<int>(4, -1));
+        vector<vector<int>> next(size, vector<int>(4, -1));
+        
+        // memory[i][j] 表示s[i:j]之间的回文串数量
+        vector<vector<int>> memory(size, vector<int>(size, 0));
+        
+        // 初始化prev和next
+        vector<int> last(4, -1);    
+        for (int i = 0; i < size; i++) {
+            last[s[i]-'a'] = i;
+            
+            for (int k = 0; k < 4; k++) {
+                prev[i][k] = last[k];
+            }
+        }
+        
+        last.resize(4, -1);
+        for (int i = size - 1; i >= 0; i--) {
+            last[s[i]-'a'] = i;
+            
+            for (int k = 0; k < 4; k++) {
+                next[i][k] = last[k];
+            }
+        }
+        
+        // 需要去掉空串
+        return dp(0, size-1, prev, next, memory) - 1;
+    }
+};
