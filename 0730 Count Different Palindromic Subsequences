@@ -1,0 +1,58 @@
+// Input: s = "bccb"
+// Output: 6
+// Explanation: The 6 different non-empty palindromic subsequences are 'b', 'c', 'bb', 'cc', 'bcb', 'bccb'.
+// Note that 'bcb' is counted only once, even though it occurs twice.
+
+class Solution {
+public:
+    int countPalindromicSubsequences(string s) {
+        int size = s.length();
+        int M = 1e9 + 7;
+        
+        // dp[i][j] 表示 s[i]~s[j] 之间的回文串数量
+        vector<vector<int>> dp(size, vector<int>(size, 0));
+        
+        for (int i = 0; i < size; i++) {
+            dp[i][i] = 1;
+        }
+        
+        // len 表示处理的substring长度
+        for (int len = 2; len <= size; len++) {
+            for (int i = 0; i+len-1 < size; i++) {
+                // i,j 表示substring的起始位置和结束位置
+                int j = i + len - 1;
+                
+                if (s[i] == s[j]) {
+                    // 假设s[i]='a', s[i:j] 之中碰到的的第一个'a'
+                    int low = i+1, high = j-1;
+                    
+                    while (low <= high && s[low] != s[i]) low++;
+                    while (low <= high && s[high] != s[j]) high--;
+                    
+                    // s[i+1:j-1]之中没有'a', e.g. a bcdb a, bcdb乘2, 再额外加 a, aa
+                    if (low > high) {
+                        dp[i][j] = (((2 * dp[i+1][j-1]) % M) + 2) % M;
+                    }
+                    // s[i+1:j-1]之中恰好只有一个'a', e.g. a bcab a, bcdb乘2, 再额外加 aa
+                    else if (low == high) {
+                        dp[i][j] = (((2 * dp[i+1][j-1]) % M) + 1) % M;
+                    }
+                    // s[i+1:j-1]之中有多个'a', e.g. a bacab a, 需要去掉一次 aca
+                    else {
+                        dp[i][j] = (((2 * dp[i+1][j-1]) % M) - (dp[low+1][high-1] % M)) % M;
+                    }
+                }
+                else {
+                    // e.g. a bcdb d, 需要去掉一次 bcdb
+                    dp[i][j] = ((dp[i][j-1] % M) + (dp[i+1][j] % M) - (dp[i+1][j-1] % M)) % M;
+                }
+                
+                if (dp[i][j] < 0) {
+                    dp[i][j] += M;
+                }
+            }
+        }
+        
+        return dp[0][size-1];
+    }
+};
