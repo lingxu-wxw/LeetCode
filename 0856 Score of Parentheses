@@ -1,0 +1,26 @@
+// "()" has score 1.
+// AB has score A + B, where A and B are balanced parentheses strings.
+// (A) has score 2 * A, where A is a balanced parentheses string.
+
+class Solution {
+public:
+    int scoreOfParentheses(string s) {
+        int score = 0;
+        
+        stack<int> st;
+        
+        for (char c : s) {
+            if (c == '(') {
+                // 之前已经累计的分数
+                st.push(score);
+                score = 0;
+            } else {
+                // 计算当前的分数，之前的分数+当前的分数
+                score = st.top() + max(score*2, 1);
+                st.pop();
+            }
+        }
+        
+        return score;
+    }
+};
