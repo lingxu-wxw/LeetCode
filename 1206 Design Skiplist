@@ -1,0 +1,115 @@
+// Input
+// ["Skiplist", "add", "add", "add", "search", "add", "search", "erase", "erase", "search"]
+// [[], [1], [2], [3], [0], [4], [1], [0], [1], [1]]
+// Output
+// [null, null, null, null, false, null, true, false, true, false]
+
+// Explanation
+// Skiplist skiplist = new Skiplist();
+// skiplist.add(1);
+// skiplist.add(2);
+// skiplist.add(3);
+// skiplist.search(0); // return False
+// skiplist.add(4);
+// skiplist.search(1); // return True
+// skiplist.erase(0);  // return False, 0 is not in skiplist.
+// skiplist.erase(1);  // return True
+// skiplist.search(1); // return False, 1 has already been erased.
+
+struct Node {
+    int val;
+    int refcnt;
+    Node *next;
+    Node() : val(0), refcnt(0), next(nullptr) {}
+    Node(int v) : val(v), refcnt(1), next(nullptr) {}
+};
+
+class Skiplist {
+private:
+    vector<Node*> table;
+        
+public:
+    Skiplist() {
+        
+    }
+    
+    bool search(int target) {
+        int idx = target >> 6;
+        if (idx >= table.size()) return false;
+        
+        Node* pre = table[idx];
+        
+        while (pre->next) {
+            if (pre->next->val == target) {
+                return true;
+            } else if (pre->next->val > target) {
+                return false;
+            }
+            
+            pre = pre->next;
+        }
+        
+        return false;
+    }
+    
+    void add(int num) {
+        int idx = num >> 6;
+        if (idx >= table.size()) {
+            for (int i = table.size(); i <= idx; i++) {
+                table.push_back(new Node(-1));
+            }
+        }
+        
+        Node* pre = table[idx];
+        
+        while (pre->next) {
+            if (pre->next->val == num) {
+                pre->next->refcnt++;
+                return;
+            } else if (pre->next->val > num) {
+                break;
+            }
+            
+            pre = pre->next;
+        }
+        
+        Node* node = new Node(num);
+        node->next = pre->next;
+        pre->next = node;
+    }
+    
+    bool erase(int num) {
+        int idx = num >> 6;
+        if (idx >= table.size()) return false;
+        
+        Node* pre = table[idx];
+        
+        while (pre->next) {
+            if (pre->next->val == num) {
+                if (pre->next->refcnt > 1) {
+                    pre->next->refcnt--;
+                } else {
+                    Node* cur = pre->next;
+                    pre->next = cur->next;
+                    delete cur;
+                }
+                return true;
+                
+            } else if (pre->next->val > num) {
+                return false;
+            }
+            
+            pre = pre->next;
+        }
+        
+        return false;
+    }
+};
+
+/**
+ * Your Skiplist object will be instantiated and called as such:
+ * Skiplist* obj = new Skiplist();
+ * bool param_1 = obj->search(target);
+ * obj->add(num);
+ * bool param_3 = obj->erase(num);
+ */
