@@ -1,0 +1,65 @@
+#include <iostream>
+#include <vector>
+#include <string>
+#include <unordered_map>
+
+using namespace std;
+
+void solution1() {
+	string str;
+	getline(cin, str);
+
+	int len = str.length();
+	int res = 0;
+
+	vector<string> vec;
+
+	for (int i = 0; i < len - 1; i++) {
+		for (int j = i + 1; j < len; j++) {
+			if (str[i] == str[j]) continue;
+
+			res++;
+
+			string strcpy = str;
+			char c = strcpy[i];
+			strcpy[i] = strcpy[j];
+			strcpy[j] = c;
+			vec.push_back(strcpy);
+		}
+	}
+
+	cout << res + 1 << endl;
+
+	for (int i = 0; i < res; i++) {
+		cout << vec[i] << endl;
+	}
+}
+
+void solution2() {
+	string str;
+	getline(cin, str);
+
+	int len = str.length();
+	int res = 0;
+
+	unordered_map<int, int> map;
+	vector<int> dp(len, 0);
+
+	map[str[0]]++;
+	dp[0] = 1;
+
+	for (int i = 1; i < len; i++) {
+		dp[i] = dp[i - 1] + i - map[str[i]];
+
+		map[str[i]]++;
+	}
+
+	cout << dp[len - 1] << endl;
+}
+
+int main() {
+	solution2();
+
+	return 0;
+
+}
