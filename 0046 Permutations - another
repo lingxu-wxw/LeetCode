@@ -1,0 +1,62 @@
+// Input: [1,2,3]
+// Output:
+// [
+//   [1,2,3],
+//   [1,3,2],
+//   [2,1,3],
+//   [2,3,1],
+//   [3,1,2],
+//   [3,2,1]
+// ]
+
+class Solution {
+public:
+    
+    // 复用 0031 Next Permutation
+    void nextPermutation(vector<int>& nums) {
+        //全排列的下一种排列, 问题22用过类似的思想
+        
+        //思路: 倒序遍历, 找到第一个逆序的, 再倒序遍历, 找到第一个比它大的, 然后交换后转置
+        //例子: 1-2(*)-7-4-3(*)-1 => 1-3-1-2-4-7
+        
+        int size = nums.size();
+        
+        int i = 0, j = 0; 
+        for (i = size - 2; i >= 0; i--){
+            //逆序
+            if (nums[i+1] > nums[i]){
+                for (j = size - 1; j > i; j--){
+                    //找到第一个更大的, 一定会有
+                    if (nums[j] > nums[i]) break;
+                }
+                //交换后顺序关系不变
+                swap(nums[i], nums[j]);
+                //翻转
+                reverse(nums.begin() + i + 1, nums.end());
+                return;
+            }
+        }
+        
+        //当前是全排列最后一项
+        reverse(nums.begin(), nums.end());
+    }
+    
+    vector<vector<int>> permute(vector<int>& nums) {
+        int size = nums.size();
+        
+        // 阶乘次数，时间复杂度 O(n!*n) 
+        int cnt = 1;
+        for (int i = 1; i <= size; i++) {
+            cnt = cnt * i;
+        }
+        
+        vector<vector<int>> res;
+        
+        for (int i = 0; i < cnt; i++) {
+            res.push_back(nums);
+            nextPermutation(nums);
+        }
+        
+        return res;
+    }
+};
