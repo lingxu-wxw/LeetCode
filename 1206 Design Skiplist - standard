@@ -1,0 +1,112 @@
+// Input
+// ["Skiplist", "add", "add", "add", "search", "add", "search", "erase", "erase", "search"]
+// [[], [1], [2], [3], [0], [4], [1], [0], [1], [1]]
+// Output
+// [null, null, null, null, false, null, true, false, true, false]
+
+// Explanation
+// Skiplist skiplist = new Skiplist();
+// skiplist.add(1);
+// skiplist.add(2);
+// skiplist.add(3);
+// skiplist.search(0); // return False
+// skiplist.add(4);
+// skiplist.search(1); // return True
+// skiplist.erase(0);  // return False, 0 is not in skiplist.
+// skiplist.erase(1);  // return True
+// skiplist.search(1); // return False, 1 has already been erased.
+
+struct Node {
+    int val;
+    Node *next;
+    Node *down;
+    Node(): val(0), next(nullptr), down(nullptr) {}
+    Node(int val): val(val), next(nullptr), down(nullptr) {}
+    Node(int val, Node* next, Node* down): val(val), next(next), down(down) {}
+};
+
+class Skiplist {
+private:
+    Node *head;
+    
+public:
+    Skiplist() {
+        head = new Node(-1);
+    }
+    
+    bool search(int target) {
+        Node *cur = head;
+        
+        while (cur) {
+            while (cur->next && cur->next->val < target) {
+                cur = cur->next;
+            }
+            if (cur->next && cur->next->val == target) {
+                return true;
+            }
+            
+            cur = cur->down;
+        }
+        
+        return false;
+    }
+    
+    void add(int num) {
+        // 可能作为插入节点的pre
+        vector<Node*> st;
+        Node *cur = head, *down;
+        
+        // 先深入到最底层，重复数字当作独立节点处理
+        while (cur) {
+            while (cur->next && cur->next->val < num) {
+                cur = cur->next;
+            }
+            st.push_back(cur);
+            cur = cur->down;
+        }
+        
+        bool insert = true;
+        while (insert && !st.empty()) {
+            cur = st.back(); 
+            st.pop_back();
+            cur->next = new Node(num, cur->next, down);
+            down = cur->next;
+            
+            // 随机决定要不要往上插一层
+            insert = (rand() & 1) == 0;
+        }
+        
+        // 添加新的一层
+        if (insert) {
+            head = new Node(-1, nullptr, head);
+        };
+    }
+    
+    bool erase(int num) {
+        Node *cur = head;
+        
+        bool found = false;
+        while (cur) {
+            while (cur->next && cur->next->val < num) {
+                cur = cur->next;
+            }
+            if (cur->next && cur->next->val == num) {
+                found =  true;
+                cur->next = cur->next->next;
+            }
+            
+            // 要将竖列上的所有该节点也都删除
+            cur = cur->down;
+        }
+        
+        return found;
+    }
+};
+
+/**
+ * Your Skiplist object will be instantiated and called as such:
+ * Skiplist* obj = new Skiplist();
+ * bool param_1 = obj->search(target);
+ * obj->add(num);
+ * bool param_3 = obj->erase(num);
+ */
