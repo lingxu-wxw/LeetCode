@@ -1,0 +1,83 @@
+// Input: s = "aaabbbcccddd", k = 3, letter = "b", repetition = 2
+// Output: "abb"
+
+// Input: s = "hjjhhhmhhwhz", k = 6, letter = "h", repetition = 5
+// Output: "hhhhhh"
+
+class Solution {
+public:
+    string smallestSubsequence(string s, int k, char letter, int repetition) {
+        int size = s.size();
+        
+        int letterremain = 0;
+        int letterinstack = 0;
+        
+        stack<char> st;
+        string str = "", lightstr = "";
+		
+        for (int i = 0; i < size; i++) {
+            if (s[i] == letter) {
+                letterremain++;
+            }
+        }
+
+        for (int i = 0; i < size; i++) {
+            // 空栈初始化
+            if (st.empty()) {
+                st.push(s[i]);
+                continue;
+            }
+            
+            while (!st.empty() && s[i] < st.top() && (st.size() + size - i > k)) {
+                // 可以退栈的letter, 之后还能找补回来
+                if (st.top() == letter && (letterinstack + letterremain - 1 >= repetition)) {
+                    st.pop();
+                    letterinstack--;
+                }
+                // 无法退栈的letter
+                else if (st.top() == letter) {
+                    break;
+                }
+                // 其他字符，可直接退栈
+                else {
+                    st.pop();
+                }
+            }
+                  
+            // 更新letter入栈状态
+            if (s[i] == letter) {
+                letterremain--;
+                letterinstack++;
+            }
+            
+            st.push(s[i]);         
+        }
+        
+        // 组装成最后的结果
+        while (!st.empty()) {
+            str += st.top();
+            st.pop();
+        }
+        reverse(str.begin(), str.end());    
+       
+		// 遍历一遍后删掉的字符仍不够，重新组装
+        if (str.size() > k) {
+            for (int i = 0; i < str.size(); i++) {
+                if (k == 0) break;
+                
+                if (str[i] == letter && repetition > 0) {
+                    lightstr += str[i];
+                    k--;
+                    repetition--;
+                }
+                // 其他字符或者多出的letter
+                else if (k - repetition > 0) {
+                    lightstr += str[i];
+                    k--;
+                }
+            }
+        }
+        
+        return (str.size() > k) ? lightstr : str;
+    }
+};
