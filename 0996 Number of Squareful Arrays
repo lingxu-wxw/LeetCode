@@ -1,0 +1,47 @@
+// Input: nums = [1,17,8]
+// Output: 2
+// Explanation: [1,8,17] and [17,8,1] are the valid permutations.
+
+class Solution {
+public:
+    
+    bool isSquare(int num) {
+        int square = (int)sqrt(num);
+        return (square * square == num);
+    }
+    
+    bool hasVisited(int& visited, int i) {
+        return ((visited & (1 << i)) != 0);
+    }
+    
+    int helper(vector<int>& nums, int& visited, vector<int>& perms) {
+        int size = nums.size();
+        if (visited == ((1<<size) - 1)) {
+            return 1;
+        }
+        
+        int res = 0;
+        for (int i = 0; i < size; i++) {
+            // 满足以下条件才可加入perms
+            // 1) idx=i没有访问过，2) 当前访问与idx=i-1不会重复，3) 能够组成square数
+            if (!hasVisited(visited, i) && (i == 0 || nums[i] != nums[i-1] || hasVisited(visited, i-1)) 
+                && (perms.empty() || isSquare(perms.back() + nums[i]))) {
+                visited += (1 << i);
+                perms.push_back(nums[i]);
+                res += helper(nums, visited, perms);
+                perms.pop_back();
+                visited -= (1 << i);
+            }
+        }
+
+        return res;
+    }
+    
+    int numSquarefulPerms(vector<int>& nums) {
+        // 排序是为了方便剪枝
+        sort(nums.begin(), nums.end());
+        int visited = 0;
+        vector<int> perms;
+        return helper(nums, visited, perms);
+    }
+};
