@@ -1,0 +1,51 @@
+// Input: head = [1,2,2,1]
+// Output: true
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    // 回文链表
+    bool isPalindrome(ListNode* head) {
+        if (!head || !head->next) return true;
+        
+        // 先用快慢指针找到中点
+        ListNode* slow = head;
+        ListNode* fast = head;
+        
+        while (fast->next && fast->next->next) {
+            slow = slow->next;
+            fast = fast->next->next;
+        }
+        
+        // 反转后半部的链表
+        // e.g 12321 slow=3, 123321 slow=前3
+        ListNode* last = slow->next;
+        while (last->next) {
+            ListNode* tmp = last->next;
+            last->next = tmp->next;
+            tmp->next = slow->next;
+            slow->next = tmp;
+        }
+        
+        // 开始比较是否是回文
+        ListNode* cur = head;
+        while (slow->next) {
+            slow = slow->next;
+            if (cur->val != slow->val) {
+                return false;
+            }
+            cur = cur->next;
+        }
+        
+        return true;
+    }
+};
