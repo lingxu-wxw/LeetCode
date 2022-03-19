@@ -1,0 +1,45 @@
+// Input: head = [1,2,3,4,5], n = 2
+// Output: [1,2,3,5]
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* removeNthFromEnd(ListNode* head, int n) {
+        // 删除链表倒数第n个
+        
+        // 特殊情况, 长度为0/1
+        if (!head || !head->next) return NULL;
+        
+        ListNode* slow = head;
+        ListNode* fast = head;
+        
+        // fast提前落位
+        while (n) {
+            fast = fast->next;
+            n--;
+        }
+        
+        // 特殊情况，需要删除的就是head
+        if (!fast) {
+            return head->next;
+        }
+        
+        while (fast->next) {
+            fast = fast->next;
+            slow = slow->next;
+        }
+        
+        slow->next = slow->next->next;
+        
+        return head;
+    }
+};
