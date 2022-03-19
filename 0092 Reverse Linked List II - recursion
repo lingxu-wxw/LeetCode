@@ -1,0 +1,43 @@
+// Input: head = [1,2,3,4,5], left = 2, right = 4
+// Output: [1,4,3,2,5]
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+private:
+    // 翻转后的后继，e.g 12345 left=2 right=4, successor=5
+    ListNode* successor;
+    
+public:
+    ListNode* reverseBetween(ListNode* head, int left, int right) {
+        if (left == 1) {
+            return reverseFirstN(head, right);
+        }
+        
+        head->next = reverseBetween(head->next, left - 1, right - 1);
+        return head;
+    }
+    
+    ListNode* reverseFirstN(ListNode* head, int firstN) {
+        if (firstN == 1) {
+            successor = head->next;
+            return head;
+        }
+        
+        // e.g. 2 -> 3 -> 4 -> 5 => 2 -> 3, 4 -> 3 -> 5(successor)
+        ListNode* last = reverseFirstN(head->next, firstN - 1);
+        
+        head->next->next = head;
+        head->next = successor;
+        
+        return last;
+    }
+};
