@@ -1,0 +1,37 @@
+// Input: tops = [2,1,2,4,2,2], bottoms = [5,2,6,2,3,2]
+// Output: 2
+// Explanation: 
+// The first figure represents the dominoes as given by tops and bottoms: before we do any rotations.
+// If we rotate the second and fourth dominoes, we can make every value in the top row equal to 2, as indicated by the second figure.
+
+class Solution {
+public:
+    int minDominoRotations(vector<int>& tops, vector<int>& bottoms) {
+        int size = tops.size();
+        
+        vector<int> topcnt(7, 0);
+        vector<int> botcnt(7, 0);
+        vector<int> samecnt(7, 0);
+        
+        int minrotations = INT_MAX;
+        
+        for (int i = 0; i < size; i++) {
+            topcnt[tops[i]]++;
+            botcnt[bottoms[i]]++;
+            
+            if (tops[i] == bottoms[i]) {
+                samecnt[tops[i]]++;
+            }
+        }
+        
+        // 骰子的六个点数依次考虑
+        for (int i = 1; i <= 6; i++) {
+            // 表明能够凑出一排相同的数字，少的往多的那边移
+            if (topcnt[i] + botcnt[i] - samecnt[i] == size) {
+                minrotations = min(minrotations, (min(topcnt[i], botcnt[i]) - samecnt[i]));
+            }
+        }
+        
+        return (minrotations == INT_MAX) ? -1 : minrotations;
+    }
+};
