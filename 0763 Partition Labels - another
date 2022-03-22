@@ -1,0 +1,35 @@
+// Input: s = "ababcbacadefegdehijhklij"
+// Output: [9,7,8]
+// Explanation:
+// The partition is "ababcbaca", "defegde", "hijhklij".
+// This is a partition so that each letter appears in at most one part.
+// A partition like "ababcbacadefegde", "hijhklij" is incorrect, because it splits s into less parts.
+
+class Solution {
+public:
+    vector<int> partitionLabels(string s) {
+        int len = s.length();
+        
+        vector<int> lastoccur(26, -1);
+        int start = 0, end = 0;
+        
+        vector<int> res;
+        
+        for (int i = 0; i < len; i++) {
+            lastoccur[s[i] - 'a'] = i;
+        }
+        
+        for (int i = 0; i < len; i++) {
+            // 刷新当前闭环所需要的end idx
+            end = max(end, lastoccur[s[i] - 'a']);
+            
+            // 表明已经闭环，可以收尾
+            if (i == end) {
+                res.push_back(i - start + 1);
+                start = i + 1;
+            }
+        }
+        
+        return res;
+    }
+};
