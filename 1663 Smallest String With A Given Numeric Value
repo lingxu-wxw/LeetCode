@@ -1,0 +1,35 @@
+// Input: n = 3, k = 27
+// Output: "aay"
+// Explanation: The numeric value of the string is 1 + 1 + 25 = 27, and it is the smallest string with such a value and length equal to 3.
+
+// Input: n = 5, k = 73
+// Output: "aaszz"
+
+class Solution {
+public:
+    string getSmallestString(int n, int k) {
+        string res = "";
+        char c;
+        
+        // 贪心策略，最优的解法一定是 a...a[]z...z, []中也只有一个其他字母
+        while (n) {
+            if (k >= (n - 1) + 26) {
+                c = 'z';
+                k -= 26;
+            } else if (k == n) {
+                c = 'a';
+                k -= 1;
+            } else {
+                c = 'a' + (k - n);
+                k = n - 1;
+            }
+            
+            res += c;
+            n--;
+        }
+        
+        reverse(res.begin(), res.end());
+        
+        return res;
+    }
+};
