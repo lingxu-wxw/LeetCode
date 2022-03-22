@@ -1,0 +1,36 @@
+// Input: s = "ababcbacadefegdehijhklij"
+// Output: [9,7,8]
+// Explanation:
+// The partition is "ababcbaca", "defegde", "hijhklij".
+// This is a partition so that each letter appears in at most one part.
+// A partition like "ababcbacadefegde", "hijhklij" is incorrect, because it splits s into less parts.
+
+class Solution {
+public:
+    vector<int> partitionLabels(string s) {
+        int len = s.length();
+        
+        unordered_map<char, int> lastoccur;
+        vector<int> startidx;
+        vector<int> res;
+        
+        for (int i = 0; i < len; i++) {
+            if (!lastoccur.count(s[i])) {
+                startidx.push_back(i);
+                lastoccur[s[i]] = i;
+            } else {
+                int lastidx = lastoccur[s[i]];
+                while (startidx.back() > lastidx) {
+                    startidx.pop_back();
+                }
+            }
+        }
+        startidx.push_back(len);
+        
+        for (int i = 1; i < startidx.size(); i++) {
+            res.push_back(startidx[i] - startidx[i-1]);
+        }
+        
+        return res;
+    }
+};
