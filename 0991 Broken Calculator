@@ -1,0 +1,23 @@
+// Input: startValue = 2, target = 3
+// Output: 2
+// Explanation: Use double operation and then decrement operation {2 -> 4 -> 3}.
+
+class Solution {
+public:
+    int brokenCalc(int startValue, int target) {
+        // startValue只有乘2和减1 两种操作
+        // 当startValue比target大时，只能不断减1
+        if (startValue >= target) {
+            return startValue - target;
+        }
+        
+        // 此时startValue比target小
+        // 当target是偶数时，上一步一定是startValue乘2
+        if (target & 1) {
+            return 1 + brokenCalc(startValue, target  + 1);
+        }
+            
+        // 当target是奇数时，上一步一定是startValue减1
+        return 1 + brokenCalc(startValue, target / 2);
+    }
+};
