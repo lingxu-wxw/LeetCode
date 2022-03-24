@@ -1,0 +1,33 @@
+// Input: people = [3,2,2,1], limit = 3
+// Output: 3
+// Explanation: 3 boats (1, 2), (2) and (3)
+
+class Solution {
+public:
+    int numRescueBoats(vector<int>& people, int limit) {
+        // Each boat carries at most two people at the same time
+        
+        int size = people.size();
+        sort(people.begin(), people.end());
+        
+        if (people.back() > limit) return -1;
+        
+        // 贪心策略，最重的和最轻的两个人放在一起
+        int i = 0, j = size-1;
+        int res = 0;
+        
+        while (i <= j) {
+            // 只剩最后一个人，或最重最轻可以一起上船
+            if (i == j || people[i] + people[j] <= limit) {
+                i++;
+                j--;
+                res++;
+            } else {
+                j--;
+                res++;
+            }
+        }
+        
+        return res;
+    }
+};
