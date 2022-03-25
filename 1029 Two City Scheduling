@@ -1,0 +1,33 @@
+// Input: costs = [[10,20],[30,200],[400,50],[30,20]]
+// Output: 110
+// Explanation: 
+// The first person goes to city A for a cost of 10.
+// The second person goes to city A for a cost of 30.
+// The third person goes to city B for a cost of 50.
+// The fourth person goes to city B for a cost of 20.
+// The total minimum cost is 10 + 30 + 50 + 20 = 110 to have half the people interviewing in each city.
+
+class Solution {
+public:
+    int twoCitySchedCost(vector<vector<int>>& costs) {
+        int size = costs.size();
+        if (size & 1) return -1;
+        
+        // 先让所有人去A城市，再从diff(B-A)中挑出n/2个最小的(含负数)去B城市
+        int totalcost = 0;
+        vector<int> diff;
+        
+        for (auto cost : costs) {
+            totalcost += cost[0];
+            diff.push_back(cost[1] - cost[0]);
+        }
+        
+        sort(diff.begin(), diff.end());
+        
+        for (int i = 0; i < size/2; i++) {
+            totalcost += diff[i];
+        }
+        
+        return totalcost;
+    }
+};
