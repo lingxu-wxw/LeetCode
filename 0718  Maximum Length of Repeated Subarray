@@ -1,0 +1,32 @@
+// Input: nums1 = [1,2,3,2,1], nums2 = [3,2,1,4,7]
+// Output: 3
+// Explanation: The repeated subarray with maximum length is [3,2,1].
+
+class Solution {
+public:
+    
+    // 参考 XXXX Longest Common Substring
+    
+    int findLength(vector<int>& nums1, vector<int>& nums2) {
+        int size1 = nums1.size(), size2 = nums2.size();
+        
+        int maxlen = 0;
+        
+        // dp[i][j]表示以nums1前i个和nums2前j个 的 最长公共子串
+        vector<vector<int>> dp(size1 + 1, vector<int>(size2 + 1, 0));
+        
+        for (int i = 1; i <= size1; i++) {
+            for (int j = 1; j <= size2; j++) {
+                // 因为dp[i][j]的设定是以nums1[i]和nums2[j]为结尾
+                if (nums1[i-1] == nums2[j-1]) {
+                    dp[i][j] = dp[i-1][j-1] + 1; 
+                    maxlen = max(maxlen, dp[i][j]);
+                } else {
+                    dp[i][j] = 0;
+                }
+            }
+        }
+        
+        return maxlen;
+    }
+};
