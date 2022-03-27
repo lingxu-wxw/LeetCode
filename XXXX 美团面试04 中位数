@@ -1,0 +1,48 @@
+#include <iostream>
+#include <vector>
+#include <queue>
+
+using namespace std;
+
+int solution(vector<int>& nums) {
+	int size = nums.size();
+
+	int res = 0;
+
+	for (int i = 0; i < size; i++) {
+		priority_queue<int> que_max;	// large top heap, small half-part array
+		priority_queue<int, vector<int>, greater<int>> que_min;	// small top heap, large half-part array
+
+		for (int j = i; j < size; j++) {
+			que_max.push(nums[j]);
+
+			while (que_max.size() - que_min.size() >= 2) {
+				que_min.push(que_max.top());
+				que_max.pop();
+			}
+
+			while (!que_min.empty() && que_max.top() > que_min.top()) {
+				int a = que_max.top();
+				que_max.pop();
+				int b = que_min.top();
+				que_min.pop();
+				que_max.push(b);
+				que_min.push(a);
+			}
+			
+			if (i % 2 == j % 2) {
+				res += que_max.top();
+			}
+		}
+	}
+
+	return res;
+}
+
+int main() {
+	vector<int> nums = {2, 4, 6, 3};	// 2+4+6+3+4+4 = 23
+	cout << solution(nums) << endl;
+
+	return 0;
+
+}
