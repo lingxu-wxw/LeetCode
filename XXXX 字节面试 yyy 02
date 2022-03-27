@@ -1,0 +1,52 @@
+#include <iostream>
+#include <queue>
+#include <vector>
+#include <unordered_map>
+
+using namespace std;
+
+void solution2() {
+	int N, M, T;	// work amount, max efficient, max efficient continue time
+	cin >> N >> M >> T;
+
+	int efficient = 1;
+	int max_effi_time = 0;
+
+	int time = 0;
+
+	while (N > 0) {
+		if (max_effi_time >= T) {
+			time += 10;
+			efficient = 1;
+			continue;
+		}
+
+		N -= efficient;
+		time++;
+
+		cout << "efficient: " << efficient << " time: " << time << endl;
+
+		if (efficient == M) {
+			max_effi_time++;
+		}
+
+		if (efficient == M && max_effi_time == T - 1 && N > efficient) {
+			time += 5;
+			efficient = efficient / 2;
+			continue;
+		}
+
+		if (efficient + 1 <= M) {
+			efficient++;
+		}
+	}
+
+	cout << time << endl;
+}
+
+int main() {
+	solution2();
+
+	return 0;
+
+}
