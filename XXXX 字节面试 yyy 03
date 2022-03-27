@@ -1,0 +1,61 @@
+#include <iostream>
+#include <queue>
+
+using namespace std;
+
+void solution(int x, int n) {
+	priority_queue<int> odds; // large top heap
+	priority_queue<int> evens;
+
+	if (x % 2 == 0) {
+		odds.push(x / 2);
+		odds.push(x / 2);
+	}
+	else {
+		odds.push(x);
+	}
+
+	priority_queue<int> odds_tmp;
+	priority_queue<int> evens_tmp;
+
+	for (int i = 1; i <= n; i++) {
+		while (!odds.empty()) {
+			evens_tmp.push(odds.top() + 1);
+			odds.pop();
+		}
+
+		while (!evens.empty()) {
+			odds_tmp.push(evens.top() + 1);
+			evens.pop();
+		}
+		
+		if (!evens_tmp.empty()) {
+			odds_tmp.push(evens_tmp.top() / 2);
+			odds_tmp.push(evens_tmp.top() / 2);
+			evens_tmp.pop();
+		}
+
+		while (!odds_tmp.empty()) {
+			odds.push(odds_tmp.top());
+			odds_tmp.pop();
+		}
+
+		while (!evens_tmp.empty()) {
+			evens.push(evens_tmp.top());
+			evens_tmp.pop();
+		}
+	} 
+
+	int oddmax = odds.empty() ? 0 : odds.top();
+	int evenmax = evens.empty() ? 0 : evens.top();
+
+	cout << max(oddmax, evenmax) << endl;
+}
+
+int main() {
+	solution(4, 0);
+	solution(1, 6);
+
+	return 0;
+
+}
