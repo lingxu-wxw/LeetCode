@@ -18,6 +18,7 @@ void solution2() {
 		if (max_effi_time >= T) {
 			time += 10;
 			efficient = 1;
+			max_effi_time = 0;
 			continue;
 		}
 
@@ -33,6 +34,7 @@ void solution2() {
 		if (efficient == M && max_effi_time == T - 1 && N > efficient) {
 			time += 5;
 			efficient = efficient / 2;
+			max_effi_time = 0;
 			continue;
 		}
 
