@@ -7,11 +7,13 @@ void solution(int x, int n) {
 	priority_queue<int> odds; // large top heap
 	priority_queue<int> evens;
 
-	if (x % 2 == 0) {
+	if (x % 4 == 0) {
+		evens.push(x / 2);
+		evens.push(x / 2);
+	} else if (x % 2 == 0) {
 		odds.push(x / 2);
 		odds.push(x / 2);
-	}
-	else {
+	} else {
 		odds.push(x);
 	}
 
