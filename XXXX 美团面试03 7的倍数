@@ -1,0 +1,33 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+void solution_7debeishu(vector<int>& nums) {
+	int size = nums.size();
+	vector<vector<int>> dp(size + 1, vector<int>(7, INT_MIN));	// INT_MIN means impossible
+
+	dp[0][0] = 0;
+
+	for (int i = 1; i <= size; i++) {
+		for (int j = 0; j < 7; j++) {
+			// (last_rem + nums[i-1]) % 7 = j
+			int last_rem = ((j - nums[i - 1]) % 7 + 7) % 7;
+
+			if (dp[i - 1][last_rem] != INT_MIN) {
+				dp[i][j] = max(dp[i - 1][j], dp[i - 1][last_rem] + nums[i - 1]);
+			}
+			else {
+				dp[i][j] = dp[i - 1][j];
+			}
+		}
+	}
+
+	cout << dp[size][0] << endl;
+}
+
+int main() {
+	vector<int> nums = { 2, -6, 15, 4, 5 };
+	solution_7debeishu(nums);
+
+	return 0;
+}
