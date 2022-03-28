@@ -1,0 +1,82 @@
+// Input: words = ["a","banana","app","appl","ap","apply","apple"]
+// Output: "apple"
+// Explanation: Both "apply" and "apple" can be built from other words in the dictionary. However, "apple" is lexicographically smaller than "apply".
+
+// Input: words = ["yo","ew","fc","zrc","yodn","fcm","qm","qmo","fcmz","z","ewq","yod","ewqz","y"]
+// Output: "yodn"
+
+class TrieNode {
+public:
+    // 每个结点都是一个26叉树
+    TrieNode* child[26];
+    bool isWord;
+    
+    // new新的结点时将child全都置为NULL
+    TrieNode() : isWord(false) {
+        for (auto &p : child) {
+            p = NULL;
+        }
+    }
+};
+
+class Solution {
+private:
+    TrieNode* root;
+public:
+    
+    void insert(string word) {
+        TrieNode* p = root;
+        
+        for (auto &s : word) {
+            // 获取当前字母序
+            int i = s - 'a';
+            if (!p->child[i]) {
+                // TrieNode和NULL区分是否存在结点
+                p->child[i] = new TrieNode();
+            }
+            p = p->child[i];
+        }
+        
+        p->isWord = true;
+    }
+    
+    bool searchAllPrefix(string word) {
+        if (word == "") return true;
+        
+        TrieNode* p = root;
+        
+        for (auto &s : word) {
+            // 获取当前字母序
+            int i = s - 'a';
+            if (!p->child[i] || !p->child[i]->isWord) {
+                return false;
+            }
+            p = p->child[i];
+        }
+        
+        // 如果只是途径不能算search, 需要这个词是单词
+        return p->isWord;
+    }
+    
+    string longestWord(vector<string>& words) {
+        root = new TrieNode();
+        int maxlen = 0;
+        string res = "";
+        
+        for (auto word : words) {
+            insert(word);
+        }
+        
+        for (auto word : words) {
+            if (searchAllPrefix(word.substr(0, word.size()-1))) {
+                if (word.size() > maxlen || (word.size() == maxlen && word < res)) {
+                    maxlen = word.size();
+                    res = word;
+                }
+            }
+        }
+        
+        return res;
+    }
+};
+
