@@ -1,0 +1,200 @@
+#include <iostream>
+#include <algorithm>
+#include <vector>
+#include <set>
+#include <iterator>
+#include <map>
+
+using namespace std;
+
+typedef pair<int, int> Node;
+
+struct cmpmap {
+	bool operator()(const int& k1, const int& k2) const {
+		return (k1 > k2);
+	}
+};
+
+struct cmpvec {
+	bool operator()(const set<Node>& s1, const set<Node>& s2) const {
+		return (s1.size() > s2.size());
+	}
+};
+
+void showboard(vector<vector<char>>& board) {
+	for (auto line : board) {
+		for (auto node : line) {
+			cout << node << " ";
+		}
+		cout << endl;
+	}
+}
+
+void setboard(vector<vector<char>>& board, set<Node> nodes, bool ismine) {
+	for (auto node : nodes) {
+		board[node.first][node.second] = (ismine ? 'X' : 'O');
+	}
+}
+
+void showset(set<Node> &s1) {
+	for (auto node : s1) {
+		cout << "{" << node.first << "," << node.second << "} ";
+	}
+	cout << endl;
+}
+
+bool contains(set<Node> &s1, set<Node> &s2) {
+	// whether all element in s2 also in s1
+	for (auto node : s2) {
+		if (!s1.count(node)) {
+			return false;
+		}
+	}
+	return true;
+}
+
+set<Node> difference(set<Node> &s1, set<Node> &s2) {
+	// element in s1 but not in s2
+	set<Node> res;
+	set_difference(s1.begin(), s1.end(), s2.begin(), s2.end(), inserter(res, res.begin()));
+	return res;
+}
+
+set<Node> neighbors(vector<vector<char>>& board, int i, int j) {
+	int height = board.size();
+	int width = board[0].size();
+	
+	vector<vector<int>> directions = { {-1, -1}, {-1, 0}, {-1, 1}, {0, -1}, {0, 1}, {1, -1}, {1, 0}, {1, 1} };
+	set<Node> res;
+
+	for (auto dir : directions) {
+		int newi = i + dir[0];
+		int newj = j + dir[1];
+		if (newi < 0 || newi >= height || newj < 0 || newj >= height || board[newi][newj] != '.') continue;
+		res.insert({ newi, newj });
+	}
+
+	return res;
+}
+
+void solution_minesweeper(vector<vector<char>>& board) {
+	int height = board.size();
+	int width = board[0].size();
+
+	// mines - nodes set
+	map<int, vector<set<Node>>, cmpmap> m;
+
+	for (int i = 0; i < height; i++) {
+		for (int j = 0; j < width; j++) {
+			if (board[i][j] != '.') {
+				set<Node> neigh = neighbors(board, i, j);
+				m[board[i][j] - '0'].push_back(neigh);
+			}
+		}
+	}
+
+	while (!m.empty()) {
+		vector<set<Node>>& vec = m.begin()->second;
+		if (vec.empty()) break;
+		sort(vec.begin(), vec.end(), cmpvec());
+
+		int curmines = m.begin()->first;
+		set<Node> curset = vec[0];
+		
+		vec.erase(vec.begin());
+		if (vec.empty()) m.erase(curmines);
+
+		// method 1: use current result
+		bool addnew = false;
+		int newmines = curmines;
+		set<Node> newset = curset;
+		for (auto node : curset) {
+			if (board[node.first][node.second] == 'O') {
+				addnew = true;
+				newset.erase(node);
+			}
+			else if (board[node.first][node.second] == 'X') {
+				addnew = true;
+				newmines -= 1;
+				newset.erase(node);
+			}
+		}
+		if (newmines == 0) {
+			setboard(board, newset, false);
+			goto next;
+		}
+		else if (newset.size() == newmines) {
+			setboard(board, newset, true);
+			goto next;
+		}
+		if (addnew) {
+			m[newmines].push_back(newset);
+		}
+		
+		// method 2: find diff set
+		if (m.empty()) break;
+		for (auto pair : m) {
+			for (auto nodes : pair.second) {
+				if (contains(curset, nodes)) {
+					set<Node> diff = difference(curset, nodes);
+					int diffmines = curmines - pair.first;
+
+					if (!diff.empty()) {
+						// diff has no mines
+						if (diffmines == 0) {
+							setboard(board, diff, false);
+						}
+						// diff is all mines
+						else if (diff.size() == diffmines) {
+							setboard(board, diff, true);
+						}
+						else {
+							m[diffmines].push_back(diff);
+						}
+					}
+
+					goto next;
+				}
+			}
+		}
+
+	next:;
+	}
+
+	cout << "Output:" << endl;
+	showboard(board);
+}
+
+int main() {
+	vector<vector<char>> board1 = {
+		{'1', '2', '1', '.'},
+		{'.', '.', '.', '.'},
+		{'.', '.', '.', '.'},
+		{'.', '.', '.', '.'}
+	};
+	vector<vector<char>> board2 = {
+		{'1', '.', '.', '.'},
+		{'2', '.', '.', '.'},
+		{'2', '.', '7', '.'},
+		{'1', '.', '.', '.'}
+	};
+
+	cout << "Input:" << endl;
+	showboard(board1);
+	cout << endl;
+
+	solution_minesweeper(board1);
+
+	return 0;
+
+}
+
+// 1 2 1 .
+// . . . .
+// . . . .
+// . . . .
+
+// 1 2 1 O
+// X O X O
+// . . . .
+// . . . .
