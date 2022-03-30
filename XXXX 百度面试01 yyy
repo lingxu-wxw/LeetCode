@@ -1,0 +1,50 @@
+#include <iostream>
+#include <string>
+#include <algorithm>
+#include <vector>
+#include <set>
+#include <map>
+
+using namespace std;
+
+void longestPalindrome(string s) {
+	int size = s.size();
+
+	int maxlen = 0, left = 0;
+
+	// state: -1 - not Palindromic, 0 - Palindromic only have 0, 1 - Palindromic only have 1, 2 - Palindromic with two num
+	vector<vector<int>> dp(size, vector<int>(size, -1));
+
+	for (int j = 0; j < size; j++) {
+		for (int i = j; i >= 0; i--) {
+			
+			// dp[i][j] = (s[i] == s[j]) && (j - i <= 2 || dp[i + 1][j - 1]);
+
+			if (s[i] == s[j]) {
+				if (j - i < 2) {
+					dp[i][j] = s[i] - '0';
+				}
+				else if (dp[i + 1][j - 1] != -1) {
+					if ((dp[i + 1][j - 1] == 0 && s[i] == '1') || (dp[i + 1][j - 1] == 1 && s[i] == '0') || (dp[i + 1][j - 1] == 2)) {
+						dp[i][j] = 2;
+					}
+					else {
+						dp[i][j] = dp[i + 1][j - 1];
+					}
+				}
+			}
+
+			if (dp[i][j] == 2 && (j - i + 1 > maxlen)) {
+				maxlen = j - i + 1;
+				left = i;
+			}
+		}
+	}
+
+	string res = s.substr(left, maxlen);
+	cout << maxlen << endl;
+}
+
+int main() {
+	longestPalindrome("111010010100");
+}
