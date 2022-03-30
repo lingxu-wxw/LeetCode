@@ -1,0 +1,67 @@
+// Input: n = "123"
+// Output: "121"
+
+class Solution {
+public:
+    
+    string nearestPalindromic(string n) {
+        int len = n.length();
+        long long val = stoll(n);
+        
+        // 情况0：0 - 1, 1 - 0
+        if (n == "0") return "1";
+        if (len == 1) return to_string(val - 1);
+        
+        // 情况1: 1234 - 1221, 12932 - 12921
+        string left = n.substr(0, (len + 1) / 2);
+        string right = (len % 2) ? left.substr(0, left.length()-1) : left;
+        reverse(right.begin(), right.end());
+        string combine = left + right;
+        
+        // 情况2：1192 - 1221, 12199 - 12221
+        string leftplus = to_string(stoll(left) + 1);
+        string rightplus = (len % 2) ? leftplus.substr(0, leftplus.length() - 1) : leftplus;
+        reverse(rightplus.begin(), rightplus.end());
+        string combineplus = leftplus + rightplus;
+        
+        // 情况3：1921 - 1881, 99800 - 99799
+        string leftminus = to_string(stoll(left) - 1);
+        string rightminus = (len % 2) ? leftminus.substr(0, leftminus.length() - 1) : leftminus;
+        reverse(rightminus.begin(), rightminus.end());
+        string combineminus = leftminus + rightminus;
+        
+        // 情况4：1000 - 999
+        string downnines = "";
+        for (int i = 0; i < len-1; i++) downnines += '9';
+        
+        // 情况5：999 - 1001
+        string upzeros = "1";
+        for (int i = 0; i < len-1; i++) upzeros += '0';
+        upzeros += '1';
+        
+        
+        vector<string> strs;
+        strs.push_back(combine);
+        strs.push_back(combineplus);
+        strs.push_back(combineminus);
+        strs.push_back(downnines);
+        strs.push_back(upzeros);
+        
+        // 防止溢出："2147483648", "807045053224792883", 
+        long long mindiff = INT_MAX;
+        long long minnum = INT_MAX;
+        
+        for (auto str : strs) {
+            long long num = stoll(str);
+            long long diff = abs(num - stoll(n));
+            if (diff == 0) continue;
+            
+            if ((diff < mindiff) || (diff == mindiff && num < minnum)) {
+                mindiff = diff;
+                minnum = num;
+            }
+        }
+        
+        return to_string(minnum);
+    }
+};
