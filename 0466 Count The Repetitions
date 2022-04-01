@@ -1,0 +1,79 @@
+// Input: s1 = "acb", n1 = 4, s2 = "ab", n2 = 2
+// Output: 2
+
+class Solution {
+public:
+    // [s1, n1] 中能出现多少次 [s2, n2]
+    
+    // e.g s1 = abaacdbac, n1 = ..., s2 = adcbd, n2 = ...
+    // s1: abaacdbac \ abaacdbac \ abaacdbac \ abaacdbac \ abaacdbac \ abaacdbac
+    // s2: a    d  c    b   d a         d  c    b   d a         d  c    b   d a
+    //     pre_loop                        in_loop                             post_loop
+    // cnt1:       1           2           3           4           5           6
+    // cnt2:       0           1           1           2           2           3
+    // idx:        2           0           2           0           2           0
+    
+    int getMaxRepetitions(string s1, int n1, string s2, int n2) {
+        if (n1 == 0) return 0;
+        int len1 = s1.length(), len2 = s2.length();
+        
+        int cnt1 = 0, cnt2 = 0, index = 0;
+        unordered_map<int, pair<int, int>> map;     // index in s2 - {cnt1, cnt2}
+        pair<int, int> pre_loop, in_loop;
+        
+        while (true) {
+            // 遍历寻找循环节
+            cnt1++;
+            for (auto c : s1) {
+                if (c == s2[index]) {
+                    index++;
+                    if (index == len2) {
+                        cnt2++;
+                        index = 0;
+                    }
+                }
+            }
+            
+            // 一直没能找到循环节，s1已经用完
+            // cnt2>=n2表示[str1, n1]中至少能出现1次[str2, n2]
+            if (cnt1 == n1) {
+                return cnt2 / n2;
+            }
+            
+            // 找到循环节
+            if (map.count(index)) {
+                // 前cnt1'个s1 中能找出 cnt2'个s2
+                pre_loop = map[index];  // {cnt1', cnt2'}
+                // 之后每 (cnt1-cnt1')个s1 中就能找出 (cnt2-cnt2')个s2
+                in_loop = {cnt1 - pre_loop.first, cnt2 - pre_loop.second};
+                break;
+            }
+            // 还没找到循环节
+            else {
+                map[index] = {cnt1, cnt2};
+            }
+        }
+        
+        // 目前res中记录的是考虑pre_loop和in_loop，[s1, n1] 中能出现多少次 s2，不是 [s2, n2]
+        int res = pre_loop.second + (n1 - pre_loop.first) / in_loop.first * in_loop.second;
+        
+        // 还有一些post_loop的部分需要考虑，可能还能挤出一些s2，index直接沿用
+        int remain1 = (n1 - pre_loop.first) % in_loop.first;
+            
+        for (int i = 0; i < remain1; i++) {
+            for (auto c : s1) {
+                if (c == s2[index]) {
+                    index++;
+                    if (index == len2) {
+                        res++;
+                        index = 0;
+                    }
+                }
+            }
+        }
+        
+        // 更新后的res: [s1, n1] 中能出现多少次 s2
+        return res / n2;
+    }
+};
+
