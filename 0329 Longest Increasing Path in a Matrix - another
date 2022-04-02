@@ -1,0 +1,66 @@
+// Input: matrix = [[9,9,4],[6,6,8],[2,1,1]]
+// Output: 4
+// Explanation: The longest increasing path is [1, 2, 6, 9].
+
+class Solution {
+public:
+    
+    vector<vector<int>> directions = {{1,0}, {-1,0}, {0,1}, {0,-1}};
+    
+    int longestIncreasingPath(vector<vector<int>>& matrix) {
+        int height = matrix.size();
+        int width = matrix[0].size();
+        if (height == 0 || width == 0) return 0;
+        
+        // 遍历整个matrix，计算出每个格子的出度，每个格子每有一个比自己大的相邻格子，出度+1
+        vector<vector<int>> outdegree(height, vector<int>(width, 0));
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                for (auto dir : directions) {
+                    int newi = i + dir[0];
+                    int newj = j + dir[1];
+                    if (newi >= 0 && newi < height && newj >= 0 && newj < width && matrix[newi][newj] > matrix[i][j]) {
+                        outdegree[i][j]++;
+                    }
+                }
+            }
+        }
+        
+        // 找出所有出度为0的格子作为出发节点进行BFS，这些节点都是某些路径的终点
+        queue<pair<int, int>> queue;
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                if (outdegree[i][j] == 0) {
+                    queue.push({i, j});
+                }
+            }
+        }
+        
+        // 每次遍历一层后，遍历到的节点outdegree减一，当减到0的时候入队
+        // 实际遍历得出的路径是从大到小的路径
+        int res = 0;
+        while (!queue.empty()) {
+            res++;
+            int size = queue.size();
+            
+            for (int idx = 0; idx < size; idx++) {
+                auto cell = queue.front();
+                queue.pop();
+                int i = cell.first, j = cell.second;
+                
+                for (auto dir : directions) {
+                    int newi = i + dir[0];
+                    int newj = j + dir[1];
+                    if (newi >= 0 && newi < height && newj >= 0 && newj < width && matrix[newi][newj] < matrix[i][j]) {
+                        outdegree[newi][newj]--;
+                        if (outdegree[newi][newj] == 0) {
+                            queue.push({newi, newj});
+                        }
+                    }
+                }
+            } 
+        }
+            
+        return res;
+    }
+};
