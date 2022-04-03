@@ -1,0 +1,34 @@
+// Input: n = 2
+// Output: 987
+// Explanation: 99 x 91 = 9009, 9009 % 1337 = 987
+
+class Solution {
+public:
+    int largestPalindrome(int n) {
+        // 一位数就是9，九九乘法表里没有回文
+        if (n == 1) return 9;
+        
+        // e.g. n=2, high=99, low=10
+        int high = pow(10, n) - 1;
+        int low = high / 10 + 1;
+        
+        // 定律：当n>1时，两个n位数相乘得出的结果一定是2n位数
+        // 要求最大的回文乘积，所以倒着遍历
+        for (int i = high; i >= low; i--) {
+            // 用当前的数字拼成一个2n位数的回文，再判断它是否是两个n位数的乘积，e.g. i=90 -> 9009
+            string left = to_string(i);
+            string right = left;
+            reverse(right.begin(), right.end());
+            
+            long long num = stoll(left + right);
+            
+            for (long long j = high; j * j > num; j--) {
+                if (num % j == 0) {
+                    return num % 1337;
+                }
+            }
+        }
+        
+        return 9;
+    }
+};
