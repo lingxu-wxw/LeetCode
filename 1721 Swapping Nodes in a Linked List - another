@@ -1,0 +1,46 @@
+// Input: head = [1,2,3,4,5], k = 2
+// Output: [1,4,3,2,5]
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* swapNodes(ListNode* head, int k) {
+        // testcase k 一定是 valid
+        if (!head) return NULL;
+        if (!head->next) return head;
+        
+        ListNode* first;
+        ListNode* second;
+        
+        // 找到正数第k个元素
+        ListNode* cur = head;
+        while (--k) {
+            cur = cur->next;
+        }
+        first = cur;
+        
+        // 找到倒数第k个元素
+        ListNode* pre = head;
+        while (cur->next) {
+            cur = cur->next;
+            pre = pre->next;
+        }
+        second = pre;
+        
+        // 交换两个元素的值
+        int tmp = first->val;
+        first->val = second->val;
+        second->val = tmp;
+        
+        return head;
+    }
+};
