@@ -1,0 +1,73 @@
+// Input: nums = [1,3,-1,-3,5,3,6,7], k = 3
+// Output: [1.00000,-1.00000,-1.00000,3.00000,5.00000,6.00000]
+// Explanation: 
+// Window position                Median
+// ---------------                -----
+// [1  3  -1] -3  5  3  6  7        1
+//  1 [3  -1  -3] 5  3  6  7       -1
+//  1  3 [-1  -3  5] 3  6  7       -1
+//  1  3  -1 [-3  5  3] 6  7        3
+//  1  3  -1  -3 [5  3  6] 7        5
+//  1  3  -1  -3  5 [3  6  7]       6
+
+class Solution {
+public:
+    vector<double> medianSlidingWindow(vector<int>& nums, int k) {
+        vector<double> res;
+        
+        // small指当前slide window数值较小的半边，large指数值较大的半边
+        // small的size稍大一些，large.size() <= small.size() <= large.size() + 1
+        // multiset默认是小顶堆，begin()取出的是最小值，rbegin()取出的是最大值
+        multiset<int> small, large;
+        
+        for (int i = 0; i < nums.size(); ++i) {
+            // 删掉脱离slide window的元素
+            if (i >= k) {
+                if (small.count(nums[i - k])) {
+                    small.erase(small.find(nums[i - k]));
+                } else if (large.count(nums[i - k])) {
+                    large.erase(large.find(nums[i - k]));
+                }
+            }
+            
+            // 当前轮次要增大small的size，此时small.size() = large.size()
+            if (small.size() <= large.size()) {
+                // 两者都为空的第一个数字，或者nums[i]本来就是较小半边，直接加进small
+                if (large.empty() || nums[i] <= *large.begin()) {
+                    small.insert(nums[i]);
+                }
+                // nums[i]属于较大半边，边界交换
+                else {
+                    small.insert(*large.begin());
+                    large.erase(large.begin());
+                    large.insert(nums[i]);
+                }
+            } 
+            // 当前轮次要增大large的size，此时small.size() = large.size() + 1
+            else {
+                // nums[i]本来就是较大半边，直接加进large
+                if (nums[i] >= *small.rbegin()) {
+                    large.insert(nums[i]);
+                }
+                // nums[i]属于较小半边，边界交换
+                else {
+                    large.insert(*small.rbegin());
+                    small.erase(--small.end());     // 注意写法
+                    small.insert(nums[i]);
+                }
+            }
+            
+            // 当slide window满时，计算当前中位数
+            // slide window为奇数取small的最大值，为偶数取两者边界平均数
+            if (i >= (k - 1)) {
+                if (k % 2) {
+                    res.push_back((double)*small.rbegin());
+                } else {
+                    res.push_back(((double)*small.rbegin() + *large.begin()) / 2);
+                }
+            }
+        }
+        
+        return res;
+    }
+};
