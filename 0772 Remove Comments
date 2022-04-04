@@ -1,0 +1,68 @@
+// Input: source = ["/*Test program */", "int main()", "{ ", "  // variable declaration ", "int a, b, c;", "/* This is a test", "   multiline  ", "   comment for ", "   testing */", "a = b + c;", "}"]
+// Output: ["int main()","{ ","  ","int a, b, c;","a = b + c;","}"]
+
+// Explanation: The line by line code is visualized as below:
+/*
+/-*Test program *-/
+int main()
+{ 
+  // variable declaration 
+int a, b, c;
+/-* This is a test
+   multiline  
+   comment for 
+   testing *-/
+a = b + c;
+}
+The string /-* denotes a block comment, including line 1 and lines 6-9. The string // denotes line 4 as comments.
+The line by line output code is visualized as below:
+int main()
+{ 
+  
+int a, b, c;
+a = b + c;
+}
+*/
+
+class Solution {
+public:
+    vector<string> removeComments(vector<string>& source) {
+        vector<string> res;
+        
+        bool iscomment = false;
+        string remain = "";     // /**/可以跨越多行
+        
+        for (auto line : source) {
+            int len = line.length();
+            
+            string str = remain;
+            
+            for (int i = 0; i < len; i++) {
+                if (iscomment) {
+                    if (i < len-1 && line[i] == '*' && line[i+1] == '/') {
+                        iscomment = false;
+                        i++;
+                    }
+                } else {
+                    if (i < len-1 && line[i] == '/' && line[i+1] == '*') {
+                        iscomment = true;
+                        i++;
+                    } else if (i < len-1 && line[i] == '/' && line[i+1] == '/') {
+                        break;
+                    } else {
+                        str += line[i];
+                    }
+                }
+            }
+            
+            if (iscomment) {
+                remain = str;
+            } else if (str.length() > 0) {
+                res.push_back(str);
+                remain = "";
+            }
+        }
+        
+        return res;
+    }
+};
