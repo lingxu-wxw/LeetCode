@@ -1,0 +1,33 @@
+// Input: stones = [2,7,4,1,8,1]
+// Output: 1
+// Explanation: 
+// We combine 7 and 8 to get 1 so the array converts to [2,4,1,1,1] then,
+// we combine 2 and 4 to get 2 so the array converts to [2,1,1,1] then,
+// we combine 2 and 1 to get 1 so the array converts to [1,1,1] then,
+// we combine 1 and 1 to get 0 so the array converts to [1] then that's the value of the last stone.
+
+class Solution {
+public:
+    int lastStoneWeight(vector<int>& stones) {
+        if (stones.size() == 1) return stones[0];
+        
+        priority_queue<int> pq; // 大顶堆
+        
+        for (auto stone : stones) {
+            pq.push(stone);
+        }
+        
+        while (pq.size() > 1) {
+            int topstone = pq.top(); pq.pop();
+            int sndstone = pq.top(); pq.pop();
+            
+            if (topstone == sndstone) {
+                continue;
+            } else if (topstone > sndstone) {
+                pq.push(topstone - sndstone);
+            }
+        }
+        
+        return pq.size() ? pq.top() : 0;
+    }
+};
