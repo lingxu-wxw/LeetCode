@@ -1,0 +1,38 @@
+// Input: s = "ab#c", t = "ad#c"
+// Output: true
+// Explanation: Both s and t become "ac".
+
+class Solution {
+public:
+    bool backspaceCompare(string s, string t) {
+        int idxs = 0, idxt = 0;
+        string ss = s, tt = t;
+        
+        for (int i = 0; i < s.length(); i++) {
+            if (s[i] == '#') {
+                if (idxs > 0) {
+                    idxs--;
+                }
+            } else {
+                ss[idxs] = s[i];
+                idxs++;
+            }
+        }
+        
+        for (int i = 0; i < t.length(); i++) {
+            if (t[i] == '#') {
+                if (idxt > 0) {
+                    idxt--;
+                }
+            } else {
+                tt[idxt] = t[i];
+                idxt++;
+            }
+        }
+        
+        ss = ss.substr(0, idxs);
+        tt = tt.substr(0, idxt);
+
+        return (ss == tt);
+    }
+};
