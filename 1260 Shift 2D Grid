@@ -1,0 +1,24 @@
+// Input: grid = [[3,8,1,9],[19,7,2,5],[4,6,11,10],[12,0,21,13]], k = 4
+// Output: [[12,0,21,13],[3,8,1,9],[19,7,2,5],[4,6,11,10]]
+
+class Solution {
+public:
+    vector<vector<int>> shiftGrid(vector<vector<int>>& grid, int k) {
+        int height = grid.size();
+        int width = grid[0].size();
+        
+        vector<vector<int>> res(height, vector<int>(width, 0));
+        
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                int newidx = (i * width + j + k) % (height * width);
+                int newi = newidx / width;
+                int newj = newidx % width;
+                
+                res[newi][newj] = grid[i][j];
+            }
+        }
+        
+        return res;
+    }
+};
