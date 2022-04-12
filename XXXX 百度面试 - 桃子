@@ -1,0 +1,57 @@
+bool helper(vector<int>& a, vector<int>& b, int lastval, int idx, int flipcnt, int& minflipcnt, unordered_map<int, bool>& status) {
+	int size = a.size();
+	if (idx == size) {
+		if (flipcnt < minflipcnt) {
+			minflipcnt = flipcnt;
+		}
+		return true;
+	}
+
+	if (a[idx] <= lastval && b[idx] <= lastval) {
+		return false;
+	}
+	else if (a[idx] > lastval && b[idx] <= lastval) {
+		if (helper(a, b, a[idx], idx + 1, flipcnt, minflipcnt, status)) {
+			return true;
+		}
+		return false;
+	}
+	else if (a[idx] <= lastval && b[idx] > lastval) {
+		if (helper(a, b, b[idx], idx + 1, flipcnt + 1, minflipcnt, status)) {
+			return true;
+		}
+		return false;
+	}
+	else if (a[idx] > lastval && b[idx] > lastval) {
+		if (helper(a, b, a[idx], idx + 1, flipcnt, minflipcnt, status) || helper(a, b, b[idx], idx + 1, flipcnt + 1, minflipcnt, status)) {
+			return true;
+		}
+		return false;
+	}
+
+	return true;
+}
+
+void magicvector(vector<int>& a, vector<int>& b) {
+	int size = a.size();
+
+	int minflipcnt = INT_MAX;
+	unordered_map<int, bool> status;
+
+	if (helper(a, b, INT_MIN, 0, 0, minflipcnt, status)) {
+		cout << minflipcnt << endl;
+	}
+	else {
+		cout << -1 << endl;
+	}
+}
+
+int main() {
+	// vector<int> a = { 1, 2, 3, 4, 5 };
+	// vector<int> b = { 2, 3, 4, 5, 6 };
+	// vector<int> a = { 1, 8, 3, 6, 7, 5 };
+	// vector<int> b = { 1, 2, 3, 6, 9, 8 };
+	vector<int> a = { 1, 8, 3, 6, 7, 5 };
+	vector<int> b = { 1, 2, 3, 6, 9, 7 };
+	magicvector(a, b);
+}
