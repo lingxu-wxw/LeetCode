@@ -1,0 +1,31 @@
+// Input: left = 1, right = 22
+// Output: [1,2,3,4,5,6,7,8,9,11,12,15,22]
+
+class Solution {
+public:
+    bool isSelfDividing(int num) {
+        string numstr = to_string(num);
+        
+        for (char c : numstr) {
+            int digit = (c - '0');
+            
+            if (digit == 0 || num % digit != 0) {
+                return false;
+            }
+        }
+        
+        return true;
+    }
+    
+    vector<int> selfDividingNumbers(int left, int right) {
+        vector<int> res;
+        
+        for (int num = left; num <= right; num++) {
+            if (isSelfDividing(num)) {
+                res.push_back(num);
+            }
+        }
+        
+        return res;
+    }
+};
