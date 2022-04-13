@@ -1,0 +1,53 @@
+// Input: rows = 5, cols = 6, rStart = 1, cStart = 4
+// Output: [[1,4],[1,5],[2,5],[2,4],[2,3],[1,3],[0,3],[0,4],[0,5],[3,5],[3,4],[3,3],[3,2],[2,2],[1,2],[0,2],[4,5],[4,4],[4,3],[4,2],[4,1],[3,1],[2,1],[1,1],[0,1],[4,0],[3,0],[2,0],[1,0],[0,0]]
+
+class Solution {
+public:
+    vector<vector<int>> spiralMatrixIII(int rows, int cols, int rStart, int cStart) {
+        vector<vector<int>> res;
+        res.push_back({rStart, cStart});
+        
+        int curi = rStart, curj = cStart;
+        int curlen = 1;
+        
+        while (res.size() < rows * cols) {
+            // 向右
+            if (curi >= 0) {
+                for (int j = max(curj+1, 0); j <= min(curj+curlen, cols-1); j++) {
+                    res.push_back({curi, j});
+                }
+            }
+            curj += curlen;
+            
+            // 向下
+            if (curj < cols) {
+                for (int i = max(curi+1, 0); i <= min(curi+curlen, rows-1); i++) {
+                    res.push_back({i, curj});
+                }
+            }
+            curi += curlen;
+            
+            curlen++;
+            
+            // 向左
+            if (curi < rows) {
+                for (int j = min(curj-1, cols-1); j >= max(curj-curlen, 0); j--) {
+                    res.push_back({curi, j});
+                }
+            }
+            curj -= curlen;
+            
+            // 向上
+            if (curj >= 0) {
+                for (int i = min(curi-1, rows-1); i >= max(curi-curlen, 0); i--) {
+                    res.push_back({i, curj});
+                }
+            }
+            curi -= curlen;
+            
+            curlen++;
+        }
+        
+        return res;
+    }
+};
