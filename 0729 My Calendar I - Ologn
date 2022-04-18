@@ -1,0 +1,67 @@
+// Input
+// ["MyCalendar", "book", "book", "book"]
+// [[], [10, 20], [15, 25], [20, 30]]
+// Output
+// [null, true, false, true]
+
+// Explanation
+// MyCalendar myCalendar = new MyCalendar();
+// myCalendar.book(10, 20); // return True
+// myCalendar.book(15, 25); // return False, It can not be booked because time 15 is already booked by another event.
+// myCalendar.book(20, 30); // return True, The event can be booked, as the first event takes every time less than 20, but not including 20.
+
+class Node {
+public:
+    int start;
+    int end;
+    Node* left;
+    Node* right;
+    
+    Node(int s, int e): start(s), end(e), left(NULL), right(NULL) {}
+};
+
+class MyCalendar {
+public:
+    MyCalendar() {
+        root = NULL;
+    }
+    
+    bool book(int start, int end) {
+        Node* node = new Node(start, end);
+        
+        if (root == NULL) {
+            root = node;
+            return true;
+        }
+        
+        return insert(root, node);
+    }
+    
+    bool insert(Node* curroot, Node* node) {
+        if (node->start >= curroot->end) {
+            if (!curroot->right) {
+                curroot->right = node;
+                return true;
+            }
+            return insert(curroot->right, node);
+        } 
+        else if (node->end <= curroot->start) {
+            if (!curroot->left) {
+                curroot->left = node;
+                return true;
+            }
+            return insert(curroot->left, node);
+        } 
+        
+        return false;
+    }
+
+private:
+    Node* root;
+};
+
+/**
+ * Your MyCalendar object will be instantiated and called as such:
+ * MyCalendar* obj = new MyCalendar();
+ * bool param_1 = obj->book(start,end);
+ */
