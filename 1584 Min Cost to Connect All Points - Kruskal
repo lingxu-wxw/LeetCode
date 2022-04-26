@@ -1,0 +1,88 @@
+// Input: points = [[0,0],[2,2],[3,10],[5,2],[7,0]]
+// Output: 20
+
+// We can connect the points as shown above to get the minimum cost of 20.
+// Notice that there is a unique path between every pair of points.
+
+class DSU {
+public:
+    vector<int> groups;
+    int componentCnt;
+    
+    DSU(int size) {
+        groups.resize(size);
+        for (int i = 0; i < size; i++) {
+            groups[i] = i;
+        }
+        
+        componentCnt = size;
+    }
+    
+    // 找到n所在的组，并将涉及到的元素都标记为同组
+    int Find(int n) {
+        if (groups[n] == n) {
+            return n;
+        }
+        groups[n] = Find(groups[n]);
+        return groups[n];
+    }
+    
+    // 将u和v划归为同一个组，u和v同组表明已经相连通
+    void Union(int u, int v) {
+        int groupu = Find(u);
+        int groupv = Find(v);
+        
+        if (groupu == groupv) return;
+        
+        groups[groupu] = groupv;
+        componentCnt--;
+    }
+};
+
+struct Edge {
+    int cost;
+    int node1;
+    int node2;
+    Edge(int c, int n1, int n2) {
+        cost = c;
+        node1 = n1;
+        node2 = n2;
+    }
+};
+
+class Solution {
+public:
+    struct cmp {
+        bool operator()(const Edge* e1, const Edge* e2) {
+            return e1->cost < e2->cost;
+        }  
+    };
+    
+    int minCostConnectPoints(vector<vector<int>>& points) {
+        int size = points.size();
+        if (size == 1) return 0;
+        
+        vector<Edge*> vec;
+        
+        for (int i = 0; i < size; i++) {
+            for (int j = i+1; j < size; j++) {
+                int cost = abs(points[i][0] - points[j][0]) + abs(points[i][1] - points[j][1]);
+                Edge* edge = new Edge(cost, i, j);
+                vec.push_back(edge);
+            }
+        }      
+        sort(vec.begin(), vec.end(), cmp());
+        
+        int mincost = 0;
+        DSU* dsu = new DSU(size);
+        
+        for (auto edge : vec) {
+            if (dsu->Find(edge->node1) != dsu->Find(edge->node2)) {
+                mincost += edge->cost;
+                dsu->Union(edge->node1, edge->node2);
+            }
+        }
+        
+        return mincost;
+    }
+};
