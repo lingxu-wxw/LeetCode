@@ -1,0 +1,53 @@
+// Input: points = [[0,0],[2,2],[3,10],[5,2],[7,0]]
+// Output: 20
+
+// We can connect the points as shown above to get the minimum cost of 20.
+// Notice that there is a unique path between every pair of points.
+
+
+struct Node {
+    int cost;
+    int idx;
+    Node(int c, int i) {
+        cost = c;
+        idx = i;
+    }
+};
+
+class Solution {
+public:
+    struct cmp {
+        bool operator()(const Node& n1, const Node& n2) {
+            return n1.cost > n2.cost;
+        }  
+    };
+    
+    int minCostConnectPoints(vector<vector<int>>& points) {
+        int size = points.size();
+        if (size == 1) return 0;
+        
+        priority_queue<Node, vector<Node>, cmp> queue;
+        set<int> set;
+        int mincost = 0;
+        
+        queue.push(Node(0, 0));
+        
+        while (set.size() < size) {
+            Node node = queue.top();
+            queue.pop();
+            if (set.count(node.idx)) continue;
+            
+            set.insert(node.idx);
+            mincost += node.cost;
+            
+            for (int nextidx = 0; nextidx < size; nextidx++) {
+                if (!set.count(nextidx)) {
+                    int cost = abs(points[node.idx][0] - points[nextidx][0]) + abs(points[node.idx][1] - points[nextidx][1]);
+                    queue.push(Node(cost, nextidx));
+                }
+            }
+        }
+        
+        return mincost;
+    }
+};
