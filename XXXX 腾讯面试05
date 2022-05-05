@@ -1,0 +1,183 @@
+#include <iostream>
+#include <string>
+#include <algorithm>
+#include <vector>
+#include <iterator>
+#include <set>
+#include <map>
+#include <unordered_map>
+#include <iomanip>
+
+using namespace std;
+
+struct TreeNode {
+	int val;
+	TreeNode *left;
+	TreeNode *right;
+	TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+};
+
+TreeNode* generateTree(vector<int>& nums, int idx) {
+	if (nums[idx] == -1) return NULL;
+	
+	int size = nums.size();
+	TreeNode* root = new TreeNode(nums[idx]);
+	int leftidx = 2 * idx + 1;
+	int rightidx = 2 * idx + 2;
+
+	root->left = (leftidx > size - 1) ? NULL : generateTree(nums, leftidx);
+	root->right = (rightidx > size - 1) ? NULL : generateTree(nums, rightidx);
+
+	return root;
+}
+
+void findNode(TreeNode* root, vector<int>& path, int val, bool& found) {
+	if (!root) return;
+
+	path.push_back(root->val);
+	if (!found && root->val == val) {
+		found = true;
+		return;
+	}
+
+	if (!found && root->left) {
+		findNode(root->left, path, val, found);
+	}
+	if (!found && root->right) {
+		findNode(root->right, path, val, found);
+	}
+
+	if (!found) {
+		path.pop_back();
+	}
+}
+
+vector<int> findPathInTwoNode(TreeNode* root, int val1, int val2) {
+	vector<int> path1, path2;
+	bool found1 = false, found2 = false;
+
+	findNode(root, path1, val1, found1);
+	findNode(root, path2, val2, found2);
+
+	vector<int> path;
+
+	int i = 0, j = 0;
+	int cnt = 0;
+	while (i < path1.size() && j < path2.size()) {
+		if (path1[i++] == path2[j++]) {
+			cnt++;
+		}
+		else {
+			break;
+		}
+	}
+
+	for (i = path1.size() - 1; i >= cnt - 1; i--) {
+		path.push_back(path1[i]);
+	}
+	for (j = cnt; j < path2.size(); j++) {
+		path.push_back(path2[j]);
+	}
+
+	return path;
+}
+
+vector<int> findCommonPath(vector<int>& path1, vector<int>& path2) {
+	int size1 = path1.size();
+	int size2 = path2.size();
+
+	vector<vector<int>> dp(size1 + 1, vector<int>(size2 + 1, 0));
+	int maxlen = 0, end = -1;
+
+	for (int i = 1; i <= size1; i++) {
+		for (int j = 1; j <= size2; j++) {
+			if (path1[i - 1] == path2[j - 1]) {
+				dp[i][j] = dp[i - 1][j - 1] + 1;
+				if (dp[i][j] > maxlen) {
+					maxlen = dp[i][j];
+					end = i - 1;
+				}
+			}
+		}
+	}
+
+	vector<int> commonpath = {};
+	for (int i = end - maxlen + 1; i <= end; i++) {
+		commonpath.push_back(path1[i]);
+	}
+
+	return commonpath;
+}
+
+bool cmp(vector<int>& v1, vector<int>& v2) {
+	if (v1.empty()) return false;
+	if (v2.empty()) return true;
+	if (v1.size() != v2.size()) return v1.size() > v2.size();
+
+	for (int i = 0; i < v1.size(); i++) {
+		if (v1[i] != v2[i]) {
+			return v1[i] < v2[i];
+		}
+	}
+	return v1.size() > v2.size();
+}
+
+vector<int> findLowestCommonPath(vector<int>& path1, vector<int>& path2) {
+	vector<int> path1_rev = path1;
+	vector<int> path2_rev = path2;
+
+	reverse(path1_rev.begin(), path1_rev.end());
+	reverse(path2_rev.begin(), path2_rev.end());
+
+	vector<vector<int>> res;
+	res.push_back(findCommonPath(path1, path2));
+	res.push_back(findCommonPath(path1_rev, path2));
+	res.push_back(findCommonPath(path1, path2_rev));
+	res.push_back(findCommonPath(path1_rev, path2_rev));
+
+	sort(res.begin(), res.end(), cmp);
+
+	return res[0];
+}
+
+void tencent05(TreeNode* root, vector<vector<int>>& problems) {
+	for (int i = 0; i < problems.size(); i++) {
+		vector<int> path1 = findPathInTwoNode(root, problems[i][0], problems[i][1]);
+		vector<int> path2 = findPathInTwoNode(root, problems[i][2], problems[i][3]);
+		vector<int> res = findLowestCommonPath(path1, path2);
+
+		for (int num : res) {
+			cout << num << " ";
+		}
+		cout << endl;
+	}
+}
+
+
+int main() {
+	vector<int> nums1 = { 1, 2, 3, 4, 5, 6, 7 };
+	vector<int> nums2 = { 5, 3, -1, 4, 2 ,-1, -1, -1, 1 };
+	TreeNode* root1 = generateTree(nums1, 0);
+	TreeNode* root2 = generateTree(nums2, 0);
+
+	vector<vector<int>> problems1 = {
+		{4, 5, 6, 7},
+		{2, 3, 5, 6},
+		{4, 3, 2, 7}
+	};
+	vector<vector<int>> problems2 = {
+		{2, 4, 5, 1},
+		{1, 1, 2, 5},
+		{2, 1, 1, 2},
+		{2, 3, 3, 5},
+		{2, 4, 3, 5}
+	};
+	
+	cout << "Case 1:" << endl;
+	tencent05(root1, problems1);
+
+	cout << endl;
+
+	cout << "Case 2:" << endl;
+	tencent05(root2, problems2);
+}
