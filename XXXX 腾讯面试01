@@ -1,0 +1,32 @@
+void bid() {
+	int bidmoney, m;
+	cin >> bidmoney >> m;
+
+	double epoch = 1e-9;
+	double bidLoseExpect;
+
+	double winrate;
+	int newbidmoney;
+
+	for (int i = 0; i < m; i++) {
+		cin >> winrate;
+		
+		bidLoseExpect = (bidmoney + 1.0) * (1.0 - winrate);
+		if (bidLoseExpect > bidmoney * 1.0 || abs(bidLoseExpect - bidmoney * 1.0) < epoch) {
+			break;
+		}
+
+		newbidmoney = (int)((bidmoney / (1.0 - winrate)) - 1.0);
+		if (newbidmoney <= bidmoney) {
+			break;
+		}
+
+		bidmoney = newbidmoney;
+	}
+
+	cout << bidmoney << endl;
+}
+
+int main() {
+	bid();
+}
