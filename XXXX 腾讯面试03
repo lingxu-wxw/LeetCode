@@ -1,0 +1,34 @@
+#include <iostream>
+#include <iomanip>
+
+using namespace std;
+
+// f(x) = x3 + ax2 + bx - c
+// f'(x) = 3x2 + 2ax + b
+// x|n+1 = x|n - f(x)/f'(x)
+
+#define fx() (double)(x*x*x + a * x*x + b * x - c)
+#define dfx() (double)(3 * x*x + 2*a * x + b)
+
+void newton_algorithm() {
+	int q;
+	cin >> q;
+
+	double epoch = 1e-7;
+	double x = 0.0;
+
+	int a, b, c;
+
+	for (int i = 0; i < q; i++) {
+		cin >> a >> b >> c;
+		while (abs(fx()) > epoch) {
+			x -= fx() / dfx();
+		}
+		cout << fixed << setprecision(8) << x << endl;
+	}
+}
+
+
+int main() {
+	newton_algorithm();
+}
