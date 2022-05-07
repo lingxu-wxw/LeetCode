@@ -8,6 +8,7 @@ public:
         
         // 能够满足条件的最大的third，这样更容易找到一个符合条件的first
         // 随着遍历的进行，third只会单调递增
+        // third是指第三个数，不是指"132"中的3
         int third = INT_MIN;
         
         // 能够满足条件的所有second，越栈底越大，保证栈里的所有数字都大于当前的third
