@@ -1,0 +1,48 @@
+// Input: pressedKeys = "22233"
+// Output: 8
+// Explanation:
+// The possible text messages Alice could have sent are:
+// "aaadd", "abdd", "badd", "cdd", "aaae", "abe", "bae", and "ce".
+// Since there are 8 possible messages, we return 8.
+
+class Solution {
+public:
+    
+    vector<int> keys = {0, 0, 3, 3, 3, 3, 3, 4, 3, 4};
+    int M = 1e9 + 7;
+    
+    int counts(char digit, int cnt) {
+        int len = keys[digit - '0'];
+        
+        vector<long long> dp(cnt + 1, 0);
+        dp[0] = 1;
+        
+        for (int i = 1; i <= cnt; i++) { 
+            for (int j = max(i - len, 0); j < i; j++) {
+                dp[i] = (dp[i] + dp[j]) % M;
+            }
+        }
+        
+        return dp[cnt];
+    }
+    
+    int countTexts(string pressedKeys) {
+        int len = pressedKeys.length();
+        
+        long long res = 1;
+        
+        int i = 0;
+        int startidx = 0;
+        
+        while (i < len) {
+            while (i < len && pressedKeys[i] == pressedKeys[startidx]) {
+                i++;
+            }
+            
+            res = (res * counts(pressedKeys[startidx], i - startidx)) % M;
+            startidx = i;
+        }
+        
+        return res;
+    }
+};
