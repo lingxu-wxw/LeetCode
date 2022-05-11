@@ -1,0 +1,29 @@
+// Input: n = 2
+// Output: 15
+// Explanation: The 15 sorted strings that consist of vowels only are
+// ["aa","ae","ai","ao","au","ee","ei","eo","eu","ii","io","iu","oo","ou","uu"].
+// Note that "ea" is not a valid string since 'e' comes after 'a' in the alphabet.
+
+class Solution {
+public:
+    
+    // vector<char> vowels = {'a', 'e', 'i', 'o', 'u'};    // 12345
+    
+    int countdfs(int n, int lastc, vector<vector<int>>& map) {
+        if (n == 0) return 1;
+        if (map[n][lastc] != -1) return map[n][lastc];
+      
+        int res = 0;
+        for (int i = lastc; i <= 4; i++) {
+            res += countdfs(n-1, i, map);
+        }
+        
+        map[n][lastc] = res;
+        return res;
+    }
+    
+    int countVowelStrings(int n) {
+        vector<vector<int>> map(n + 1, vector<int>(5, -1));
+        return countdfs(n, 0, map);
+    }
+};
