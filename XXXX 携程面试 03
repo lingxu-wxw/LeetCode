@@ -1,0 +1,36 @@
+#include <iostream>
+#include <string>
+#include <algorithm>
+#include <vector>
+#include <iterator>
+#include <set>
+#include <map>
+#include <unordered_map>
+#include <iomanip>
+
+using namespace std;
+
+void samechar(string str) {
+	int len = str.length();
+
+	map<int, int> m;
+	for (char c : str) {
+		m[c - 'a']++;
+	}
+
+	int mincnt = INT_MAX;
+	for (int base = 0; base < 26; base++) {
+		int cnt = 0;
+		for (auto iter : m) {
+			int mindiff = min(abs(base - iter.first), min(abs(base - 26 - iter.first), abs(base + 26 - iter.first)));
+			cnt += mindiff * iter.second;
+		}
+		mincnt = min(mincnt, cnt);
+	}
+
+	cout << mincnt << endl;
+}
+
+int main() {
+	samechar("yab");  // res = 3
+}
