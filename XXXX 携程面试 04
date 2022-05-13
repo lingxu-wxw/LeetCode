@@ -1,0 +1,95 @@
+#include <iostream>
+#include <string>
+#include <algorithm>
+#include <vector>
+#include <iterator>
+#include <set>
+#include <map>
+#include <unordered_map>
+#include <iomanip>
+
+using namespace std;
+
+struct Node {
+	int fivecnt;
+	int twocnt;
+	int zerocnt;
+	Node(int f, int t, int z) : fivecnt(f), twocnt(t), zerocnt(z) {};
+};
+
+Node parseNum(int num) {
+	int fivecnt = 0, twocnt = 0, zerocnt = 0;
+	while (num % 10 == 0) {
+		zerocnt++;
+		num = num / 10;
+	}
+	while (num % 5 == 0) {
+		fivecnt++;
+		num = num / 5;
+	}
+	while (num % 2 == 0) {
+		twocnt++;
+		num = num / 2;
+	}
+
+	return Node(fivecnt, twocnt, zerocnt);
+}
+
+int dfs(vector<Node>& nodes, int startidx, int fivecnt, int twocnt, int zerocnt, int& maxzerocnt, unordered_map<string, int>& memo) {
+	int size = nodes.size();
+	if (startidx >= size) {
+		if (zerocnt > maxzerocnt) {
+			maxzerocnt = zerocnt;
+		}
+		return zerocnt;
+	}
+
+	string state = to_string(startidx) + "-" + to_string(fivecnt) + "-" + to_string(twocnt) + "-" + to_string(zerocnt);
+	if (memo.count(state)) {
+		return memo[state];
+	}
+
+	int maxzeros = 0;
+
+	for (int i = startidx; i < size; i++) {
+		int nextfivecnt = fivecnt + nodes[i].fivecnt;
+		int nexttwocnt = twocnt + nodes[i].twocnt;
+		
+		int newzero = min(nextfivecnt, nexttwocnt);
+		nextfivecnt -= newzero;
+		nexttwocnt -= newzero;
+
+		int nextzerocnt = zerocnt + nodes[i].zerocnt + newzero;
+
+		int zeros = dfs(nodes, i + 2, nextfivecnt, nexttwocnt, nextzerocnt, maxzerocnt, memo);
+		maxzeros = max(maxzeros, zeros);
+	}
+
+	memo[state] = maxzeros;
+	return maxzeros;
+}
+
+void findmaxzerocnt(vector<int>& nums) {
+	int size = nums.size();
+	
+	vector<Node> nodes;
+	for (int num : nums) {
+		nodes.push_back(parseNum(num));
+	}
+
+	int maxzerocnt = 0;
+	unordered_map<string, int> memo;
+	int res = dfs(nodes, 0, 0, 0, 0, maxzerocnt, memo);
+
+	cout << maxzerocnt << endl;
+	cout << res << endl;
+
+	for (auto iter : memo) {
+		cout << iter.first << " " << iter.second << endl;
+	}
+}
+
+int main() {
+	vector<int> nums = { 25, 30, 125, 64 };
+	findmaxzerocnt(nums);
+}
