@@ -1,0 +1,66 @@
+// Input: times = [[2,1,1],[2,3,1],[3,4,1]], n = 4, k = 2
+// Output: 2
+
+class Solution {
+public:
+    
+    // 参考链接: https://zhuanlan.zhihu.com/p/338414118
+    // Dijkstra算法详解 通俗易懂
+    
+    int networkDelayTime(vector<vector<int>>& times, int n, int k) {
+        // 构造邻接表，这道题里是存在delay为0的边的
+        vector<vector<int>> graph(n+1, vector<int>(n+1, -1));
+        for (auto time : times) {
+            graph[time[0]][time[1]] = time[2];
+        }
+        
+        // 到达每个顶点的最短路径
+        vector<int> mindelay(n+1, -1);
+        mindelay[k] = 0;
+        
+        // 初始化neighdist，当前可达顶点的最短路径
+        vector<int> neighdist(n+1, -1);
+        for (int i = 1; i <= n; i++) {
+            neighdist[i] = graph[k][i];
+        }
+        
+        // 开始 Dijkstra's algorithm
+        for (int i = 1; i < n; i++) {          
+            // 从当前可达的顶点中挑选最近的顶点
+            int mindist = INT_MAX;
+            int minidx = -1;
+            for (int j = 1; j <= n; j++) {
+                if (neighdist[j] >= 0 && neighdist[j] < mindist) {
+                    mindist = neighdist[j];
+                    minidx = j;
+                }
+            }
+            
+            // 当前有顶点是不可达的
+            if (minidx == -1) return -1;
+            
+            // 选中minidx对应的顶点并访问
+            mindelay[minidx] = mindist;
+            neighdist[minidx] = -1;
+            
+            // 找到当前尚没有访问到的顶点，更新当前的neighdist
+            // 当mindelay[j]有值之后，neighdist[j]就不会再被更新了
+            for (int j = 1; j <= n; j++) {
+                if (graph[minidx][j] >= 0 && mindelay[j] == -1) {
+                    int newdist = mindelay[minidx] + graph[minidx][j];
+                    if (newdist < neighdist[j] || neighdist[j] == -1) {
+                        neighdist[j] = newdist;
+                    }
+                }
+            }
+        }
+        
+        int maxdelay = 0;
+        for (int i = 1; i <= n; i++) {
+            if (mindelay[i] == -1) return -1;
+            maxdelay = max(maxdelay, mindelay[i]);
+        }
+        
+        return maxdelay;
+    }
+};
