@@ -1,0 +1,48 @@
+// Input: times = [[2,1,1],[2,3,1],[3,4,1]], n = 4, k = 2
+// Output: 2
+
+class Solution {
+public:
+    
+    int networkDelayTime(vector<vector<int>>& times, int n, int k) {
+        // 构造邻接表，这道题里是存在delay为0的边的
+        vector<vector<int>> graph(n+1, vector<int>(n+1, -1));
+        for (auto time : times) {
+            graph[time[0]][time[1]] = time[2];
+        }
+        
+        // 到达每个顶点的最短路径
+        vector<int> mindelay(n+1, INT_MAX);
+        mindelay[k] = 0;
+        
+        // 从顶点k开始BFS
+        queue<int> queue;
+        queue.push(k);
+        
+        while (!queue.empty()) {
+            int curnode = queue.front();
+            queue.pop();
+            
+            for (int i = 1; i <= n; i++) {
+                if (graph[curnode][i] >= 0) {
+                    int newdelay = mindelay[curnode] + graph[curnode][i];
+                    if (newdelay < mindelay[i]) {
+                        mindelay[i] = newdelay;
+                        queue.push(i);
+                    }
+                }
+            }
+        }
+        
+        // 找出当前顶点的最大delay
+        int maxdelay = 0;
+        for (int i = 1; i <= n; i++) {
+            if (mindelay[i] == INT_MAX) return -1;
+            maxdelay = max(maxdelay, mindelay[i]);
+        }
+        
+        return maxdelay;
+    }
+};
+
+
