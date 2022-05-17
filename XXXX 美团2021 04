@@ -1,0 +1,43 @@
+// https://www.nowcoder.com/question/next?pid=28665343&qid=1371129&tid=56522304
+
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <limits.h>
+using namespace std;
+
+int main() {
+    int N;
+    cin >> N;
+    
+    vector<int> nodecost(N+2);
+    int cost;
+    for (int i = 1; i <= N; i++) {
+        cin >> cost;
+        nodecost[i] = cost;
+    }
+    
+    vector<vector<int>> leftmincost(N+2, vector<int>(N+2, 0));
+    vector<vector<int>> rightmincost(N+2, vector<int>(N+2, 0));
+    
+    for (int len = 1; len <= N; len++) {
+    
+        // [left,right]作为某节点的左子树/右子树时的最小权值
+        for (int left = 1; left <= N - len + 1; left++) {
+            int right = left + len - 1;
+            leftmincost[left][right] = INT_MAX;
+            rightmincost[left][right] = INT_MAX;
+            
+            // i作为当前子树的root
+            for (int i = left; i <= right; i++) {
+                int leftcost = leftmincost[left][i-1] + nodecost[i] * nodecost[right+1] + rightmincost[i+1][right];
+                int rightcost = leftmincost[left][i-1] + nodecost[i] * nodecost[left-1] + rightmincost[i+1][right];
+                leftmincost[left][right] = min(leftmincost[left][right], leftcost);
+                rightmincost[left][right] = min(rightmincost[left][right], rightcost);
+            }
+        }
+    }
+    
+    cout << leftmincost[1][N] << endl;
+    return 0;
+}
