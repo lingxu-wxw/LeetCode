@@ -1,0 +1,45 @@
+#include <iostream>
+#include <queue>
+using namespace std;
+
+int main() {
+    int n, x, y;
+    cin >> n >> x >> y;
+    
+    if (n > 2 * y || n < 2 * x) {
+        cout << -1 << endl;
+        return 0;
+    }
+    
+    priority_queue<int> low_scores; // 大顶堆，分数低的部分
+    priority_queue<int, vector<int>, greater<int>> high_scores; // 小顶堆，分数高的部分
+    
+    int score;
+    for (int i = 0; i < n; i++) {
+        cin >> score;
+        low_scores.push(score);
+        
+        while (low_scores.size() > x) {
+            high_scores.push(low_scores.top());
+            low_scores.pop();
+        }
+        
+        while (!high_scores.empty() && low_scores.top() > high_scores.top()) {
+            int a = low_scores.top();
+			low_scores.pop();
+            int b = high_scores.top();
+            high_scores.pop();
+
+            low_scores.push(b);
+            high_scores.push(a);
+        }
+    }
+    
+    while (low_scores.size() < x || high_scores.size() > y) {
+        low_scores.push(high_scores.top());
+        high_scores.pop();
+    }
+    
+    cout << low_scores.top() << endl;
+    return 0;
+}
