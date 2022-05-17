@@ -1,0 +1,30 @@
+// https://www.nowcoder.com/question/next?pid=28665343&qid=1371129&tid=56522304
+
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+int main() {
+    int n;
+    cin >> n;
+ 
+    vector<int> nums(n);   
+    int num;
+    for (int i = 0; i < n; i++) {
+        cin >> num;
+        nums[i] = num;
+    }
+    
+    sort(nums.begin(), nums.end());
+    
+    int targetnum = 1;
+    int changecnt = 0;
+    for (int i = 0; i < n; i++) {
+        changecnt += abs(nums[i] - targetnum);
+        targetnum++;
+    }
+    
+    cout << changecnt << endl;
+    return 0;
+}
