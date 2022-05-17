@@ -1,0 +1,51 @@
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <string>
+using namespace std;
+
+int main() {
+	int T;
+	cin >> T;
+
+	for (int cnt = 0; cnt < T; cnt++) {
+		int N, M;
+        string nums, genders;
+		cin >> N >> nums >> M >> genders;
+
+		priority_queue<int, vector<int>, greater<int>> zero_table;
+		priority_queue<int, vector<int>, greater<int>> one_table;
+
+		for (int i = 0; i < N; i++) {
+			if (nums[i] == '0') zero_table.push(i + 1);
+			else if (nums[i] == '1') one_table.push(i + 1);
+		}
+
+		for (int i = 0; i < M; i++) {
+			if (genders[i] == 'M') {
+				if (!one_table.empty()) {
+					cout << one_table.top() << '\n';
+					one_table.pop();
+				}
+				else if (!zero_table.empty()) {
+					cout << zero_table.top() << '\n';
+					one_table.push(zero_table.top());
+					zero_table.pop();
+				}
+			}
+			else if (genders[i] == 'F') {
+				if (!zero_table.empty()) {
+					cout << zero_table.top() << '\n';
+					one_table.push(zero_table.top());
+					zero_table.pop();
+				}
+				else if (!one_table.empty()) {
+					cout << one_table.top() << '\n';
+					one_table.pop();
+				}
+			}
+		}
+	}
+
+	return 0;
+}
