@@ -1,0 +1,45 @@
+// Input: piles = [[1,100,3],[7,8,9]], k = 2
+// Output: 101
+// Explanation:
+// The above diagram shows the different ways we can choose k coins.
+// The maximum total we can obtain is 101.
+
+// Input: piles = [[100],[100],[100],[100],[100],[100],[1,1,1,1,1,1,700]], k = 7
+// Output: 706
+// Explanation:
+// The maximum total can be obtained if we choose all coins from the last pile.
+
+class Solution {
+public:
+    int maxValueOfCoins(vector<vector<int>>& piles, int k) {
+        int size = piles.size();
+        
+        // 将piles[x][j] 修改为 piles[x][0] ~ piles[0][j-1] 的总和
+        for (auto &p : piles) {
+            for (int i = 1; i < p.size(); i++) {
+                p[i] += p[i-1];
+            }
+        }
+        
+        // dp[i][j]表示，到piles[i]为止，选定j个coin的最大值
+        // 为dp[0][x]分配初始值，dp[0][x] = piles[0][x-1]
+        vector<vector<int>> dp(size, vector<int>(k + 1, 0));
+        
+        for (int c = 1; c <= min(k, (int)piles[0].size()); c++) {
+            dp[0][c] = piles[0][c-1];
+        }
+    
+        // 从0~size-1推进dp，过程中dp[i][j]会成为前i个pile共选取j个coin的最大中间结果
+        for (int i = 1; i < size; i++) {
+            auto &p = piles[i];
+            for (int j = 1; j <= k; j++) {
+                for (int c = 0; c <= min(j, (int)p.size()); c++) {
+                    int coinvalue = (c == 0 ? 0 : p[c-1]) + dp[i-1][j-c];
+                    dp[i][j] = max(dp[i][j], coinvalue);
+                }
+            }
+        }
+        
+        return dp[size-1][k];
+    }
+};
