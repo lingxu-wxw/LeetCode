@@ -1,0 +1,48 @@
+// Input: days = [1,4,6,7,8,20], costs = [2,7,15]
+// Output: 11
+// Explanation: For example, here is one way to buy passes that lets you travel your travel plan:
+// On day 1, you bought a 1-day pass for costs[0] = $2, which covered day 1.
+// On day 3, you bought a 7-day pass for costs[1] = $7, which covered days 3, 4, ..., 9.
+// On day 20, you bought a 1-day pass for costs[0] = $2, which covered day 20.
+// In total, you spent $11 and covered all the days of your travel.
+
+class Solution {
+public:
+    
+    // 到第days[idx]天为止的最小开销
+    int helper(vector<int>& days, vector<int>& costs, int idx, vector<int>& memo) {
+        if (idx == -1) return 0;
+        if (memo[idx] != -1) return memo[idx];
+        
+        // 第days[idx]天 是 1-day pass的最后一天
+        int onedaycost = helper(days, costs, idx-1, memo) + costs[0];
+        
+        // 第days[idx]天 是 7-day pass的最后一天
+        int lastidx = idx;
+        int startday = days[idx] - 7;
+        while (lastidx >= 0 && days[lastidx] > startday) {
+            lastidx--;
+        }
+        int sevendaycost = helper(days, costs, lastidx, memo) + costs[1];
+        
+        // 第days[idx]天 是 30-day pass的最后一天
+        lastidx = idx;
+        startday = days[idx] - 30;
+        while (lastidx >= 0 && days[lastidx] > startday) {
+            lastidx--;
+        }
+        int thirtydaycost = helper(days, costs, lastidx, memo) + costs[2];
+        
+        // 到第days[idx]天为止的最小开销
+        int lowcost = min(onedaycost, min(sevendaycost, thirtydaycost));
+        
+        memo[idx] = lowcost;
+        return lowcost;
+    }
+    
+    int mincostTickets(vector<int>& days, vector<int>& costs) {
+        int size = days.size();
+        vector<int> memo(size, -1);
+        return helper(days, costs, size-1, memo);
+    }
+};
