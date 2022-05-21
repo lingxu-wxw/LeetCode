@@ -1,0 +1,29 @@
+// Input: current = "02:30", correct = "04:35"
+// Output: 3
+// Explanation:
+// We can convert current to correct in 3 operations as follows:
+// - Add 60 minutes to current. current becomes "03:30".
+// - Add 60 minutes to current. current becomes "04:30".
+// - Add 5 minutes to current. current becomes "04:35".
+// It can be proven that it is not possible to convert current to correct in fewer than 3 operations.
+
+class Solution {
+public:
+    int convertTime(string current, string correct) {
+        int currentminute = stoi(current.substr(0,2)) * 60 + stoi(current.substr(3,2));
+        int correctminute = stoi(correct.substr(0,2)) * 60 + stoi(correct.substr(3,2));
+        
+        // current <= correct
+        int diff = correctminute - currentminute;
+        int cnt = 0;
+        
+        vector<int> times = {60, 15, 5, 1};
+        for (int time : times) {
+            cnt += (diff / time);
+            diff = diff % time;
+            if (diff == 0) break;
+        }
+        
+        return cnt;
+    }
+};
