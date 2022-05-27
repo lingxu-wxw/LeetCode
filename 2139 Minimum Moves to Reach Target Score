@@ -1,0 +1,26 @@
+// Input: target = 19, maxDoubles = 2
+// Output: 7
+
+// Explanation: Initially, x = 1
+// Increment 3 times so x = 4
+// Double once so x = 8
+// Increment once so x = 9
+// Double again so x = 18
+// Increment once so x = 19
+
+class Solution {
+public:
+    int minMoves(int target, int maxDoubles) {
+        if (target == 1) return 0;
+        
+        if (maxDoubles > 0) {
+            if (target & 1) {
+                return minMoves(target - 1, maxDoubles) + 1;
+            } else {
+                return minMoves(target / 2, maxDoubles - 1) + 1;
+            }
+        }
+        
+        return target - 1;
+    }
+};
