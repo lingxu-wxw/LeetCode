@@ -1,0 +1,36 @@
+// Input: s = "00110110", k = 2
+// Output: true
+// Explanation: The binary codes of length 2 are "00", "01", "10" and "11". They can be all found as substrings at indices 0, 1, 3 and 2 respectively.
+
+class Solution {
+public:
+    bool hasAllCodes(string s, int k) {
+        if (s.length() < k) return false;
+        
+        set<int> binarys;
+        int targetsize = pow(2, k);
+        int highweight = targetsize / 2;
+        
+        int curnum = 0;
+        
+        // 初始化
+        for (int i = 0; i < k; i++) {
+            int lowbit = s[i] - '0';
+            curnum = curnum * 2 + lowbit;
+        }
+        binarys.insert(curnum);
+        
+        // 滑动窗口
+        for (int i = k; i < s.length(); i++) {
+            int lowbit = s[i] - '0';
+            int highbit = (s[i-k] - '0') * highweight;
+            curnum = (curnum - highbit) * 2 + lowbit;
+            
+            if (!binarys.count(curnum)) {
+                binarys.insert(curnum);
+            }
+        }
+        
+        return (binarys.size() == targetsize);
+    }
+};
