@@ -1,0 +1,157 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+// k merge sort
+#define k 5
+
+// minval and maxval in memory
+#define MINVAL -1
+#define MAXVAL 10000
+
+// losertree inter node
+// ls[0] is currently min key
+typedef int LoserTree[k];
+
+// losertree leaf node
+typedef struct {
+	int val;
+} ExNode, External[k + 1];
+
+// disk data in memory (one for each sector)
+External mem;
+
+// disk sector
+vector<int> d0 = { 10, 15, 16 };
+vector<int> d1 = {  9, 18, 20 };
+vector<int> d2 = { 20, 22, 40 };
+vector<int> d3 = {  6, 15, 25 };
+vector<int> d4 = { 12, 37, 48 };
+
+// disk sector offset
+int t0 = 0;
+int t1 = 0;
+int t2 = 0;
+int t3 = 0;
+int t4 = 0;
+vector<int> dsize = { 3, 3, 3, 3, 3 };
+
+// adjust losertree from mem[midx] to ls[0]
+void Adjust(LoserTree ls, int midx) {
+	int lsidx = (midx + k) / 2;
+	
+	while (lsidx > 0) {
+		// update losertree: store max idx, min idx continue
+		// midx is always the winner
+		if (mem[midx].val > mem[ls[lsidx]].val) {
+			int tmp = ls[lsidx];
+			ls[lsidx] = midx;
+			midx = tmp;
+		}
+
+		lsidx = lsidx / 2;
+	}
+
+	// current min num's idx
+	ls[0] = midx;
+}
+
+// create losertree
+void CreateLoserTree(LoserTree ls) {
+	mem[k].val = MINVAL;
+
+	// for all lsidx, init ls[lsidx] = k and mem[ls[lsidx]].val = MINVAL
+	for (int i = 0; i < k; i++) {
+		ls[i] = k;
+	}
+
+	// adjust losertree for all val in memory
+	for (int i = k - 1; i >= 0; i--) {
+		Adjust(ls, i);
+	}
+}
+
+// read val from disk to memory
+void Input(int didx) {
+	switch (didx) {
+		case 0:
+			if (t0 < dsize[didx]) {
+				// memory sector not read out
+				mem[didx].val = d0[t0];
+				t0++;
+			} 
+			else {
+				// memory sector read out
+				mem[didx].val = MAXVAL;
+			}
+			break;
+		case 1:
+			if (t1 < dsize[didx]) {
+				mem[didx].val = d1[t1];
+				t1++;
+			}
+			else {
+				mem[didx].val = MAXVAL;
+			}
+			break;
+		case 2:
+			if (t2 < dsize[didx]) {
+				mem[didx].val = d2[t2];
+				t2++;
+			}
+			else {
+				mem[didx].val = MAXVAL;
+			}
+			break;
+		case 3:
+			if (t3 < dsize[didx]) {
+				mem[didx].val = d3[t3];
+				t3++;
+			}
+			else {
+				mem[didx].val = MAXVAL;
+			}
+			break;
+		case 4:
+			if (t4 < dsize[didx]) {
+				mem[didx].val = d4[t4];
+				t4++;
+			}
+			else {
+				mem[didx].val = MAXVAL;
+			}
+			break;
+		default:
+			break;
+	}
+}
+
+// k disk sector merge
+void Kmerge(LoserTree ls) {
+	// read val from disk to memory
+	for (int i = 0; i < k; i++) {
+		Input(i);
+	}
+
+	// create losertree
+	CreateLoserTree(ls);
+
+	// winner stores in ls[0]
+	// if ls[0] = MAXVAL, merge finish
+	while (mem[ls[0]].val != MAXVAL) {
+		cout << mem[ls[0]].val << " ";
+
+		// read val from v_ls[0]
+		Input(ls[0]);
+
+		// adjust losertree by new val
+		Adjust(ls, ls[0]);
+	}
+}
+
+int main() {
+	LoserTree ls;
+	Kmerge(ls);
+	return 0;
+}
