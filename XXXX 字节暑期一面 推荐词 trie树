@@ -1,0 +1,114 @@
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <string>
+#include <algorithm>
+using namespace std;
+
+class TrieNode {
+public:
+	TrieNode* child[26];
+	bool isWord;
+
+	int minidx;
+	int maxidx;
+
+	// root trienode
+	TrieNode() : isWord(false), minidx(INT_MIN), maxidx(INT_MAX) {
+		for (auto &p : child) {
+			p = NULL;
+		}
+	}
+
+	// normal trienode
+	TrieNode(int idx) : isWord(false), minidx(idx), maxidx(idx) {
+		for (auto &p : child) {
+			p = NULL;
+		}
+	}
+};
+
+class Trie {
+private:
+	TrieNode* root;
+
+public:
+	Trie() {
+		root = new TrieNode();
+	}
+	
+	void insert(string word, int idx) {
+		TrieNode* p = root;
+
+		for (auto &s : word) {
+			int i = s - 'a';
+			if (!p->child[i]) {
+				p->child[i] = new TrieNode(idx);
+			}
+
+			if (idx < p->minidx) {
+				p->minidx = idx;
+			}
+			if (idx > p->maxidx) {
+				p->maxidx = idx;
+			}
+
+			p = p->child[i];
+		}
+
+		p->isWord = true;
+	}
+
+	bool startsWith(string prefix, int& minidx, int& maxidx) {
+		TrieNode* p = root;
+
+		for (auto &s : prefix) {
+			int i = s - 'a';
+			if (!p->child[i]) {
+				return false;
+			}
+
+			p = p->child[i];
+		}
+
+		minidx = p->minidx;
+		maxidx = p->maxidx;
+
+		return true;
+	}
+};
+
+int min(int num1, int num2) {
+	return (num1 < num2) ? num1 : num2;
+}
+
+void recommend(vector<string>& dicts, string target) {
+	sort(dicts.begin(), dicts.end());
+
+	Trie* trie = new Trie();
+	for (int i = 0; i < dicts.size(); i++) {
+		trie->insert(dicts[i], i);
+	}
+
+	string prefix = "";
+	for (int i = 0; i < target.size(); i++) {
+		prefix += target[i];
+		int minidx, maxidx;
+
+		if (trie->startsWith(prefix, minidx, maxidx)) {
+			for (int j = minidx; j <= min(minidx + 2, maxidx); j++) {
+				cout << dicts[j] << " ";
+			}
+		}
+		cout << endl;
+	}
+}
+
+int main() {
+	vector<string> dicts = { "mouse", "monitor", "monstor", "mother", "mouth" };
+	string target = "mouse";
+
+	recommend(dicts, target);
+
+	return 0;
+}
