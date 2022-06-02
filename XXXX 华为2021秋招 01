@@ -1,0 +1,129 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+struct Node {
+	int forward;
+	int buffer;
+	int curcache;
+	Node* next;
+
+	Node(int forward, int buffer) : forward(forward), buffer(buffer), curcache(0), next(NULL) {};
+};
+
+void faultConditions(vector<vector<bool>>& faults, vector<bool>& out, int len, int start, bool last) {
+	if (out.size() == len) {
+		faults.push_back(out);
+		return;
+	}
+
+	if (start >= len) {
+		return;
+	}
+
+	out.push_back(false);
+	faultConditions(faults, out, len, start + 1, false);
+	out.pop_back();
+	
+	if (!last) {
+		out.push_back(true);
+		faultConditions(faults, out, len, start + 1, true);
+		out.pop_back();
+	}
+}
+
+int main() {
+
+	// Console input: node cnt 
+	int len;
+	cin >> len;
+
+	Node* dummy = new Node(INT_MAX, INT_MAX);
+	Node* cur = dummy;
+
+	// Console input: node info
+	int forward, buffer;
+	char comma;
+	for (int i = 0; i < len; i++) {
+		cin >> forward;
+		cin >> comma;
+		cin >> buffer;
+		Node* node = new Node(forward, buffer);
+		
+		cur->next = node;
+		cur = cur->next;
+	}
+
+	// Console input: packet cnt
+	int packets;
+	cin >> packets;
+
+
+	// Fault Conditions
+	vector<vector<bool>> faults;
+	vector<bool> out;
+	faultConditions(faults, out, len, 0, false);
+
+
+	// Traverse
+	int res = INT_MAX;
+
+	for (auto fault : faults) {
+
+		// Traverse: first round
+		int receive = 0;
+		int passing = packets;
+
+		cur = dummy->next;
+		for (int i = 0; i < len; i++) {
+			if (fault[i] || cur->forward >= passing) {
+				// just pass
+			}
+			else {
+				// not fault and overpass
+				cur->curcache = min(cur->buffer, passing - cur->forward);
+				passing = cur->forward;
+			}
+
+			cur = cur->next;
+		}
+
+		receive += passing;
+
+		// Traverse: second round
+		passing = 0;
+
+		cur = dummy->next;
+
+		for (int i = 0; i < len; i++) {
+			if (fault[i]) {
+				// just pass
+			}
+			else {
+				passing += cur->curcache;
+				if (cur->forward >= passing) {
+					cur->curcache = 0;
+				}
+				else {
+					cur->curcache = min(cur->buffer, passing - cur->forward);
+					passing = cur->forward;
+				}
+			}
+
+			cur = cur->next;
+		}
+
+		receive += passing;
+
+		// Compare
+		res = min(res, receive);
+	}
+
+	// Console ouput
+	cout << res << endl;
+	
+
+	return 0;
+}
