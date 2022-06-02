@@ -1,0 +1,89 @@
+#include <iostream>
+#include <vector>
+#include <unordered_map>
+#include <queue>
+#include <string>
+#include <algorithm>
+
+using namespace std;
+
+int main() {
+
+	// Console input: string cnt 
+	int len;
+	cin >> len;
+
+	// Console input: relationship
+	unordered_map<string, vector<string>> subclass;
+	unordered_map<string, vector<string>> instances;
+
+	string str1, relation, str2;
+	for (int i = 0; i < len; i++) {
+		cin >> str1;
+		cin >> relation;
+		cin >> str2;
+
+		if (relation == "subClassOf") {
+			subclass[str2].push_back(str1);
+		}
+		else if (relation == "instanceOf") {
+			instances[str2].push_back(str1);
+		}
+	}
+
+	// Console input: search word
+	string target;
+	cin >> target;
+
+
+	// Traverse
+	vector<string> res;
+
+	queue<string> queue;
+	queue.push(target);
+
+	while (!queue.empty()) {
+		int size = queue.size();
+
+		while (size > 0) {
+			string str = queue.front(); queue.pop();
+			
+			// Add subclass
+			if (subclass.count(str)) {
+				for (auto s : subclass[str]) {
+					queue.push(s);
+				}
+			}
+
+			// Add instance
+			if (instances.count(str)) {
+				for (auto s : instances[str]) {
+					res.push_back(s);
+				}
+			}
+
+			size--;
+		}
+	}
+	
+	
+	// Console output
+	if (res.empty()) {
+		cout << "empty" << endl;
+	}
+	else {
+		sort(res.begin(), res.end());
+		string out = "";
+
+		for (auto s : res) {
+			out = out + s + " ";
+		}
+
+		// erase last space
+		out = out.substr(0, out.length() - 1);
+		cout << out << endl;
+	}
+	
+
+	return 0;
+}
