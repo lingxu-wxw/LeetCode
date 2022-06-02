@@ -1,0 +1,76 @@
+// https://www.nowcoder.com/profile/6177682/myFollowings/detail/32964097
+
+#include <iostream>
+#include <vector>
+#include <string>
+#include <sstream>
+#include <algorithm>
+using namespace std;
+
+#define MAX_LOG_LINE 8
+#define MAX_FILENAME_LEN 16
+
+struct bugmsg {
+	int idx;
+	string filename;
+	int codeline;
+	int occurcnt;
+	bugmsg(int idx, string filename, int codeline) : idx(idx), filename(filename), codeline(codeline), occurcnt(1) {};
+};
+
+struct cmp {
+	bool operator()(bugmsg& m1, bugmsg& m2) {
+		return ((m1.occurcnt > m2.occurcnt) || (m1.occurcnt == m2.occurcnt && m1.idx < m2.idx));
+	}
+};
+
+int main() {
+	int idx = 0;
+
+	vector<bugmsg> logs;
+
+	while (true) {
+		string input;
+		getline(cin, input);
+		if (input.empty()) break;
+
+		idx++;
+
+		istringstream is(input);
+		string path;
+		int codeline;
+		is >> path >> codeline;
+
+		stringstream ss(path);
+		string filename;
+		while (getline(ss, filename, '\\')) {}
+
+		bool solved = false;
+		for (int i = 0; i < logs.size(); i++) {
+			if (filename == logs[i].filename && codeline == logs[i].codeline) {
+				logs[i].occurcnt++;
+				solved = true;
+				break;
+			}
+		}
+
+		if (solved) continue;
+
+		struct bugmsg msg(idx, filename, codeline);
+		logs.push_back(msg);
+	}
+
+	sort(logs.begin(), logs.end(), cmp());
+
+	for (int i = 0; i < logs.size() && i < MAX_LOG_LINE; i++) {
+		string filename = logs[i].filename;
+		string lightfilename = filename;
+		if (filename.length() > MAX_FILENAME_LEN) {
+			lightfilename = filename.substr(filename.length() - MAX_FILENAME_LEN);
+		}
+
+		cout << lightfilename << " " << logs[i].codeline << " " << logs[i].occurcnt << endl;
+	}
+
+	return 0;
+}
