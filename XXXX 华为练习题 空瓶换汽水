@@ -1,0 +1,29 @@
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int main() {
+    int bottles;
+    while (true) {
+        cin >> bottles;
+        if (bottles == 0) break;
+        
+        int cnt = 0;
+        
+        // 0/1空瓶无法继续进行
+        while (bottles > 1) {
+            // 2空瓶 借一个
+            if (bottles == 2) {
+                cnt++;
+                break;
+            }
+            
+            cnt += bottles / 3;
+            bottles = (bottles / 3) + (bottles % 3);
+        }
+        
+        cout << cnt << endl;
+    }
+    
+    return 0;
+}
