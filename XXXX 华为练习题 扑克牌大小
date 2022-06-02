@@ -1,0 +1,80 @@
+#include <iostream>
+#include <vector>
+#include <string>
+#include <sstream>
+#include <algorithm>
+#include <unordered_map>
+using namespace std;
+
+enum STYLE {
+	SINGLE = 0,
+	PAIR,
+	STRAIGHT,
+	TRIPLE,
+	BOMB,
+	JOKERS,
+	ERROR
+};
+
+enum CARD {
+	CARD_3 = 3,
+	CARD_4 = 4,
+	CARD_5 = 5,
+	CARD_6 = 6,
+	CARD_7 = 7,
+	CARD_8 = 8,
+	CARD_9 = 9,
+	CARD_10 = 10,
+	CARD_J = 11,
+	CARD_Q = 12,
+	CARD_K = 13,
+	CARD_A = 14,
+	CARD_2 = 15,
+	CARD_joker = 16,
+	CARD_JOKER = 17
+};
+
+int main() {
+	string input;
+	
+	while (getline(cin, input)) {
+		if (input.find("joker JOKER") != -1) {
+			cout << "joker JOKER" << endl;
+			continue;
+		}
+
+		int pos = input.find('-');
+		string cards1 = input.substr(0, pos);
+		string cards2 = input.substr(pos + 1);
+
+		int card1cnt = count(cards1.begin(), cards1.end(), ' ') + 1;
+		int card2cnt = count(cards2.begin(), cards2.end(), ' ') + 1;
+
+		string firstcard1 = cards1.substr(0, cards1.find(' '));
+		string firstcard2 = cards2.substr(0, cards2.find(' '));
+
+		string str = "345678910JQKA2jokerJOKER";
+
+		if (card1cnt == card2cnt) {
+			if (str.find(firstcard1) > str.find(firstcard2)) {
+				cout << cards1 << endl;
+			}
+			else {
+				cout << cards2 << endl;
+			}
+		}
+		else {
+			if (card1cnt == 4) {
+				cout << cards1 << endl;
+			}
+			else if (card2cnt == 4) {
+				cout << cards2 << endl;
+			}
+			else {
+				cout << "ERROR" << endl;
+			}
+		}
+	}
+
+	return 0;
+}
