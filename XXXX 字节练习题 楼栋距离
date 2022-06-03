@@ -1,0 +1,33 @@
+// https://www.nowcoder.com/question/next?pid=16516564&qid=362290&tid=57019968
+
+#include <iostream>
+#include <vector>
+using namespace std;
+
+#define M 99997867
+
+long long combine(long long n) {
+    return n * (n-1) / 2;
+}
+
+int main() {
+    int N, D;
+    cin >> N >> D;
+    
+    vector<int> buildings(N, 0);
+    int start = 0;
+    long long res = 0;
+    
+    for (int end = 0; end < N; end++) {
+        cin >> buildings[end];
+        
+        while (end >= 2 && buildings[end] - buildings[start] > D) {
+            start++;
+        }
+        
+        res += combine(end-start);
+    }
+    
+    cout << res % M << endl;
+    return 0;
+}
