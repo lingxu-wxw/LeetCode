@@ -1,0 +1,100 @@
+/*
+题目描述
+在3×3的棋盘上，摆有八个棋子，每个棋子上标有1至8的某一数字。棋盘中留有一个空格，空格用0来表示。空格周围的棋子可以移到空格中。要求解的问题是：给出一种初始布局（初始状态）和目标布局（为了使题目简单,设目标状态为123804765），找到一种最少步骤的移动方法，实现从初始布局到目标布局的转变。
+输入格式
+输入初始状态，一行九个数字，空格用0表示
+输出格式
+只有一行，该行只有一个数字，表示从初始状态到目标状态需要的最少移动次数(测试数据中无特殊无法到达目标状态数据)
+输入输出样例
+输入 283104765
+输出 4
+*/
+
+#include <iostream>
+#include <vector>
+#include <string>
+#include <algorithm>
+#include <unordered_map>
+using namespace std;
+
+#define END_STATE 123804765
+
+vector<int> e = { 1, 10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000, 1000000000 };
+inline int getNumAt(int state, int idx) {
+	return state % e[idx + 1] / e[idx]; 
+}
+inline int swapNumAt(int state, int p, int idx) { 
+	return state - getNumAt(state, idx) * e[idx] + getNumAt(state, idx) * e[p];
+}
+
+unordered_map<int, int> map;	// state - direction 
+bool found = false;
+int Depth = 0;
+
+void dfs(int state, int p, int depth, int direction) {
+	if (map[state] + direction == 3) {
+		found = true;
+	}
+	map[state] = direction;
+
+	// control BFS
+	if (depth == Depth) {
+		return;
+	}
+
+	// not first row, zero hole up
+	if (p / 3 != 0) {
+		dfs(swapNumAt(state, p, p - 3), p - 3, depth + 1, direction);
+	}
+	// not last row, zero hole down
+	if (p / 3 != 2) {
+		dfs(swapNumAt(state, p, p + 3), p + 3, depth + 1, direction);
+	}
+	// not first column, zero hole left
+	if (p % 3 != 0) {
+		dfs(swapNumAt(state, p, p - 1), p - 1, depth + 1, direction);
+	}
+	// not last column, zero hole right
+	if (p % 3 != 0) {
+		dfs(swapNumAt(state, p, p + 1), p + 1, depth + 1, direction);
+	}
+}
+
+void printmap() {
+	cout << endl << "Print Map: Depth=" << Depth << endl;
+	for (auto iter : map) {
+		cout << iter.first << " " << iter.second << endl;
+	}
+	cout << endl;
+}
+
+int main() {
+	int begin_state, end_state;
+	int p;		// zero_idx
+
+	cin >> begin_state;
+	end_state = END_STATE;
+	for (p = 0; getNumAt(begin_state, p) != 0; p++);
+
+	while (true) {
+		dfs(begin_state, p, 0, 1);
+		if (found) {
+			cout << Depth * 2 - 1;
+			break;
+		}
+
+		// printmap();
+
+		dfs(end_state, 4, 0, 2);
+		if (found) {
+			cout << Depth * 2;
+			break;
+		}
+
+		// printmap();
+
+		Depth++;
+	}
+
+	return 0;
+}
