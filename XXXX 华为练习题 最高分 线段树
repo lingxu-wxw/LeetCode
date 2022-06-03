@@ -1,0 +1,96 @@
+#include <stdio.h>
+#include <algorithm>
+using namespace std;
+
+const int MAXN = 100000;
+ 
+int data[MAXN+5];
+int tree[MAXN*4+5];
+
+void build(int node, int lidx, int ridx) {
+    if (lidx == ridx) {
+        tree[node] = data[lidx];
+        return;
+    }
+    
+    int lchild = node * 2;
+    int rchild = node * 2 + 1;
+    int midx = (lidx + ridx) / 2;
+    
+    build(lchild, lidx, midx);
+    build(rchild, midx + 1, ridx);
+    tree[node] = max(tree[lchild], tree[rchild]);
+}
+
+int query(int leftidx, int rightidx, int node, int lidx, int ridx) {
+    if (leftidx <= lidx && rightidx >= ridx) {
+        return tree[node];
+    }
+    
+    int lchild = node * 2;
+    int rchild = node * 2 + 1;
+    int midx = (lidx + ridx) / 2;
+    
+    int lres = -1, rres = -1;
+    if (leftidx <= midx) {
+        lres = query(leftidx, rightidx, lchild, lidx, midx);
+    }
+    if (rightidx > midx) {
+        rres = query(leftidx, rightidx, rchild, midx + 1, ridx);
+    }
+    
+    if (lres == -1) return rres;
+    if (rres == -1) return lres;
+    return max(lres, rres);
+}
+
+void update(int idx, int newscore, int node, int lidx, int ridx) {
+    if (lidx == ridx && idx == lidx) {
+        tree[node] = newscore;
+        return;
+    }
+    
+    int lchild = node * 2;
+    int rchild = node * 2 + 1;
+    int midx = (lidx + ridx) / 2;
+    
+    if (idx <= midx) {
+        update(idx, newscore, lchild, lidx, midx);
+    } else {
+        update(idx, newscore, rchild, midx + 1, ridx);
+    }
+    
+    tree[node] = max(tree[lchild], tree[rchild]);
+}
+
+int main() {
+    int N, M;
+    while (~scanf("%d%d", &N, &M)) {
+        int score;
+        for (int i = 1; i <= N; i++) {
+            scanf("%d", &data[i]);
+        }
+        
+        build(1, 1, N);
+        
+        char operation;
+        int num1, num2;
+        for (int i = 0; i < M; i++) {
+            scanf(" %c%d%d", &operation, &num1, &num2);
+            
+            if (operation == 'Q') {
+                int leftidx = num1, rightidx = num2;
+                if (leftidx > rightidx) {
+                    swap(leftidx, rightidx);
+                }
+                printf("%d\n", query(leftidx, rightidx, 1, 1, N));
+            } 
+            else if (operation == 'U') {
+                int idx = num1, newscore = num2;
+                update(idx, newscore, 1, 1, N);
+            }
+        }
+    }
+    
+    return 0;
+}
