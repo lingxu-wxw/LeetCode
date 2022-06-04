@@ -1,0 +1,56 @@
+输入例子1:
+4
+0 2 6 5
+2 0 4 4
+6 4 0 2
+5 4 2 0
+
+输出例子1:
+13
+
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <limits.h>
+using namespace std;
+
+int main() {
+    int n;
+    cin >> n;
+    
+    vector<vector<int>> graph(n, vector<int>(n, 0));
+    vector<pair<int, int>> edges;
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            cin >> graph[i][j];
+        }
+    }
+    
+    // dp[i][j], i表示访问过的地点的bit位，j表示以哪个城市结尾, dp[i][j]表示当前的开销
+    int statesNum = (1 << n);
+    vector<vector<int>> dp(statesNum, vector<int>(n, INT_MAX));
+    
+    // 固定从城市0出发
+    dp[1][0] = 0;
+    
+    for (int i = 1; i < statesNum; i++) {
+        for (int j = 0; j < n; j++) {
+            if (dp[i][j] != INT_MAX) {
+                for (int k = 0; k < n; k++) {
+                    if ((i & (1 << k)) == 0) {
+                        dp[i | (1 << k)][k] = min(dp[i | (1 << k)][k], dp[i][j] + graph[j][k]);
+                    }
+                }
+            }
+        }
+    }
+    
+    int res = INT_MAX;
+    for (int i = 1; i < n; i++) {
+        // 最后还要回城市0
+        res = min(res, dp[statesNum - 1][i] + graph[i][0]);
+    }
+    cout << res << endl;
+    
+    return 0;
+}
