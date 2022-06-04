@@ -1,0 +1,41 @@
+#include <iostream>
+#include <unordered_map>
+#include <string>
+#include <algorithm>
+using namespace std;
+
+int main() {
+    int N;
+    cin >> N;
+    
+    while (N--) {
+        int M;
+        cin >> M;
+        
+        unordered_map<string, pair<int, int>> map;
+        int maxlen = 0;
+        
+        for (int i = 0; i < M; i++) {
+            int K;
+            cin >> K;
+            
+            while (K--) {
+                int x, y;
+                cin >> x >> y;
+                string state = to_string(x) + "-" + to_string(y);
+                
+                if (!map.count(state) || i != map[state].first + 1) {
+                    map[state] = {i, 1};
+                } else {
+                    map[state] = {i, map[state].second + 1};
+                }
+                
+                maxlen = max(maxlen, map[state].second);
+            }
+        }
+        
+         cout << maxlen << endl;
+    }
+    
+    return 0;
+}
