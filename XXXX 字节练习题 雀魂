@@ -1,0 +1,75 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+bool iswin(vector<int> hands, bool haspair) {
+    if (hands.empty()) {
+        return true;
+    }
+    
+    int mincard = hands[0];
+    int mincardcnt = count(hands.begin(), hands.end(), mincard);
+    
+    // 最小的牌当雀头
+    if (!haspair && mincardcnt >= 2) {
+        vector<int> resthands(hands.begin() + 2, hands.end());
+        if (iswin(resthands, true)) {
+            return true;
+        }
+    }
+    
+    // 最小的牌当刻子
+    if (mincardcnt >= 3) {
+        vector<int> resthands(hands.begin() + 3, hands.end());
+        if (iswin(resthands, haspair)) {
+            return true;
+        }
+    }
+    
+    // 最小的牌当顺子
+    if (count(hands.begin(), hands.end(), mincard + 1) > 0
+       && count(hands.begin(), hands.end(), mincard + 2) > 0) {
+        vector<int> resthands(hands.begin() + 1, hands.end());
+        resthands.erase(find(resthands.begin(), resthands.end(), mincard + 1));
+        resthands.erase(find(resthands.begin(), resthands.end(), mincard + 2));
+        if (iswin(resthands, haspair)) {
+            return true;
+        }
+    }
+    
+    return false;
+}
+
+bool canwin(vector<int> hands, int card) {
+    if (count(hands.begin(), hands.end(), card) == 4) {
+        return false;
+    }
+    
+    hands.push_back(card);
+    sort(hands.begin(), hands.end());
+    return iswin(hands, false);
+}
+
+int main() {
+    vector<int> hands(13, 0);
+    for (int i = 0; i < 13; i++) {
+        cin >> hands[i];
+    }
+    
+    vector<int> res;
+    for (int i = 1; i <= 9; i++) {
+        if (canwin(hands, i)) {
+            res.push_back(i);
+        }
+    }
+    
+    if (res.empty()) {
+        cout << 0 << endl;
+    } else {
+        for (int card : res) {
+            cout << card << " ";
+        }
+        cout << endl;
+    }
+}
