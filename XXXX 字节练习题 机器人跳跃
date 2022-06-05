@@ -1,0 +1,46 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+int N;
+vector<int> buildings;
+int maxH = -1;
+
+bool judgeE(int E){
+    int curE = E;
+    for (int i = 0; i < N; i++){
+        curE = 2*curE - buildings[i];
+        
+        if (curE >= maxH) return true;
+        if (curE < 0) return false;
+    }
+    
+    return true;
+}
+
+
+int main(){
+    cin >> N;
+    
+    for (int i = 0; i < N; i++) {
+        int height;
+        cin >> height;
+        buildings.push_back(height);
+        maxH = max(maxH, height);
+    }
+    
+    int left = 0, right = maxH;
+    while (left < right) {
+        int mid = (left + right) / 2;
+        if (judgeE(mid)) {
+            right = mid;
+        } else {
+            left = mid + 1;
+        }
+    }
+    
+    cout << left << endl;
+    
+    return 0;
+}
