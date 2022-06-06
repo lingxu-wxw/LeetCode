@@ -1,0 +1,45 @@
+#include <iostream>
+#include <string>
+#include <unordered_map>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+int main() {
+    string str;
+    int M;
+    
+    while (cin >> str >> M) {
+        unordered_map<char, vector<int>> map;
+        for (int i = 0; i < str.length(); i++) {
+            map[str[i]].push_back(i);
+        }
+
+        int res = 1;
+        for (auto iter : map) {
+            vector<int> idxs = iter.second;
+            int size = idxs.size();
+            if (size < 2) continue;
+
+            // dp[i][j] 表示将 idxs[i]到idxs[j]全都聚在一起的最小操作数
+            vector<vector<int> > dp(size, vector<int>(size, 0));
+            int maxlen = 1;
+
+            for (int len = 2; len <= size; len++) {
+                for (int i = 0; i < size - len + 1; i++) {
+                    int j = i + len - 1;
+                    dp[i][j] = dp[i+1][j-1] + (idxs[j] - idxs[i] - (len - 1));
+                    if (dp[i][j] <=  M) {
+                        maxlen = len;
+                    }
+                }
+            }
+
+            res = max(res, maxlen);
+        }
+
+        cout << res << endl;
+    }
+    
+    return 0;
+}
