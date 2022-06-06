@@ -1,0 +1,44 @@
+#include <iostream>
+#include <unordered_map>
+#include <vector>
+using namespace std;
+
+int main() {
+    int N, M, C;
+    cin >> N >> M >> C;
+    
+    unordered_map<int, vector<int>> colors;
+    
+    for (int i = 0; i < N; i++) {
+        int num_i;
+        cin >> num_i;
+        
+        while (num_i--) {
+            int color;
+            cin >> color;
+            colors[color].push_back(i);
+        }
+    }
+    
+    int cnt = 0;
+    for (auto iter : colors) {
+        vector<int> idxs =  iter.second;
+        if (idxs.size() <= 1) continue;
+        
+        if (idxs.back() + M > idxs[0] + N) {
+            cnt++;
+            continue;
+        }
+        
+        for (int i = 1; i < idxs.size(); i++) {
+            if (idxs[i] - idxs[i-1] < M) {
+                cnt++; 
+                break;
+            }
+        }
+    }
+    
+    cout << cnt << endl;
+    
+    return 0;
+}
