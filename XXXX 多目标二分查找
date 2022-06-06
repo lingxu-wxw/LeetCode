@@ -1,0 +1,42 @@
+// 函数使用二分查找搜索一个增序的数组
+// 当有多个元素值与目标元素相等时，返回最左边一个元素的下标，目标元素不存在时返回-1
+
+
+int BinarySearch(const vector<int>& data, int target){
+    int left = 0;
+    int right = data.size()-1;
+    
+    while (left < right) {
+		    int mid = (left + right) / 2;     //保证取到中间靠前的位置
+		    if (data[mid] >= target)
+			      right = mid;
+		    else
+			      left = mid + 1;
+	  }
+	
+    if (data[right] == target)
+		    return r;
+		return -1;
+}
+
+
+// 函数使用二分查找搜索一个增序的数组
+// 当有多个元素值与目标元素相等时，返回最右边一个元素的下标，目标元素不存在时返回-1
+
+int BinarySearchMax(const vector<int>& data, int target)
+{
+	  int left = 0;
+    int right = data.size()-1;
+    
+    while (left < right) {
+		    int mid = (left + right + 1) / 2;   //保证取到中间靠后的位置
+        if(data[mid] <= target)
+        	  left = mid;
+        else
+        	  right = mid - 1;
+	  }
+    
+    if (data[left] == target)
+        return left;
+	  return -1;
+}
