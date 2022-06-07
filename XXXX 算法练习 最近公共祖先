@@ -1,0 +1,99 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+struct TreeNode {
+	int val;
+	TreeNode *left;
+	TreeNode *right;
+	TreeNode() : val(0), left(nullptr), right(nullptr) {}
+	TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+	TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+};
+
+TreeNode* generateTree(vector<int>& nums, int idx) {
+	if (nums[idx] == -1) return NULL;
+
+	int size = nums.size();
+	TreeNode* root = new TreeNode(nums[idx]);
+	int leftidx = 2 * idx + 1;
+	int rightidx = 2 * idx + 2;
+
+	root->left = (leftidx > size - 1) ? NULL : generateTree(nums, leftidx);
+	root->right = (rightidx > size - 1) ? NULL : generateTree(nums, rightidx);
+
+	return root;
+}
+
+#define MAXN 20
+#define N 16
+
+int LOG2[MAXN];
+int father[MAXN][10];	// father[i][k]指i号节点的2^k级祖先, 父亲是1级祖先
+int depth[MAXN];
+bool visited[MAXN];
+
+void dfs(TreeNode* node, int cur, int fath = 0) {
+	if (node == NULL) return;
+	if (visited[cur]) return;
+
+	visited[cur] = true;
+	depth[cur] = depth[fath] + 1;
+	father[cur][0] = fath;
+
+	for (int i = 1; i <= LOG2[depth[cur]]; i++) {
+		father[cur][i] = father[father[cur][i - 1]][i - 1];
+	}
+
+	dfs(node->left, cur * 2, cur);
+	dfs(node->right, cur * 2 + 1, cur);
+}
+
+int lowestCommonAncestor(TreeNode* root, int p, int q) {
+	if (depth[p] > depth[q]) {
+		swap(p, q);
+	}
+
+	while (depth[p] != depth[q]) {
+		q = father[q][LOG2[depth[q] - depth[p]]];
+	}
+
+	if (p == q) return p;
+
+	for (int k = LOG2[depth[q]]; k >= 0; k--) {
+		if (father[p][k] != father[q][k]) {
+			p = father[p][k];
+			q = father[q][k];
+		}
+	}
+
+	return father[p][0];
+}
+
+int main() {
+	vector<int> nums = { 1, 2, 3, 4, 5, 6, 7, -1, -1, 10, 11 };
+	//  p = 2, q = 3
+	//  p = 2, q = 11
+	TreeNode* root = generateTree(nums, 0);
+
+	LOG2[1] = 0;
+	for (int i = 2; i <= N; i++) {
+		LOG2[i] = LOG2[i / 2] + 1;
+	}
+
+	for (int i = 0; i <= N; i++) {
+		depth[i] = 0;
+	}
+
+	for (int i = 0; i <= N; i++) {
+		visited[i] = false;
+	}
+
+	dfs(root, 1);
+
+	cout << lowestCommonAncestor(root, 2, 3) << endl;
+	cout << lowestCommonAncestor(root, 4, 11) << endl;
+
+	return 0;
+}
