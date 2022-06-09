@@ -1,0 +1,16 @@
+// Input: s = "baabb"
+// Output: 2
+// Explanation: "baabb" -> "b" -> "". 
+// Remove palindromic subsequence "baab" then "b".
+
+class Solution {
+public:
+    int removePalindromeSub(string s) {
+        // s只包含'a'和'b'，最多两次就结束了
+        int len = s.length();
+        for (int i = 0; i < len / 2; i++) {
+            if (s[i] != s[len-i-1]) return 2;
+        }
+        return 1;
+    }
+};
