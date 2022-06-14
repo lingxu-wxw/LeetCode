@@ -1,0 +1,31 @@
+void Bellman_Ford(int n, int m)
+{
+    for (int j = 0; j < n - 1; ++j)
+        for (int i = 1; i <= m; ++i)
+            dist[edges[i].to] = min(dist[edges[i].to], dist[edges[i].from] + edges[i].w);
+}
+
+void SPFA(int s)
+{
+    queue<int> Q;
+    Q.push(s);
+    while (!Q.empty())
+    {
+        int p = Q.front();
+        Q.pop();
+        inqueue[p] = 0;
+        for (int e = head[p]; e != 0; e = edges[e].next)
+        {
+            int to = edges[e].to;
+            if (dist[to] > dist[p] + edges[e].w)
+            {
+                dist[to] = dist[p] + edges[e].w;
+                if (!inqueue[to])
+                {
+                    inqueue[to] = 1;
+                    Q.push(to);
+                }
+            }
+        }
+    }
+}
