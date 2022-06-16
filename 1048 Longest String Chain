@@ -1,0 +1,49 @@
+// Input: words = ["a","b","ba","bca","bda","bdca"]
+// Output: 4
+// Explanation: One of the longest word chains is ["a","ba","bda","bdca"].
+
+class Solution {
+public:
+    
+    bool isChain(string s1, string s2) {
+        if (s2.length() != s1.length() + 1) return false;
+        
+        for (int i = 0; i < s2.length(); i++) {
+            // s2.substr(0, i) + s2.substr(i + 1);
+            string str = s2;
+            str.erase(i, 1);
+            if (s1 == str) return true;
+        }
+        
+        return false;
+    }
+    
+    int longestStrChain(vector<string>& words) {
+        int size = words.size();
+        if (size == 1) return 1;
+        
+        map<int, vector<pair<string, int>>> map;
+        for (string word : words) {
+            map[word.length()].push_back({word, 1});
+        }
+        if (map.size() == 1) return 1;
+        
+        int maxlen = 1;
+        
+        for (auto iter : map) {
+            int len = iter.first;
+            if (!map.count(len-1)) continue;
+            
+            for (auto &p2 : map[len]) {
+                for (auto p1 : map[len-1]) {
+                    if (isChain(p1.first, p2.first)) {
+                        p2.second = max(p2.second, p1.second + 1);
+                        maxlen = max(maxlen, p2.second);
+                    }
+                }
+            }
+        }
+        
+        return maxlen;
+    }
+};
