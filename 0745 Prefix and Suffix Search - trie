@@ -1,0 +1,84 @@
+// Input
+// ["WordFilter", "f"]
+// [[["apple"]], ["a", "e"]]
+// Output
+// [null, 0]
+
+// Explanation
+// WordFilter wordFilter = new WordFilter(["apple"]);
+// wordFilter.f("a", "e"); // return 0, because the word at index 0 has prefix = "a" and suffix = 'e".
+
+class TrieNode {
+public:
+	unordered_map<char, TrieNode*> child;
+    char ch;
+	int idx;
+	TrieNode(char c, int i) : ch(c), idx(i) {}
+};
+
+class Trie {
+private:
+	TrieNode* root;
+public:
+	Trie() {
+		root = new TrieNode('\0', -1);
+	}
+	
+	void insert(string word, int idx) {
+		TrieNode* p = root;
+        
+		for (char &c : word) {
+			if (!p->child.count(c)) {
+                p->child[c] = new TrieNode(c, idx);
+            } else {
+                p->child[c]->idx = idx;
+            }
+			p = p->child[c];
+		}
+	}
+    
+    int search(string target) {
+        TrieNode* p = root;
+        
+        for (char &c : target) {
+            if (!p->child.count(c)) {
+                return -1;
+            }
+            p = p->child[c];
+        }
+        
+        return p->idx;
+    }
+};
+
+class WordFilter {
+private:
+	Trie* trie;
+public:
+    WordFilter(vector<string>& words) {
+        trie = new Trie();
+        
+        for (int idx = 0; idx < words.size(); idx++) {
+            string word = words[idx];
+            int size = word.size();
+            
+            for (int j = size-1; j >= 0; j--) {
+                string suffix = word.substr(j);
+                string target = suffix + "#" + word;
+                trie->insert(target, idx);
+            }
+        }
+    }
+    
+    int f(string prefix, string suffix) {
+        string target = suffix + "#" + prefix;
+        return trie->search(target);
+    }
+
+};
+
+/**
+ * Your WordFilter object will be instantiated and called as such:
+ * WordFilter* obj = new WordFilter(words);
+ * int param_1 = obj->f(prefix,suffix);
+ */
