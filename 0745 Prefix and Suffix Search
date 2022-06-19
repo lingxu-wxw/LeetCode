@@ -1,0 +1,43 @@
+// Input
+// ["WordFilter", "f"]
+// [[["apple"]], ["a", "e"]]
+// Output
+// [null, 0]
+
+// Explanation
+// WordFilter wordFilter = new WordFilter(["apple"]);
+// wordFilter.f("a", "e"); // return 0, because the word at index 0 has prefix = "a" and suffix = 'e".
+
+class WordFilter {
+public:
+    WordFilter(vector<string>& words) {
+        for (int idx = 0; idx < words.size(); idx++) {
+            string word = words[idx];
+            int size = word.size();
+            
+            for (int i = 1; i <= size; i++) {
+                for (int j = 0; j < size; j++) {
+                    string prefix = word.substr(0, i);
+                    string suffix = word.substr(j);
+                    string target = suffix + "#" + prefix;
+                    
+                    map[target] = idx;
+                }
+            }
+        }
+    }
+    
+    int f(string prefix, string suffix) {
+        string target = suffix + "#" + prefix;
+        return (map.count(target)) ? map[target] : -1;
+    }
+
+private:
+    unordered_map<string, int> map;
+};
+
+/**
+ * Your WordFilter object will be instantiated and called as such:
+ * WordFilter* obj = new WordFilter(words);
+ * int param_1 = obj->f(prefix,suffix);
+ */
