@@ -1,0 +1,57 @@
+// Input: root = [0,0,null,0,0]
+// Output: 1
+// Explanation: One camera is enough to monitor all nodes if placed as shown.
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    
+    // state 0 - node don't have camera(0) and is not being watched(0)
+    // state 1 - node don't have camera(0) and is being watched(1)
+    // state 2 - node has camera(1) and is being watched(1)
+    int helper(TreeNode* node, int& cnt) {
+        // 叶子节点不加camera
+        if (!node) {
+            return 1;
+        }
+        
+        int leftstate = helper(node->left, cnt);
+        int rightstate = helper(node->right, cnt);
+        
+        // 左右孩子节点其中一个还没有被cover且只能靠当前节点，当前节点必须是camera
+        if (leftstate == 0 || rightstate == 0) {
+            cnt++;
+            return 2;
+        }
+        
+        // 左右孩子节点其中一个可以cover当前节点，当前节点无须是camera
+        if (leftstate == 2 || rightstate == 2) {
+            return 1;
+        }
+        
+        // 左右孩子都被更下面的孩子cover，当前节点靠父亲cover
+        return 0;
+        
+    }
+    
+    int minCameraCover(TreeNode* root) {
+        int cnt = 0;
+        
+        // 检查root状态，如果root未被cover还要额外加一个camera
+        if (helper(root, cnt) == 0) {
+            cnt++;
+        }
+        
+        return cnt;
+    }
+};
