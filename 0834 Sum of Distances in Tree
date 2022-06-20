@@ -1,0 +1,109 @@
+// Input: n = 6, edges = [[0,1],[0,2],[2,3],[2,4],[2,5]]
+// Output: [8,12,6,10,10,10]
+// Explanation: The tree is shown above.
+// We can see that dist(0,1) + dist(0,2) + dist(0,3) + dist(0,4) + dist(0,5)
+// equals 1 + 1 + 2 + 2 + 2 = 8.
+// Hence, answer[0] = 8, and so on.
+
+class Solution {
+public:
+    
+    // 任何时候都以0为root
+    
+    vector<int> subtree;    // 节点及子树的总节点数
+    vector<int> dist;   // 节点到其他节点的距离之和
+    
+    // 计算各个节点及子树的总节点数
+    int countSubTree(int node, vector<vector<int>>& graph, vector<bool>& visited) {
+        visited[node] = true;
+        
+        int count = 1;
+        for (auto child : graph[node]) {
+            if (!visited[child]) {
+                count += countSubTree(child, graph, visited);
+            }
+        }
+        
+        subtree[node] = count;
+        return count;
+    }
+    
+    // 计算root节点到其他节点的距离之和
+    void getRootDistance(int node, vector<vector<int>>& graph, vector<bool>& visited) {
+        queue<int> queue;
+        queue.push(node);
+        visited[node] = true;
+        
+        int level = 0;
+        int distance = 0;
+        
+        while (!queue.empty()) {
+            level++;
+            
+            int size = queue.size();
+            for (int i = 0; i < size; i++) {
+                int curnode = queue.front();
+                queue.pop();
+                
+                for (auto child : graph[curnode]) {
+                    if (!visited[child]) {
+                        queue.push(child);
+                        visited[child] = true;
+                        distance += level;
+                    }
+                }
+            }
+        }
+        
+        dist[node] = distance;
+    }
+    
+    // 计算所有节点到其他节点的距离之和
+    void getAllNodeDistance(int node, int n, vector<vector<int>>& graph, vector<bool>& visited) {
+        queue<int> queue;
+        queue.push(node);
+        visited[node] = true;
+        
+        while (!queue.empty()) {
+            int size = queue.size();
+            for (int i = 0; i < size; i++) {
+                int curnode = queue.front();
+                queue.pop();
+                
+                for (auto child : graph[curnode]) {
+                    if (!visited[child]) {
+                        queue.push(child);
+                        visited[child] = true;
+                        // 自己分支下的节点距离都减一，其余节点距离都加一
+                        dist[child] = dist[curnode] - subtree[child] + (n - subtree[child]);
+                    }
+                }
+            }
+        }
+    }
+    
+    vector<int> sumOfDistancesInTree(int n, vector<vector<int>>& edges) {
+        // 构造邻接表
+        vector<vector<int>> graph(n);
+        for (auto edge : edges) {
+            graph[edge[0]].push_back(edge[1]);
+            graph[edge[1]].push_back(edge[0]);
+        }
+        
+        // 计算各个节点及子树的总节点数
+        vector<bool> visited1(n, false);
+        subtree.resize(n, 0);
+        countSubTree(0, graph, visited1);
+        
+        // 计算root节点到其他节点的距离之和
+        vector<bool> visited2(n, false);
+        dist.resize(n, 0);
+        getRootDistance(0, graph, visited2);
+        
+        // 计算所有节点到其他节点的距离之和
+        vector<bool> visited3(n, false);
+        getAllNodeDistance(0, n, graph, visited3);
+        
+        return dist;
+    }
+};
