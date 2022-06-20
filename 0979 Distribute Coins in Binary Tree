@@ -1,0 +1,38 @@
+// Input: root = [0,3,0]
+// Output: 3
+// Explanation: From the left child of the root, we move two coins to the root [taking two moves]. Then, we move one coin from the root of the tree to the right child.
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    
+    // {coins, size}, 前者表示subtree中的coins总数，后者表示subtree中的节点总数
+    // 现在多余或缺少的coin都在左右孩子处，两者的差值代表以当前节点为root的subtree配平所需要的操作数
+    pair<int, int> helper(TreeNode* node, int& cnt) {
+        if (!node) return {0, 0};
+        
+        pair<int, int> leftstate = helper(node->left, cnt);
+        pair<int, int> rightstate = helper(node->right, cnt);
+        pair<int, int> curstate = {leftstate.first + rightstate.first + node->val, leftstate.second + rightstate.second + 1};
+
+        cnt += abs(curstate.first - curstate.second);
+        
+        return curstate;
+    }
+    
+    int distributeCoins(TreeNode* root) {
+        int cnt = 0;
+        helper(root, cnt);
+        return cnt;
+    }
+};
