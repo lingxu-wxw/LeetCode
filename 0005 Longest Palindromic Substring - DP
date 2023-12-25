@@ -9,8 +9,8 @@ public:
         
         int maxlen = 1, left = 0;
         
-        // dp[i][j]表示字符串s[i]~s[j]是回文串
-        vector<vector<bool>> dp(size, vector<bool>(size));
+        // dp[i][j]表示字符串s[i]~s[j]是否是回文串
+        vector<vector<bool>> dp(size, vector<bool>(size, false));
         
         for (int j = 0; j < size; j++) {
             for (int i = j; i >= 0; i--) {

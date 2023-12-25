@@ -1,0 +1,32 @@
+// Input: s = "0100"
+// Output: 1
+// Explanation: If you change the last character to '1', s will be "0101", which is alternating.
+
+class Solution {
+public:
+    int minOperations(string s) {
+        int len = s.length();
+
+        // operations need to take
+        int startwithzero = 0;  // '010101'
+        int startwithone = 0;   // '101010'
+
+        for (int i = 0; i < len; i++) {
+            if (i % 2 == 0) {
+                if (s[i] == '0') {
+                    startwithone++;
+                } else {
+                    startwithzero++;
+                }
+            } else {
+                if (s[i] == '0') {
+                    startwithzero++;
+                } else {
+                    startwithone++;
+                }
+            }
+        }
+
+        return min(startwithzero, startwithone);
+    }
+};

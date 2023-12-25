@@ -9,7 +9,7 @@ public:
         
         int maxlen = 1;
         
-        // dp[i][j]表示字符串s[i]~s[j]中的最长回文子序列
+        // dp[i][j]表示字符串s[i]~s[j]中的最长回文子序列的长度
         vector<vector<int>> dp(size, vector<int>(size, 0));
         
         for (int i = 0; i < size; i++) {

@@ -8,6 +8,7 @@ public:
     int longestCommonSubsequence(string text1, string text2) {
         int size1 = text1.size(), size2 = text2.size();
         
+        // dp[i+1][j+1]表示，遍历到 text1的idx=i 和 text1的idx=j 的位置时的最长公共子序列
         vector<vector<int>> dp(size1+1, vector<int>(size2+1, 0));
         
         for (int i = 1; i <= size1; i++) {
