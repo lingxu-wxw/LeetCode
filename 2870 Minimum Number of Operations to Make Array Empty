@@ -1,0 +1,39 @@
+// Example 1:
+// Input: nums = [2,3,3,2,2,4,2,3,4]
+// Output: 4
+// Explanation: We can apply the following operations to make the array empty:
+// - Apply the first operation on the elements at indices 0 and 3. The resulting array is nums = [3,3,2,4,2,3,4].
+// - Apply the first operation on the elements at indices 2 and 4. The resulting array is nums = [3,3,4,3,4].
+// - Apply the second operation on the elements at indices 0, 1, and 3. The resulting array is nums = [4,4].
+// - Apply the first operation on the elements at indices 0 and 1. The resulting array is nums = [].
+// It can be shown that we cannot make the array empty in less than 4 operations.
+
+// Example 2:
+// Input: nums = [2,1,2,2,3,3]
+// Output: -1
+// Explanation: It is impossible to empty the array.
+
+class Solution {
+public:
+    int minOperations(vector<int>& nums) {
+        unordered_map<int, int> frequency;  // num, count;
+        for (int& num : nums) {
+            frequency[num]++;
+        }
+
+        int operationCount = 0;
+        for (auto& iter : frequency) {
+            int count = iter.second;
+            if (count == 1) {
+                return -1;
+            }
+            operationCount += count / 3;
+            if (count % 3 != 0) {
+                // 余2直接做一次delete two，余1把上一次delete three改成两次delete two
+                operationCount++;
+            }
+        }
+
+        return operationCount;
+    }
+};
