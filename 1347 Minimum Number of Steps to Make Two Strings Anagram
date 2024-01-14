@@ -1,0 +1,29 @@
+// Input: s = "leetcode", t = "practice"
+// Output: 5
+// Explanation: Replace 'p', 'r', 'a', 'i' and 'c' from t with proper characters to make t anagram of s.
+
+class Solution {
+public:
+    int minSteps(const string& s, const string& t) {
+        if (s.length() != t.length()) return -1;
+
+        unordered_map<char, int> frequencyS;
+        unordered_map<char, int> frequencyT;
+        for (const auto& ch : s) {
+            frequencyS[ch]++;
+        }
+        for (const auto& ch : t) {
+            frequencyT[ch]++;
+        }
+
+        int steps = 0;
+        for (auto& iter : frequencyS) {
+            char ch = iter.first;
+            if (frequencyS[ch] > frequencyT[ch]) {
+                steps += (frequencyS[ch] - frequencyT[ch]);
+            }
+        }
+
+        return steps;
+    }
+};
