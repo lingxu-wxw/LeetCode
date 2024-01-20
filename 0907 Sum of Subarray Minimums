@@ -1,0 +1,48 @@
+// Input: arr = [3,1,2,4]
+// Output: 17
+// Explanation: 
+// Subarrays are [3], [1], [2], [4], [3,1], [1,2], [2,4], [3,1,2], [1,2,4], [3,1,2,4]. 
+// Minimums are 3, 1, 2, 4, 1, 1, 2, 1, 1, 1.
+// Sum is 17.
+
+// Input: arr = [11,81,94,43,3]
+// Output: 444
+
+class Solution {
+public:
+    int sumSubarrayMins(vector<int>& arr) {
+        int size = arr.size();
+
+        vector<int> leftMinIdx(size, -1);       // 左边第一个值更小的idx(包含相等)
+        stack<int> leftStack;
+        for (int i = 0; i < size; i++) {
+            while (!leftStack.empty() && arr[i] < arr[leftStack.top()]) {
+                leftStack.pop();
+            }
+            if (!leftStack.empty()) {
+                leftMinIdx[i] = leftStack.top();
+            }
+            leftStack.push(i);
+        }
+
+        vector<int> rightMinIdx(size, size);    // 右边第一个值更小的idx(不包含相等)
+        stack<int> rightStack;
+        for (int i = size-1; i >= 0; i--) {
+            while (!rightStack.empty() && arr[i] <= arr[rightStack.top()]) {
+                rightStack.pop();
+            }
+            if (!rightStack.empty()) {
+                rightMinIdx[i] = rightStack.top();
+            }
+            rightStack.push(i);
+        }
+
+        long sum = 0;
+        long M = 1e9 + 7;
+        for (int i = 0; i < size; i++) {
+            sum += ((long)arr[i] * (i - leftMinIdx[i]) * (rightMinIdx[i] - i)) % M;
+        }
+
+        return sum % M;
+    }
+};

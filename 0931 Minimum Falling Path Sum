@@ -1,0 +1,34 @@
+// Input: matrix = [[2,1,3],[6,5,4],[7,8,9]]
+// Output: 13
+// Explanation: There are two falling paths with a minimum sum as shown.
+
+class Solution {
+public:
+    int minFallingPathSum(vector<vector<int>>& matrix) {
+        int size = matrix.size();
+        if (size == 1) return matrix[0][0];
+
+        vector<vector<int>> dp(size, vector<int>(size, INT_MAX));
+        for (int j = 0; j < size; j++) {
+            dp[0][j] = matrix[0][j];
+        }
+        for (int i = 1; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                int prevMinSum = dp[i-1][j];
+                if (j > 0) {
+                    prevMinSum = min(prevMinSum, dp[i-1][j-1]);
+                }
+                if (j < size - 1) {
+                    prevMinSum = min(prevMinSum, dp[i-1][j+1]);
+                }
+                dp[i][j] = matrix[i][j] + prevMinSum;
+            }
+        }
+
+        int minSum = INT_MAX;
+        for (int j = 0; j < size; j++) {
+            minSum = min(minSum, dp[size-1][j]);
+        }
+        return minSum;
+    }
+};
