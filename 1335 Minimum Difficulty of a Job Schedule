@@ -1,0 +1,43 @@
+// Input: jobDifficulty = [6,5,4,3,2,1], d = 2
+// Output: 7
+// Explanation: First day you can finish the first 5 jobs, total difficulty = 6.
+// Second day you can finish the last job, total difficulty = 1.
+// The difficulty of the schedule = 6 + 1 = 7
+
+class Solution {
+public:
+    int minDifficulty(const vector<int>& jobDifficulty, int dayCount) {
+        int jobCount = jobDifficulty.size();
+        if (jobCount < dayCount) {
+            return -1;
+        }
+        if (jobCount == dayCount) {
+            int totalDifficulty = 0;
+            for (const int difficulty : jobDifficulty) {
+                totalDifficulty += difficulty;
+            }
+            return totalDifficulty;
+        }
+
+        // dp[i][j]表示用时i+1天完成前j+1个任务的最小难度
+        vector<vector<int>> dp(dayCount, vector<int>(jobCount, INT_MAX));
+        dp[0][0] = jobDifficulty[0];
+        for (int j = 1; j < jobCount; j++) {
+            dp[0][j] = max(dp[0][j-1], jobDifficulty[j]);
+        }
+
+        // 先更新一天做完任务的dp数组，再更新两天做完任务的dp数组，以此类推
+        for (int i = 1; i < dayCount; i++) {
+            for (int j = 0; j < jobCount; j++) {
+                // 从第j个任务往前推，分配一部分任务放到新的一天做
+                int maxDifficulty = 0;
+                for (int k = j; k >= i; k--) {
+                    maxDifficulty = max(maxDifficulty, jobDifficulty[k]);
+                    dp[i][j] = min(dp[i][j], dp[i-1][k-1] + maxDifficulty);
+                }
+            }
+        }
+
+        return dp[dayCount-1][jobCount-1];
+    }
+};

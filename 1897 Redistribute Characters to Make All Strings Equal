@@ -1,0 +1,27 @@
+// Input: words = ["abc","aabc","bc"]
+// Output: true
+// Explanation: Move the first 'a' in words[1] to the front of words[2],
+// to make words[1] = "abc" and words[2] = "abc".
+// All the strings are now equal to "abc", so return true.
+
+class Solution {
+public:
+    bool makeEqual(const vector<string>& words) {
+        int wordCount = words.size();
+        if (wordCount == 1) return true;
+
+        vector<int> charCount(26, 0);
+        for (const auto& word : words) {
+            for (const auto& ch : word) {
+                charCount[ch - 'a']++;
+            }
+        }
+
+        for (const auto& count : charCount) {
+            if (count % wordCount != 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+};
