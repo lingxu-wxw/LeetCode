@@ -1,0 +1,30 @@
+class Solution {
+public:
+    string encode(int curI, int curJ) {
+        return to_string(curI) + "_" + to_string(curJ);
+    }
+
+    bool isPathCrossing(const string& path) {
+        int curI = 0, curJ = 0;
+        unordered_set<string> set;
+        set.insert(encode(curI, curJ));
+
+        for (const char direction : path) {
+            switch (direction) {
+                case 'N': curJ++; break;
+                case 'S': curJ--; break;
+                case 'E': curI++; break;
+                case 'W': curI--; break;
+                default: return false;  // unexpected
+            }
+            string curPos = encode(curI, curJ);
+            if (set.count(curPos)) {
+                return true;
+            } else {
+                set.insert(curPos);
+            }
+        }
+
+        return false;
+    }
+};

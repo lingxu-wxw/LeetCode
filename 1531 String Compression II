@@ -1,0 +1,53 @@
+// Example 1:
+// Input: s = "aaabcccd", k = 2
+// Output: 4
+// Explanation: Compressing s without deleting anything will give us "a3bc3d" of length 6. Deleting any of the characters 'a' or 'c' would at most decrease the length of the compressed string to 5, for instance delete 2 'a' then we will have s = "abcccd" which compressed is abc3d. Therefore, the optimal way is to delete 'b' and 'd', then the compressed version of s will be "a3c3" of length 4.
+
+// Example 2:
+// Input: s = "aabbaa", k = 2
+// Output: 2
+// Explanation: If we delete both 'b' characters, the resulting compressed string would be "a4" of length 2.
+
+class Solution {
+public:
+    int compressLen(int sameCount) {
+        if (sameCount == 1) return 1;
+        if (sameCount < 10) return 2;
+        if (sameCount < 100) return 3;
+        return 4;
+    }
+
+    // 字符串s，至多删掉k个字符
+    int getLengthOfOptimalCompression(string s, int k) {
+        int len = s.length();
+
+        // 考虑s的前i个字符，删去k个字符后，压缩的最短长度
+        vector<vector<int>> dp(len+1, vector<int>(k+1, INT_MAX >> 1));
+        dp[0][0] = 0;
+
+        for (int i = 1; i <= len; i++) {
+            // j表示本轮循环可以删掉的最大字符数
+            for (int j = 0; j <= k && j <= i; j++) {
+                // 初始化dp[i][j]，先删除第i个字符作为一种情况
+                if (j > 0) {
+                    dp[i][j] = dp[i-1][j-1];
+                }
+
+                // s的前i个字符里，和第i个字符相同/不同的字符数
+                // 看到不同的字符就删掉，看到相同的字符就尝试压缩
+                // e.g. "aabbaaa", i=7, j=2
+                int same = 0, diff = 0;
+                for (int idx = i; idx >= 1 && diff <= j; idx--) {
+                    if (s[idx-1] == s[i-1]) {
+                        same++;
+                        dp[i][j] = min(dp[i][j], dp[idx-1][j-diff] + compressLen(same));
+                    } else {
+                        diff++;
+                    }
+                }
+            }
+        }
+
+        return dp[len][k];
+    }
+};

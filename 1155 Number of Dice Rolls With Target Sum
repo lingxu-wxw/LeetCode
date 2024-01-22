@@ -1,0 +1,33 @@
+// Example 1:
+// Input: n = 1, k = 6, target = 3
+// Output: 1
+// Explanation: You throw one die with 6 faces.
+// There is only one way to get a sum of 3.
+
+// Example 2:
+// Input: n = 2, k = 6, target = 7
+// Output: 6
+// Explanation: You throw two dice, each with 6 faces.
+// There are 6 ways to get a sum of 7: 1+6, 2+5, 3+4, 4+3, 5+2, 6+1.
+
+class Solution {
+public:
+    int numRollsToTarget(int n, int k, int target) {
+        if (n * k < target) return 0; 
+    
+        // dp[i][j]表示用i个骰子掷出j有多少种可能的情况
+        vector<vector<long>> dp(n+1, vector<long>(target+1, 0));
+        dp[0][0] = 1;
+        long M = 1e9 + 7;
+
+        for (int i = 1; i <= n; i++) {
+            for (int j = 1; j <= target && j <= i * k; j++) {
+                for (int num = 1; num <= k && num <= j; num++) {
+                    dp[i][j] = (dp[i][j] + dp[i-1][j-num]) % M;
+                }
+            }
+        }
+
+        return dp[n][target] % M;
+    }
+};
