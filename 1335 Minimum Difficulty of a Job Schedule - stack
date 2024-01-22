@@ -1,0 +1,65 @@
+// Input: jobDifficulty = [6,5,4,3,2,1], d = 2
+// Output: 7
+// Explanation: First day you can finish the first 5 jobs, total difficulty = 6.
+// Second day you can finish the last job, total difficulty = 1.
+// The difficulty of the schedule = 6 + 1 = 7
+
+class Solution {
+public:
+    int minDifficulty(const vector<int>& jobDifficulty, int dayCount) {
+        int jobCount = jobDifficulty.size();
+        if (jobCount < dayCount) {
+            return -1;
+        }
+        if (jobCount == dayCount) {
+            int totalDifficulty = 0;
+            for (const int difficulty : jobDifficulty) {
+                totalDifficulty += difficulty;
+            }
+            return totalDifficulty;
+        }
+
+        // dp[i]表示完成前j+1个任务的最小难度
+        vector<int> dp(jobCount, -1);
+        dp[0] = jobDifficulty[0];
+        for (int i = 1; i < jobCount; i++) {
+            dp[i] = max(dp[i-1], jobDifficulty[i]);
+        }
+
+        // swap: 压缩空间但不修改原数组
+        vector<int> dpPrev(jobCount, -1);
+
+        // 单调栈
+        vector<int> stackIdx;
+        stackIdx.reserve(jobCount);
+        int lastIdx = -1;
+
+        // 先更新一天做完任务的dp数组，再更新两天做完任务的dp数组，以此类推
+        for (int i = 1; i < dayCount; i++) {
+            dp.swap(dpPrev);
+            stackIdx.clear();
+
+            // 第j个任务放在第i+1天做，往前看尽可能多覆盖一些任务也放到第i+1天做
+            for (int j = i; j < jobCount; j++) {
+                dp[j] = jobDifficulty[j] + dpPrev[j-1];     
+
+                while (!stackIdx.empty() && jobDifficulty[stackIdx.back()] <= jobDifficulty[j]) {
+                    lastIdx = stackIdx.back();
+                    stackIdx.pop_back();
+                    // 尝试把第lastIdx~j的任务放到第i+1天做，第i+1天难度为jobDifficulty[j]
+                    dp[j] = min(dp[j], dp[lastIdx] + jobDifficulty[j] - jobDifficulty[lastIdx]);
+                }
+
+                if (!stackIdx.empty()) {
+                    lastIdx = stackIdx.back();
+                    // 尝试把第lastIdx~j的任务放到第i+1天做，第i+1天难度为jobDifficulty[lastIdx]
+                    dp[j] = min(dp[j], dp[lastIdx]);
+                }
+
+                stackIdx.emplace_back(j);
+            }
+        }
+
+        return dp[jobCount-1];
+    }
+};

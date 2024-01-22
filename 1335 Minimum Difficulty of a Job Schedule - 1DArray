@@ -19,25 +19,28 @@ public:
             return totalDifficulty;
         }
 
-        // dp[i][j]表示用时i+1天完成前j+1个任务的最小难度
-        vector<vector<int>> dp(dayCount, vector<int>(jobCount, INT_MAX));
-        dp[0][0] = jobDifficulty[0];
-        for (int j = 1; j < jobCount; j++) {
-            dp[0][j] = max(dp[0][j-1], jobDifficulty[j]);
+        // 压缩空间: dp[i]表示完成前j+1个任务的最小难度
+        vector<int> dp(jobCount, -1);
+        dp[0] = jobDifficulty[0];
+        for (int i = 1; i < jobCount; i++) {
+            dp[i] = max(dp[i-1], jobDifficulty[i]);
         }
 
         // 先更新一天做完任务的dp数组，再更新两天做完任务的dp数组，以此类推
         for (int i = 1; i < dayCount; i++) {
-            for (int j = i; j < jobCount; j++) {
+            // 遍历顺序需要反过来，因为一维dp数组会修改
+            for (int j = jobCount - 1; j >= i; j--) {
                 // 从第j个任务往前推，分配一部分任务放到新的一天做
-                int maxDifficulty = 0;
+                int maxDifficulty = 0;         // 第k~j个任务里最难的任务
+                int minDifficulty = INT_MAX;   // 完成第j个任务的最小难度
                 for (int k = j; k >= i; k--) {
                     maxDifficulty = max(maxDifficulty, jobDifficulty[k]);
-                    dp[i][j] = min(dp[i][j], dp[i-1][k-1] + maxDifficulty);
+                    minDifficulty = min(minDifficulty, dp[k-1] + maxDifficulty);
                 }
+                dp[j] = minDifficulty;
             }
         }
 
-        return dp[dayCount-1][jobCount-1];
+        return dp[jobCount-1];
     }
 };
