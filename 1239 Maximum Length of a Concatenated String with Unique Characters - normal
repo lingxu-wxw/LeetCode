@@ -1,0 +1,37 @@
+// Input: arr = ["cha","r","act","ers"]
+// Output: 6
+// Explanation: Possible longest valid concatenations are "chaers" ("cha" + "ers") and "acters" ("act" + "ers").
+
+class Solution {
+public:
+    bool isUniqueStr(const std::string& str) {
+        unordered_set<char> set;
+        for (const char ch : str) {
+            if (set.count(ch)) {
+                return false;
+            }
+            set.insert(ch);
+        }
+        return true;
+    }
+
+    void maxLengthDFS(const vector<string>& arr, const int startIdx, const string& curStr, int& maxLen) {
+        bool isUnique = isUniqueStr(curStr);
+        if (isUnique) {
+            maxLen = max(maxLen, static_cast<int>(curStr.length()));
+        }
+        if (startIdx == arr.size() || !isUnique) {
+            return;
+        }
+
+        for (int i = startIdx; i < arr.size(); i++) {
+            maxLengthDFS(arr, i + 1, curStr + arr.at(i), maxLen);
+        }
+    }
+
+    int maxLength(const vector<string>& arr) {
+        int maxLen = 0;
+        maxLengthDFS(arr, 0, "", maxLen);
+        return maxLen;
+    }
+};

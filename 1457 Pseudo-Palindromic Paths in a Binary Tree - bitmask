@@ -1,0 +1,40 @@
+// Input: root = [2,3,1,3,1,null,1]
+// Output: 2 
+// Explanation: The figure above represents the given binary tree. There are three paths going from the root node to leaf nodes: the red path [2,3,3], the green path [2,1,1], and the path [2,3,1]. Among these paths only red path and green path are pseudo-palindromic paths since the red path [2,3,3] can be rearranged in [3,2,3] (palindrome) and the green path [2,1,1] can be rearranged in [1,2,1] (palindrome).
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    // mask & (mask-1)
+    // 0000000000 & 1111111111 (负数：原码取反然后+1)
+    // 0000010000 & 0000001111
+    // 0001000100 & 0001000011
+    bool isPseudoPalindromic(int mask) {
+        return ((mask & (mask - 1)) == 0) ? 1 : 0;
+    }
+
+    int helperDFS(TreeNode* root, int mask) {
+        if (!root) return 0;
+
+        mask ^= (1 << root->val);   // 奇变偶，偶变奇
+        if (!root->left && !root->right) {
+            return isPseudoPalindromic(mask);
+        }
+        return helperDFS(root->left, mask) + helperDFS(root->right, mask);
+    }
+
+    // 1 <= Node.val <= 9
+    int pseudoPalindromicPaths(TreeNode* root) {
+        return helperDFS(root, 0);
+    }
+};

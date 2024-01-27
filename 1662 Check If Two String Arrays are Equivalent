@@ -1,0 +1,21 @@
+// Input: word1 = ["ab", "c"], word2 = ["a", "bc"]
+// Output: true
+// Explanation:
+// word1 represents string "ab" + "c" -> "abc"
+// word2 represents string "a" + "bc" -> "abc"
+// The strings are the same, so return true.
+
+class Solution {
+public:
+    bool arrayStringsAreEqual(const vector<string>& word1, const vector<string>& word2) {
+        string str1 = "", str2 = "";
+        for (const string& str : word1) {
+            str1 += str;
+        }
+        for (const string& str : word2) {
+            str2 += str;
+        }
+
+        return (str1 == str2);
+    }
+};

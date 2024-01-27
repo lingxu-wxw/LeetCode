@@ -1,0 +1,50 @@
+// Input: arr = ["cha","r","act","ers"]
+// Output: 6
+// Explanation: Possible longest valid concatenations are "chaers" ("cha" + "ers") and "acters" ("act" + "ers").
+
+class Solution {
+public:
+    // 返回num二进制中 bit=1 的位数
+    int bitCount(int num) {
+        int cnt = 0;
+        while (num > 0) {
+            // 去除最低位的1
+            // 10100 & 10011 = 10000
+            num = num & (num - 1);
+            cnt++;
+        }
+        return cnt;
+    }
+
+    int maxLength(const vector<string>& arr) {
+        int maxLen = 0;
+
+        vector<int> masks;
+        masks.emplace_back(0);
+        
+        for (const string& str : arr) {
+            // 先把每个字符串都转化称一个mask
+            int strMask = 0;
+            for (const char c : str) {
+                strMask = strMask | (1 << (c - 'a'));
+            }
+            
+            // 如果字符串本身就有重复字符，就不再参与后续讨论
+            if (bitCount(strMask) != str.length()) {
+                continue;
+            }
+
+            // 倒序遍历可以明确每一轮的边界
+            for (int i = masks.size() - 1; i >= 0; i--) {
+                // 如果strMask与当前mask没有重叠，就可以新增newMask
+                if ((masks.at(i) & strMask) == 0) {
+                    int newMask = masks.at(i) | strMask;
+                    masks.emplace_back(newMask);
+                    maxLen = max(maxLen, bitCount(newMask));
+                }
+            }
+        }
+        
+        return maxLen;
+    }
+};
